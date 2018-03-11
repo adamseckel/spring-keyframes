@@ -2,13 +2,19 @@
   "name": "spring-keyframes",
   "description":
     "Use javascript to generate css keyframe animations based on spring physics with emotion",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "include": "lib",
+  "author": "hemlok",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hemlok/spring-keyframes"
+  },
   "license": "MIT",
   "scripts": {
     "build":
-      "babel src --out-dir lib --source-maps inline --presets=es2015,stage-2"
+      "babel src --out-dir lib --source-maps inline --presets=es2015,stage-2",
+    "prepublish": "yarn build"
   },
   "prettier": {
     "singleQuote": true,
