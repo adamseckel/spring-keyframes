@@ -22,7 +22,7 @@
     "semi": false,
     "jsxBracketSameLine": true
   },
-  "precommit": ["build"],
+  "pre-commit": ["build"],
   "dependencies": {
     "emotion": "9.0.2",
     "springer": "0.0.1"
