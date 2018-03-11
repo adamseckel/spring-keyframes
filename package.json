@@ -1,0 +1,40 @@
+{
+  "name": "spring-keyframes",
+  "description":
+    "Use javascript to generate css keyframe animations based on spring physics with emotion",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "include": "lib",
+  "license": "MIT",
+  "scripts": {
+    "build":
+      "babel src --out-dir lib --source-maps inline --presets=es2015,stage-2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "semi": false,
+    "jsxBracketSameLine": true
+  },
+  "precommit": ["build"],
+  "dependencies": {
+    "emotion": "9.0.2",
+    "springer": "0.0.1"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-eslint": "8.2.2",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-2": "6.24.1",
+    "pre-commit": "1.2.2",
+    "eslint-plugin-flowtype": "2.46.1",
+    "eslint-plugin-import": "2.9.0",
+    "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint": "4.18.2",
+    "eslint-config-react-app": "2.1.0",
+    "eslint-plugin-prettier": "2.6.0",
+    "eslint-plugin-react": "7.7.0",
+    "prettier": "1.11.1"
+  }
+}
