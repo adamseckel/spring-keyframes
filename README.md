@@ -5,6 +5,7 @@
 ---
 
 Spring transform properties: `transformX`, `transformY`, `scale3d`, as `x`, `y`, and `scale`, as well as `opacity`.
+The default export is wrapped in emotion's `keyframes`, however you can also export {spring} which returns a string to use with other css-in-js solutions.
 
 ### Example
 This example is done for a react app, but can easoly work without react with `emotion`
