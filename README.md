@@ -10,6 +10,8 @@ Spring transform properties: `transformX`, `transformY`, `scale3d`, as `x`, `y`,
 * The default export is wrapped in emotion's `keyframes`, however you can also export `{ spring }` which returns an array you can join and use with other css-in-js solutions. (I think...)
 * Requires an `Array.from` polyfill
 
+Note: for scale, be sure to use a higher precision, like 4.
+
 ### Example
 
 This example is done for a react app, but can easoly work without react with `emotion`
@@ -21,7 +23,7 @@ import styled from 'react-emotion'
 const options = {
   stiffness: 0.8,
   damping: 0.5,
-  precision: 2,
+  precision: 4,
   unit: 'px',
 }
 
