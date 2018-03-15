@@ -2,7 +2,7 @@
   "name": "spring-keyframes",
   "description":
     "Use javascript to generate css keyframe animations based on spring physics with emotion",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "lib/index.js",
   "include": "lib",
   "author": "hemlok",
@@ -14,13 +14,8 @@
   "scripts": {
     "build":
       "babel src --out-dir lib --source-maps inline --presets=es2015,stage-2",
-    "prepublish": "yarn build"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "semi": false,
-    "jsxBracketSameLine": true
+    "prepublish": "yarn build",
+    "test": "NODE_ENV=production jest --watch"
   },
   "pre-commit": ["build"],
   "dependencies": {
@@ -28,19 +23,22 @@
     "springer": "0.0.1"
   },
   "devDependencies": {
+    "jest": "23.0.0-alpha.0",
+    "babel-core": "6.26.0",
+    "babel-jest": "23.0.0-alpha.0",
     "babel-cli": "6.26.0",
     "babel-eslint": "8.2.2",
     "babel-preset-env": "1.6.1",
     "babel-preset-es2015": "6.24.1",
     "babel-preset-stage-2": "6.24.1",
-    "pre-commit": "1.2.2",
+    "eslint": "4.18.2",
+    "eslint-config-react-app": "2.1.0",
     "eslint-plugin-flowtype": "2.46.1",
     "eslint-plugin-import": "2.9.0",
     "eslint-plugin-jsx-a11y": "6.0.3",
-    "eslint": "4.18.2",
-    "eslint-config-react-app": "2.1.0",
     "eslint-plugin-prettier": "2.6.0",
     "eslint-plugin-react": "7.7.0",
+    "pre-commit": "1.2.2",
     "prettier": "1.11.1"
   }
 }

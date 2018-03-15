@@ -100,20 +100,15 @@ export function spring({ from, to }, options) {
       ),
       frame,
     ])
-    .filter(([spring, frame], i, frames) => {
+
+    .map(([spring, frame]) => [`${frame}%`, mapToCss(spring, unit)])
+    .filter(([frame, spring], i, frames) => {
       const lastIndex = i - 1 > 0 ? i - 1 : 0
-      return lastIndex > 0 ? frames[lastIndex][0] !== spring : true
+      return lastIndex > 0 ? frames[lastIndex][1] !== spring : true
     })
-    .reduce(
-      (frames, [spring, frame]) => [
-        ...frames,
-        [`${frame}%`, mapToCss(spring, unit)],
-      ],
-      []
-    )
     .map(([frame, spring]) => `${frame} { ${spring} }`)
 }
 
 export default function({ from, to }, options) {
-  return keyframes(spring({ from, to }, options))
+  return keyframes(spring({ from, to }, options).join(''))
 }
