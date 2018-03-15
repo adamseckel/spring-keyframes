@@ -3,6 +3,7 @@
 #### Generate css keyframes in css-in-js based on a spring algorithm, with emotion: https://github.com/emotion-js/emotion.
 
 ---
+![spring 7](https://user-images.githubusercontent.com/9043345/37491197-eff0e8c6-2894-11e8-86ae-414533c4b8f4.gif)
 
 Spring transform properties: `transformX`, `transformY`, `scale3d`, as `x`, `y`, and `scale`, as well as `opacity`.
 
