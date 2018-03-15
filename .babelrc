@@ -1,4 +1,8 @@
 {
   "presets": ["es2015", "stage-2"],
-  "ignore": ["*.test.js"]
+  "env": {
+    "production": {
+      "ignore": ["*.test.js"]
+    }
+  }
 }

@@ -4,7 +4,7 @@
     "Use javascript to generate css keyframe animations based on spring physics with emotion",
   "version": "0.0.3",
   "main": "lib/index.js",
-  "include": "lib",
+  "files": ["lib"],
   "author": "hemlok",
   "repository": {
     "type": "git",
@@ -13,9 +13,9 @@
   "license": "MIT",
   "scripts": {
     "build":
-      "babel src --out-dir lib --source-maps inline --presets=es2015,stage-2",
+      "NODE_ENV=production babel src --out-dir lib --source-maps inline --presets=es2015,stage-2",
     "prepublish": "yarn build",
-    "test": "NODE_ENV=production jest --watch"
+    "test": "NODE_ENV=test jest --watch"
   },
   "pre-commit": ["build"],
   "dependencies": {

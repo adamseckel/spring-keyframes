@@ -75,7 +75,7 @@ function mapPropTypes(prop, spring, unit) {
 function mapToCss(spring, unit) {
   return Object.keys(spring).reduce(
     (animation, prop) =>
-      `${animation} ${mapPropTypes(prop, spring[prop], unit)}`,
+      `${animation}${mapPropTypes(prop, spring[prop], unit)}`,
     ''
   )
 }
@@ -104,9 +104,11 @@ export function spring({ from, to }, options) {
     .map(([spring, frame]) => [`${frame}%`, mapToCss(spring, unit)])
     .filter(([frame, spring], i, frames) => {
       const lastIndex = i - 1 > 0 ? i - 1 : 0
-      return lastIndex > 0 ? frames[lastIndex][1] !== spring : true
+      return lastIndex > 0 && frame !== '100%'
+        ? frames[lastIndex][1] !== spring
+        : true
     })
-    .map(([frame, spring]) => `${frame} { ${spring} }`)
+    .map(([frame, spring]) => `${frame} {${spring}}`)
 }
 
 export default function({ from, to }, options) {
