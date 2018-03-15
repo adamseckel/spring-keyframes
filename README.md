@@ -1,13 +1,16 @@
 # Spring-Keyframes
 
 #### Generate css keyframes in css-in-js based on a spring algorithm, with emotion: https://github.com/emotion-js/emotion.
+
 ---
+
 Spring transform properties: `transformX`, `transformY`, `scale3d`, as `x`, `y`, and `scale`, as well as `opacity`.
 
-- The default export is wrapped in emotion's `keyframes`, however you can also export `{ spring }` which returns a string to use with other css-in-js solutions. (I think...)
-- Requires an `Array.from` polyfill
+* The default export is wrapped in emotion's `keyframes`, however you can also export `{ spring }` which returns an array you can join and use with other css-in-js solutions. (I think...)
+* Requires an `Array.from` polyfill
 
 ### Example
+
 This example is done for a react app, but can easoly work without react with `emotion`
 
 ```
@@ -36,10 +39,3 @@ const Component = styled.div`
   }, options)} 300ms linear 1;
 `
 ```
-
----
-
-##### ToDo:
-
-* Jest Tests,
-* Snapshot Tests,
