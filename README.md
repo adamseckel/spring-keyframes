@@ -14,7 +14,7 @@ Note: for scale, be sure to use a higher precision, like 4.
 
 ### Example
 
-This example is done for a react app, but can easoly work without react with `emotion`
+This example is done for a react app, but can easily work without react with `emotion`
 
 ```
 import springKeyframes from 'spring-keyframes'
