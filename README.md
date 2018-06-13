@@ -40,5 +40,6 @@ const Component = styled.div`
       scale: 1
     }
   }, options)} 300ms linear 1;
+  animation-fill-mode: both;
 `
 ```
