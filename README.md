@@ -17,7 +17,7 @@ Note: for scale, be sure to use a higher precision, like 4.
 This example is done for a react app, but can easily work without react with `emotion`
 
 ```
-import springKeyframes from 'spring-keyframes'
+import spring from 'spring-keyframes'
 import styled from 'react-emotion'
 
 const options = {
@@ -28,7 +28,7 @@ const options = {
 }
 
 const Component = styled.div`
-  animation: ${springKeyframes({
+  animation: ${spring({
     from: {
       opacity: 0,
       x: 0,
@@ -39,7 +39,7 @@ const Component = styled.div`
       x: 100,
       scale: 1
     }
-  }, options)} 300ms linear 1;
+  }, options)} 300ms;
   animation-fill-mode: both;
 `
 ```
