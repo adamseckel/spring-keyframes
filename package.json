@@ -30,9 +30,9 @@
     "springer": "0.0.1"
   },
   "devDependencies": {
-    "jest": "23.0.0-alpha.0",
+    "jest": "23.0.0",
     "babel-core": "6.26.0",
-    "babel-jest": "23.0.0-alpha.0",
+    "babel-jest": "23.0.0",
     "babel-cli": "6.26.0",
     "babel-eslint": "8.2.2",
     "babel-preset-env": "1.6.1",
