@@ -2,89 +2,98 @@ import springer from 'springer'
 import { keyframes } from '@emotion/core'
 
 const defaults = {
-  stiffness: 0.5,
-  damping: 0.8,
+  stiffness: 50,
+  damping: 80,
   precision: 2,
   unit: 'px',
 }
 
-const numFrames = { length: 101 }
 const transformMap = ['x', 'y', 'scale']
 
 function roundToPrecision(num: number, precision = 2) {
-  const decimalPoints = Array.from({ length: precision }).reduce(
-    (count = 1) => count * 10
-  )
+  const decimalPoints = Math.pow(10, precision)
+
   return Math.ceil(num * decimalPoints) / decimalPoints
 }
 
-function calcPropTweenVal(
+const calcPropTweenVal = (
   prop: keyof Css,
   frame: number,
-  from: Css,
-  to: Css,
-  { damping, stiffness, precision }: Options
-) {
-  const spring = springer(damping, stiffness)
-  const value = from[prop] + (to[prop] - from[prop]) * spring(frame / 100)
+  from: Partial<Css>,
+  to: Partial<Css>,
+  { precision }: Pick<Options, 'precision'>
+) => (spring: (number: any) => number) => {
+  const value =
+    (from[prop] || 0) +
+    ((to[prop] || 0) - (from[prop] || 0)) * spring(frame / 100)
 
   return roundToPrecision(value, precision)
 }
-const createCalcPropTweenVal = (from: Css, to: Css, options: Options) => (
-  prop: keyof Css,
-  frame: number
-) => calcPropTweenVal(prop, frame, from, to, options)
 
-function splitTransform(prop: keyof Css, v, transformList = []) {
-  return transformMap.includes(prop)
-    ? { transform: [...transformList, [prop, v]] }
-    : { [prop]: v }
+const createCalcPropTweenVal = (
+  from: Partial<Css>,
+  to: Partial<Css>,
+  options: Omit<Options, 'unit'>
+) => (prop: keyof Css, frame: number) => {
+  const spring = springer(options.damping / 100, options.stiffness / 100)
+  return calcPropTweenVal(prop, frame, from, to, options)(spring)
 }
 
-function reduceFrame(
+const splitTransform = (prop: keyof Css, value: number, transformList = []) =>
+  transformMap.includes(prop)
+    ? { transform: [...transformList, [prop, value]] }
+    : { [prop]: value }
+
+const reduceFrame = (
   tween: Record<string, any>,
   property: keyof Css,
   value: number
-) {
-  return { ...tween, ...splitTransform(property, value, tween.transform) }
-}
+) => ({ ...tween, ...splitTransform(property, value, tween.transform) })
 
-function mapTransformPropToCss(prop: keyof Css, spring, unit = 'px') {
+function mapTransformPropToCss(
+  prop: keyof Css,
+  sprungValue: number,
+  unit = 'px'
+) {
   switch (prop) {
     case 'y':
-      return `translateY(${spring}${unit})`
+      return `translateY(${sprungValue}${unit})`
     case 'x':
-      return `translateX(${spring}${unit})`
+      return `translateX(${sprungValue}${unit})`
     case 'scale':
-      return `scale3d(${spring}, ${spring}, 1)`
+      return `scale3d(${sprungValue}, ${sprungValue}, 1)`
     default:
-      return `${prop}(${spring})`
+      return `${prop}(${sprungValue})`
   }
 }
 
-function mapTransformProps(spring, unit: string) {
-  return spring.reduce(
+const mapTransformProps = (
+  sprungFrameTuples: [keyof Css, number][],
+  unit: string
+) =>
+  sprungFrameTuples.reduce(
     (transform, [prop, spring]) =>
       `${transform} ${mapTransformPropToCss(prop, spring, unit)}`,
     'transform:'
   )
-}
 
-function mapPropTypes(prop, spring, unit) {
-  return prop === 'transform'
+const mapPropTypes = (
+  prop: string,
+  spring: [keyof Css, number][],
+  unit: string
+) =>
+  prop === 'transform'
     ? `${mapTransformProps(spring, unit)};`
     : `${prop}: ${spring};`
-}
 
-function mapToCss(spring, unit) {
-  return Object.keys(spring).reduce(
+const mapToCss = (spring: any, unit: string) =>
+  Object.keys(spring).reduce(
     (animation, prop) =>
       `${animation}${mapPropTypes(prop, spring[prop], unit)}`,
     ''
   )
-}
 
-export function spring({ from, to }: Props, options: Options) {
+export function spring({ from, to }: Props, options?: Partial<Options>) {
   const { stiffness, damping, precision, unit } = {
     ...defaults,
     ...options,
@@ -96,16 +105,19 @@ export function spring({ from, to }: Props, options: Options) {
     precision,
   })
 
-  return Array.from(numFrames)
-    .map((_, frame) => [
+  const frames = new Array(101).fill('')
+
+  return frames
+    .map((_, frame: number) => [
       Object.keys(from).reduce(
-        (tween, prop) => reduceFrame(tween, prop, calcTween(prop, frame)),
+        //@ts-ignore
+        (tween, prop: keyof Css) =>
+          reduceFrame(tween, prop, calcTween(prop, frame)),
         {}
       ),
       frame,
     ])
-
-    .map(([spring, frame]) => [`${frame}%`, mapToCss(spring, unit)])
+    .map(([sprungValues, frame]) => [`${frame}%`, mapToCss(sprungValues, unit)])
     .filter(([frame, spring], i, frames) => {
       const lastIndex = i - 1 > 0 ? i - 1 : 0
       return lastIndex > 0 && frame !== '100%'
@@ -116,24 +128,24 @@ export function spring({ from, to }: Props, options: Options) {
 }
 
 export interface Props {
-  from: Css
-  to: Css
+  from: Partial<Css>
+  to: Partial<Css>
 }
 
 interface Css {
-  x?: number
-  y?: number
-  scale?: number
-  opacity?: number
+  x: number
+  y: number
+  scale: number
+  opacity: number
 }
 
 interface Options {
-  stiffness?: number
-  damping?: number
-  precision?: number
-  unit?: string
+  stiffness: number
+  damping: number
+  precision: number
+  unit: string
 }
 
-export default function({ from, to }: Props, options: Options) {
+export default function({ from, to }: Props, options?: Partial<Options>) {
   return keyframes(spring({ from, to }, options).join(''))
 }
