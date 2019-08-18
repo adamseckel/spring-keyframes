@@ -23,7 +23,9 @@
     "springer": "0.0.1"
   },
   "devDependencies": {
-    "prettier": "1.18.2"
+    "@emotion/core": "^10.0.16",
+    "prettier": "1.18.2",
+    "typescript": "3.5.3"
   },
   "peerDependencies": {
     "@emotion/core": "~10"

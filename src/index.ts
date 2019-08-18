@@ -23,17 +23,15 @@ function calcPropTweenVal(
   frame,
   from,
   to,
-  { damping, stiffness, precision }
+  { damping, stiffness, precision }: Options
 ) {
   const spring = springer(damping, stiffness)
   const value = from[prop] + (to[prop] - from[prop]) * spring(frame / 100)
 
   return roundToPrecision(value, precision)
 }
-
-function createCalcPropTweenVal(from, to, options) {
-  return (prop, frame) => calcPropTweenVal(prop, frame, from, to, options)
-}
+const createCalcPropTweenVal = (from, to, options: Options) => (prop, frame) =>
+  calcPropTweenVal(prop, frame, from, to, options)
 
 function splitTransform(prop, v, transformList = []) {
   return transformMap.includes(prop)
@@ -80,7 +78,7 @@ function mapToCss(spring, unit) {
   )
 }
 
-export function spring({ from, to }, options) {
+export function spring({ from, to }, options: Options) {
   const { stiffness, damping, precision, unit } = {
     ...defaults,
     ...options,
@@ -111,6 +109,18 @@ export function spring({ from, to }, options) {
     .map(([frame, spring]) => `${frame} {${spring}}`)
 }
 
-export default function({ from, to }, options) {
+export interface Props {
+  from: string
+  to: string
+}
+
+interface Options {
+  stiffness?: number
+  damping?: number
+  precision?: number
+  unit?: string
+}
+
+export default function({ from, to }: Props, options: Options) {
   return keyframes(spring({ from, to }, options).join(''))
 }
