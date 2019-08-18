@@ -1,5 +1,5 @@
 import springer from 'springer'
-import { keyframes } from 'emotion'
+import { keyframes } from '@emotion/core'
 
 const defaults = {
   stiffness: 0.5,
@@ -7,6 +7,7 @@ const defaults = {
   precision: 2,
   unit: 'px',
 }
+
 const numFrames = { length: 101 }
 const transformMap = ['x', 'y', 'scale']
 
@@ -24,11 +25,10 @@ function calcPropTweenVal(
   to,
   { damping, stiffness, precision }
 ) {
-  return roundToPrecision(
-    from[prop] +
-      (to[prop] - from[prop]) * springer(damping, stiffness)(frame / 100),
-    precision
-  )
+  const spring = springer(damping, stiffness)
+  const value = from[prop] + (to[prop] - from[prop]) * spring(frame / 100)
+
+  return roundToPrecision(value, precision)
 }
 
 function createCalcPropTweenVal(from, to, options) {

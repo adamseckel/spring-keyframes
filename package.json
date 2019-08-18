@@ -1,10 +1,11 @@
 {
   "name": "spring-keyframes",
-  "description":
-    "Use javascript to generate css keyframe animations based on spring physics with emotion",
+  "description": "Use javascript to generate css keyframe animations based on spring physics with emotion",
   "version": "1.0.1",
   "main": "lib/index.js",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "author": "hemlok",
   "keywords": [
     "emotion",
@@ -18,34 +19,13 @@
     "url": "https://github.com/hemlok/spring-keyframes"
   },
   "license": "MIT",
-  "scripts": {
-    "build":
-      "NODE_ENV=production babel src --out-dir lib --source-maps inline --presets=es2015,stage-2",
-    "prepare": "yarn build",
-    "test": "NODE_ENV=test jest --watch"
-  },
-  "pre-commit": ["build"],
   "dependencies": {
-    "emotion": "9.0.2",
     "springer": "0.0.1"
   },
   "devDependencies": {
-    "jest": "23.0.0",
-    "babel-core": "6.26.0",
-    "babel-jest": "23.0.0",
-    "babel-cli": "6.26.0",
-    "babel-eslint": "8.2.2",
-    "babel-preset-env": "1.6.1",
-    "babel-preset-es2015": "6.24.1",
-    "babel-preset-stage-2": "6.24.1",
-    "eslint": "4.18.2",
-    "eslint-config-react-app": "2.1.0",
-    "eslint-plugin-flowtype": "2.46.1",
-    "eslint-plugin-import": "2.9.0",
-    "eslint-plugin-jsx-a11y": "6.0.3",
-    "eslint-plugin-prettier": "2.6.0",
-    "eslint-plugin-react": "7.7.0",
-    "pre-commit": "1.2.2",
-    "prettier": "1.11.1"
+    "prettier": "1.18.2"
+  },
+  "peerDependencies": {
+    "@emotion/core": "~10"
   }
 }
