@@ -11,7 +11,7 @@ const defaults = {
 const numFrames = { length: 101 }
 const transformMap = ['x', 'y', 'scale']
 
-function roundToPrecision(num, precision = 2) {
+function roundToPrecision(num: number, precision = 2) {
   const decimalPoints = Array.from({ length: precision }).reduce(
     (count = 1) => count * 10
   )
@@ -19,10 +19,10 @@ function roundToPrecision(num, precision = 2) {
 }
 
 function calcPropTweenVal(
-  prop,
-  frame,
-  from,
-  to,
+  prop: keyof Css,
+  frame: number,
+  from: Css,
+  to: Css,
   { damping, stiffness, precision }: Options
 ) {
   const spring = springer(damping, stiffness)
@@ -30,20 +30,26 @@ function calcPropTweenVal(
 
   return roundToPrecision(value, precision)
 }
-const createCalcPropTweenVal = (from, to, options: Options) => (prop, frame) =>
-  calcPropTweenVal(prop, frame, from, to, options)
+const createCalcPropTweenVal = (from: Css, to: Css, options: Options) => (
+  prop: keyof Css,
+  frame: number
+) => calcPropTweenVal(prop, frame, from, to, options)
 
-function splitTransform(prop, v, transformList = []) {
+function splitTransform(prop: keyof Css, v, transformList = []) {
   return transformMap.includes(prop)
     ? { transform: [...transformList, [prop, v]] }
     : { [prop]: v }
 }
 
-function reduceFrame(tween, property, value) {
+function reduceFrame(
+  tween: Record<string, any>,
+  property: keyof Css,
+  value: number
+) {
   return { ...tween, ...splitTransform(property, value, tween.transform) }
 }
 
-function mapTransformPropToCss(prop, spring, unit = 'px') {
+function mapTransformPropToCss(prop: keyof Css, spring, unit = 'px') {
   switch (prop) {
     case 'y':
       return `translateY(${spring}${unit})`
@@ -56,7 +62,7 @@ function mapTransformPropToCss(prop, spring, unit = 'px') {
   }
 }
 
-function mapTransformProps(spring, unit) {
+function mapTransformProps(spring, unit: string) {
   return spring.reduce(
     (transform, [prop, spring]) =>
       `${transform} ${mapTransformPropToCss(prop, spring, unit)}`,
@@ -78,7 +84,7 @@ function mapToCss(spring, unit) {
   )
 }
 
-export function spring({ from, to }, options: Options) {
+export function spring({ from, to }: Props, options: Options) {
   const { stiffness, damping, precision, unit } = {
     ...defaults,
     ...options,
@@ -110,8 +116,15 @@ export function spring({ from, to }, options: Options) {
 }
 
 export interface Props {
-  from: string
-  to: string
+  from: Css
+  to: Css
+}
+
+interface Css {
+  x?: number
+  y?: number
+  scale?: number
+  opacity?: number
 }
 
 interface Options {
