@@ -1,7 +1,7 @@
 {
   "name": "spring-keyframes",
   "description": "Use javascript to generate css keyframe animations based on spring physics with emotion",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
