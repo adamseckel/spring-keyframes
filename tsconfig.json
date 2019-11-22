@@ -13,10 +13,9 @@
     "declaration": true /* Generates corresponding '.d.ts' file. */,
     "declarationMap": true /* Generates a sourcemap for each corresponding '.d.ts' file. */,
     "sourceMap": true /* Generates corresponding '.map' file. */,
-    "outDir": "./lib" /* Redirect output structure to the directory. */,
     "removeComments": true /* Do not emit comments to output. */,
     "strict": true /* Enable all strict type-checking options. */,
-    "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
+    "noImplicitAny": false /* Raise error on expressions and declarations with an implied 'any' type. */,
     "noImplicitThis": true /* Raise error on 'this' expressions with an implied 'any' type. */,
 
     "noUnusedLocals": true /* Report errors on unused locals. */,
@@ -24,7 +23,5 @@
     "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
-  },
-  "exclude": ["src/*.test.ts", "lib"],
-  "include": ["src"]
+  }
 }
