@@ -1,12 +1,50 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`returns a keyframe array, with duplicate values removed 1`] = `
+exports[`returns a keyframe array, duration, and ease 1`] = `
 Array [
   "0% {opacity: 0; width: 100px; transform: translateX(0px) translateY(100px) scale(0);}
   33.33% {opacity: 1.19; width: 218.68px; transform: translateX(23.74px) translateY(40.66px) scale(1.19);}
   66.67% {opacity: 0.97; width: 196.51px; transform: translateX(19.3px) translateY(51.75px) scale(0.97);}
   100% {opacity: 1; width: 200px; transform: translateX(20px) translateY(50px) scale(1);}",
   "750ms",
+  "cubic-bezier(0.445,  0.050, 0.550, 0.950)",
+]
+`;
+
+exports[`returns a keyframe array, duration, and ease for a long spring 1`] = `
+Array [
+  "0% {opacity: 0;}
+  4.62% {opacity: 1.8;}
+  9.23% {opacity: 0.37;}
+  13.85% {opacity: 1.49;}
+  18.97% {opacity: 0.61;}
+  23.59% {opacity: 1.31;}
+  28.21% {opacity: 0.76;}
+  33.33% {opacity: 1.19;}
+  37.95% {opacity: 0.85;}
+  42.56% {opacity: 1.12;}
+  47.18% {opacity: 0.91;}
+  52.31% {opacity: 1.07;}
+  56.92% {opacity: 0.94;}
+  61.54% {opacity: 1.05;}
+  66.67% {opacity: 0.96;}
+  71.28% {opacity: 1.03;}
+  75.9% {opacity: 0.98;}
+  80.51% {opacity: 1.02;}
+  85.64% {opacity: 0.99;}
+  90.26% {opacity: 1.01;}
+  94.87% {opacity: 0.99;}
+  100% {opacity: 1;}",
+  "3250.0000000000005ms",
+  "cubic-bezier(0.445,  0.050, 0.550, 0.950)",
+]
+`;
+
+exports[`returns a keyframe array, duration, and ease for a short spring 1`] = `
+Array [
+  "0% {opacity: 0;}
+  100% {opacity: 1;}",
+  "5350ms",
   "cubic-bezier(0.445,  0.050, 0.550, 0.950)",
 ]
 `;

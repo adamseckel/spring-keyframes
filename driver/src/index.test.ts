@@ -8,3 +8,23 @@ it('returns a keyframe array, duration, and ease', () => {
 
   expect(animation).toMatchSnapshot()
 })
+
+it('returns a keyframe array, duration, and ease for a long spring', () => {
+  const animation = spring(
+    { opacity: 0 },
+    { opacity: 1 },
+    { stiffness: 400, damping: 3 }
+  )
+
+  expect(animation).toMatchSnapshot()
+})
+
+it('returns a keyframe array, duration, and ease for a short spring', () => {
+  const animation = spring(
+    { opacity: 0 },
+    { opacity: 1 },
+    { stiffness: 2, damping: 3 }
+  )
+
+  expect(animation).toMatchSnapshot()
+})
