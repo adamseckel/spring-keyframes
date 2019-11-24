@@ -20,6 +20,9 @@
     "test": "NODE_ENV=test jest --watch",
     "build": "tsc"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "24.0.17",
@@ -37,5 +40,5 @@
       "^.+\\.tsx?$": "ts-jest"
     }
   },
-  "gitHead": "f66409b7c45f09de90c9832e5abbde075cdea91e"
+  "gitHead": "bfc6e57e8e107871963fdb2fd55151807efc26ba"
 }
