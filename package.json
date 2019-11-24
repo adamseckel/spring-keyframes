@@ -7,11 +7,12 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "demo"
   ],
   "scripts": {
     "demo": "yarn build & cd ./demo && yarn dev",
-    "release": "lerna publish",
+    "release": "yarn build && lerna publish",
     "build": "lerna run build"
   },
   "devDependencies": {

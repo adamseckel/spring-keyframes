@@ -1,8 +1,17 @@
 import React from 'react'
 import Head from 'next/head'
 import Nav from '../components/nav'
-import { Animated } from '@spring-keyframes/react'
+import { default as spring } from '@spring-keyframes/driver'
+import { css, keyframes } from 'emotion'
 
+const [frames, duration, ease] = spring(
+  { x: 0, opacity: 0 },
+  { x: 100, opacity: 1 }
+)
+
+const name = css`
+  animation: ${keyframes`${frames}`} ${duration} ${ease} 1 both;
+`
 const Home = () => (
   <div>
     <Head>
@@ -12,10 +21,8 @@ const Home = () => (
 
     <Nav />
 
-    <div className="hero">
-      <Animated initial={{ opacity: 0, x: 0 }} animate={{ opacity: 1, x: 40 }}>
-        <h1 className="title">Welcome to Next.js!</h1>
-      </Animated>
+    <div className={name}>
+      <h1 className="title">Welcome to Next.js!</h1>
       <p className="description">
         To get started, edit <code>pages/index.js</code> and save to reload.
       </p>

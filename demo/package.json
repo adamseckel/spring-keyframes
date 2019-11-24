@@ -7,8 +7,12 @@
     "build": "next build",
     "start": "next start"
   },
+  "publishConfig": {
+    "access": "private"
+  },
   "dependencies": {
-    "@spring-keyframes/react": "^0.0.1",
+    "@spring-keyframes/react": "*",
+    "@spring-keyframes/driver": "*",
     "@weco/next-plugin-transpile-modules": "^2.2.1",
     "@zeit/next-typescript": "^1.1.1",
     "emotion": "^10.0.23",
