@@ -57,7 +57,7 @@ type TransformFrame = [TransformProperty, number]
 type Property = CSSProperty | TransformProperty
 type Frame = { [K in Property]?: number }
 
-const transforms: TransformProperty[] = ['scale', 'x', 'y', 'rotate']
+const transforms = ['scale', 'x', 'y', 'rotate']
 const unitless = ['opacity', 'transform']
 
 const transformMap: Record<TransformProperty, (v: number) => string> = {
@@ -162,7 +162,7 @@ function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
   const keys = Object.keys(from) as Property[]
 
   keys.forEach(key => {
-    if (key in transforms) {
+    if (transforms.includes(key)) {
       transform.push([
         key,
         interpolate(1, 0, from[key], to[key])(value),
