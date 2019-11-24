@@ -1,3 +1,5 @@
+// ---------- @CHENGLOU's STEPPER ----------
+
 // stepper is used a lot. Saves allocation to return the same array wrapper.
 // This is fine and danger-free against mutations because the callsite
 // immediately destructures it and gets the numbers inside without passing the
@@ -41,22 +43,28 @@ function stepper(
   return reusedTuple
 }
 
-/// ------- LIB
+// ---------- @spring-keyframes/driver ----------
 
 const msPerFrame = 1000 / 60
-
-const ease = 'cubic-bezier(0.445,  0.050, 0.550, 0.950)'
+const EASE = 'cubic-bezier(0.445,  0.050, 0.550, 0.950)'
 
 type Max = [number, number]
 type Maxes = Max[]
+type TransformProperty = 'scale' | 'x' | 'y' | 'rotate'
+type CSSProperty = keyof React.CSSProperties
+type CSSFrame = [CSSProperty, number | string]
+type TransformFrame = [TransformProperty, number]
+type Property = CSSProperty | TransformProperty
+type Frame = { [K in Property]?: number }
 
-const transforms = ['scale', 'x', 'y', 'rotate']
+const transforms: TransformProperty[] = ['scale', 'x', 'y', 'rotate']
 const unitless = ['opacity', 'transform']
-const transformMap = {
-  scale: v => `scale(${v})`,
-  x: v => `translateX(${v}px)`,
-  y: v => `translateY(${v}px)`,
-  rotate: v => `rotate(${v}deg)`,
+
+const transformMap: Record<TransformProperty, (v: number) => string> = {
+  scale: (v: number) => `scale(${v})`,
+  x: (v: number) => `translateX(${v}px)`,
+  y: (v: number) => `translateY(${v}px)`,
+  rotate: (v: number) => `rotate(${v}deg)`,
 }
 
 function spring({
@@ -112,18 +120,20 @@ function spring({
   return [maxes, lastFrame]
 }
 
+type FrameNumber = number
+
 type Keyframe = [
   /** Frame */
-  number,
+  FrameNumber,
   /** value */
-  any[]
+  CSSFrame[]
 ]
 
 const interpolate = (
-  inputMax: number,
-  inputMin: number,
-  ouputMax: number,
-  outputMin: number
+  inputMax: number = 0,
+  inputMin: number = 0,
+  ouputMax: number = 0,
+  outputMin: number = 0
 ) => (value: number) => {
   return (
     Math.round(
@@ -137,8 +147,8 @@ const interpolate = (
 function convertMaxesToKeyframes(
   maxes: Maxes,
   toFrame: (value: number) => number,
-  from,
-  to
+  from: Frame,
+  to: Frame
 ): Keyframe[] {
   return maxes.map(([value, index]) => [
     toFrame(index),
@@ -146,15 +156,22 @@ function convertMaxesToKeyframes(
   ])
 }
 
-function toValue(value, from, to): any[] {
-  let style: any[] = []
-  let transform: any[] = []
+function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
+  let style: CSSFrame[] = []
+  let transform: TransformFrame[] = []
+  const keys = Object.keys(from) as Property[]
 
-  Object.keys(from).forEach(key => {
-    if (transforms.includes(key)) {
-      transform.push([key, interpolate(1, 0, from[key], to[key])(value)])
+  keys.forEach(key => {
+    if (key in transforms) {
+      transform.push([
+        key,
+        interpolate(1, 0, from[key], to[key])(value),
+      ] as TransformFrame)
     } else {
-      style.push([key, interpolate(1, 0, from[key], to[key])(value)])
+      style.push([
+        key,
+        interpolate(1, 0, from[key], to[key])(value),
+      ] as CSSFrame)
     }
   })
 
@@ -166,17 +183,17 @@ function toValue(value, from, to): any[] {
   return style
 }
 
-function createTransformBlock(transforms) {
+function createTransformBlock(transforms: TransformFrame[]): string {
   return transforms.map(([key, value]) => transformMap[key](value)).join(' ')
 }
 
-function createBlock(value) {
+function createBlock(value: CSSFrame[]) {
   return value
     .map(([prop, val]) => `${prop}: ${val}${unitForProp(prop)}`)
     .join('; ')
 }
 
-function unitForProp(prop) {
+function unitForProp(prop: Property) {
   return unitless.includes(prop) ? '' : 'px'
 }
 
@@ -186,7 +203,7 @@ function convertKeyframesToCSS(keyframes: Keyframe[]): string {
     .join('\n  ')
 }
 
-interface Options {
+export interface Options {
   stiffness?: number
   damping?: number
   mass?: number
@@ -200,7 +217,11 @@ const defaults = {
   precision: 0.01,
 }
 
-export default function main(from: {}, to: {}, options?: Options) {
+export default function main(
+  from: Frame,
+  to: Frame,
+  options?: Options
+): [string, string, string] {
   const optionsWithDefaults = {
     ...defaults,
     ...options,
@@ -220,5 +241,5 @@ export default function main(from: {}, to: {}, options?: Options) {
   const duration = msPerFrame * lastFrame + 'ms'
 
   // @TODO use some tool to generate the keyframe declaration, and the `animation: x` property
-  return [cssKeyframes, duration, ease]
+  return [cssKeyframes, duration, EASE]
 }

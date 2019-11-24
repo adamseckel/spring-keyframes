@@ -5,7 +5,7 @@
   "repository": "https://github.com/hemlok/spring-keyframes.git",
   "author": "Adam Seckel <adam.seckel@gmail.com>",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "workspaces": [
     "driver",
     "react",

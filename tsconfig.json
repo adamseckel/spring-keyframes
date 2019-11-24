@@ -15,7 +15,7 @@
     "sourceMap": true /* Generates corresponding '.map' file. */,
     "removeComments": true /* Do not emit comments to output. */,
     "strict": true /* Enable all strict type-checking options. */,
-    "noImplicitAny": false /* Raise error on expressions and declarations with an implied 'any' type. */,
+    "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
     "noImplicitThis": true /* Raise error on 'this' expressions with an implied 'any' type. */,
 
     "noUnusedLocals": true /* Report errors on unused locals. */,
