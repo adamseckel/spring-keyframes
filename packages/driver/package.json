@@ -36,5 +36,6 @@
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     }
-  }
+  },
+  "gitHead": "f66409b7c45f09de90c9832e5abbde075cdea91e"
 }
