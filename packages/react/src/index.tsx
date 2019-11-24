@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { cx, css, keyframes } from 'emotion'
-import { default as spring } from '@spring-keyframes/driver'
+import { default as spring } from '../../driver/lib'
 
 function animatedClass({ from, to, options = {} }: any) {
   const { stiffness, damping, mass, precision, delay } = options

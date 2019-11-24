@@ -7,12 +7,14 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "driver",
-    "react",
-    "demo"
+    "packages/*"
   ],
   "scripts": {
-    "build": "cd ./driver; tsc --watch & cd .. && cd ./react && tsc --watch",
-    "demo": "yarn build & cd ./demo && yarn dev"
+    "demo": "yarn build & cd ./demo && yarn dev",
+    "release": "lerna publish",
+    "build": "lerna run build"
+  },
+  "devDependencies": {
+    "lerna": "^3.19.0"
   }
 }

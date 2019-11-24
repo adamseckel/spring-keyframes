@@ -1,9 +1,10 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "exclude": ["./src/*.test.ts", "lib"],
   "include": ["./src"],
   "compilerOptions": {
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
-    "outDir": "./lib"
+    "outDir": "./lib",
+    "jsx": "react"
   }
 }
