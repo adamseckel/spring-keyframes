@@ -2,10 +2,10 @@
 
 exports[`returns a keyframe array, duration, and ease 1`] = `
 Array [
-  "0% {opacity: 0; width: 100px; transform: translateX(0px) translateY(100px) scale(0);}
-  33.33% {opacity: 1.19; width: 218.68px; transform: translateX(23.74px) translateY(40.66px) scale(1.19);}
-  66.67% {opacity: 0.97; width: 196.51px; transform: translateX(19.3px) translateY(51.75px) scale(0.97);}
-  100% {opacity: 1; width: 200px; transform: translateX(20px) translateY(50px) scale(1);}",
+  "0% {opacity: 0; width: 100px; transform: translate3d(0px, 100px, 0);}
+  33.33% {opacity: 1.19; width: 218.68px; transform: translate3d(23.74px, 40.66px, 0) scale3d(1.19, 1.19, 1);}
+  66.67% {opacity: 0.97; width: 196.51px; transform: translate3d(19.3px, 51.75px, 0) scale3d(0.97, 0.97, 1);}
+  100% {opacity: 1; width: 200px; transform: translate3d(20px, 50px, 0) scale3d(1, 1, 1);}",
   "750ms",
   "cubic-bezier(0.445,  0.050, 0.550, 0.950)",
 ]
@@ -35,7 +35,7 @@ Array [
   90.26% {opacity: 1.01;}
   94.87% {opacity: 0.99;}
   100% {opacity: 1;}",
-  "3250.0000000000005ms",
+  "3250ms",
   "cubic-bezier(0.445,  0.050, 0.550, 0.950)",
 ]
 `;

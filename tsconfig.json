@@ -6,6 +6,7 @@
     "lib": [
       "es2015",
       "es2017",
+      "es2019",
       "esnext",
       "dom"
     ] /* Specify library files to be included in the compilation. */,

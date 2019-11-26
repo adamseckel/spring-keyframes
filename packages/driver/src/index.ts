@@ -55,17 +55,10 @@ type CSSProperty = keyof React.CSSProperties
 type CSSFrame = [CSSProperty, number | string]
 type TransformFrame = [TransformProperty, number]
 type Property = CSSProperty | TransformProperty
-type Frame = { [K in Property]?: number }
+export type Frame = { [K in Property]?: number }
 
 const transforms = ['scale', 'x', 'y', 'rotate']
 const unitless = ['opacity', 'transform']
-
-const transformMap: Record<TransformProperty, (v: number) => string> = {
-  scale: (v: number) => `scale(${v})`,
-  x: (v: number) => `translateX(${v}px)`,
-  y: (v: number) => `translateY(${v}px)`,
-  rotate: (v: number) => `rotate(${v}deg)`,
-}
 
 function spring({
   stiffness,
@@ -184,7 +177,27 @@ function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
 }
 
 function createTransformBlock(transforms: TransformFrame[]): string {
-  return transforms.map(([key, value]) => transformMap[key](value)).join(' ')
+  const props: Partial<Record<TransformProperty, number>> = {}
+
+  transforms.forEach(([key, value]) => {
+    props[key] = value
+  })
+
+  const { x, y, scale, rotate } = props
+
+  const block = []
+
+  if (x || y) {
+    block.push(`translate3d(${x || 0}px, ${y || 0}px, 0)`)
+  }
+  if (rotate) {
+    block.push(`rotate3d(1, 0, 0, ${rotate}deg)`)
+  }
+  if (scale) {
+    block.push(`scale3d(${scale}, ${scale}, 1)`)
+  }
+
+  return block.join(' ')
 }
 
 function createBlock(value: CSSFrame[]) {
@@ -238,8 +251,7 @@ export default function main(
   const cssKeyframes = convertKeyframesToCSS(keyframes)
 
   // Calculate duration based on the number of frames.
-  const duration = msPerFrame * lastFrame + 'ms'
+  const duration = Math.round(msPerFrame * lastFrame * 100) / 100 + 'ms'
 
-  // @TODO use some tool to generate the keyframe declaration, and the `animation: x` property
   return [cssKeyframes, duration, EASE]
 }

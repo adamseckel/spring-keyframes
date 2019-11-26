@@ -7,7 +7,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@spring-keyframes/driver": "^0.0.4"
+    "@spring-keyframes/driver": "*"
   },
   "devDependencies": {
     "emotion": "^10.0.23",
