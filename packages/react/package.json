@@ -1,13 +1,13 @@
 {
   "name": "@spring-keyframes/react",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "main": "lib/index.js",
   "files": [
     "lib"
   ],
   "license": "MIT",
   "dependencies": {
-    "@spring-keyframes/driver": "*"
+    "@spring-keyframes/driver": "^0.0.6"
   },
   "devDependencies": {
     "emotion": "^10.0.23",
