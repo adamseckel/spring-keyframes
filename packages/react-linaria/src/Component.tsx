@@ -1,9 +1,15 @@
 import * as React from 'react'
-import { cx, css, keyframes } from 'emotion'
+import { cx, css } from 'linaria'
 import { default as spring, Frame, Options } from '@spring-keyframes/driver'
-
+import { Tags } from './tags'
 interface Transition extends Options {
   delay?: number
+}
+const defaults = {
+  stiffness: 180,
+  damping: 12,
+  mass: 1,
+  precision: 0.01,
 }
 
 function animatedClass({
@@ -15,23 +21,26 @@ function animatedClass({
   to: Frame
   options?: Transition
 }) {
-  const { stiffness, damping, mass, precision, delay } = options
+  const { stiffness, damping, mass, precision, delay } = {
+    ...defaults,
+    ...options,
+  }
   const [frames, duration, ease] = spring(from, to, {
     stiffness,
     damping,
     mass,
     precision,
   })
-  const animation = keyframes`${frames}`
-  return [
-    css`
-      animation: ${animation} ${ease} ${duration} ${delay}ms 1 both;
-    `,
-    animation,
-  ]
+
+  return css`
+    @keyframes spring {
+      ${frames}
+    }
+    animation: spring ${ease} ${duration} ${delay ? `${delay}ms` : ''} 1 both;
+  `
 }
 
-export interface AnimatedProps extends React.HTMLProps<HTMLDivElement> {
+export interface AnimatedProps extends React.HTMLProps<HTMLElement> {
   /** Remove the Animated component and trigger its @exit animation. */
   show?: boolean
   /** A @Frame to animated to when @show is toggled to false. */
@@ -42,6 +51,7 @@ export interface AnimatedProps extends React.HTMLProps<HTMLDivElement> {
   initial: Frame
   /** Define options for all of the Animated components transitions, including the spring, and delay. */
   transition?: Transition
+  Tag?: Tags
 }
 
 export function Animated({
@@ -55,6 +65,8 @@ export function Animated({
   style,
   className,
 
+  Tag = 'div',
+
   ...rest
 }: AnimatedProps) {
   const [shouldRender, setRender] = React.useState(show)
@@ -67,34 +79,32 @@ export function Animated({
   }, [show])
 
   React.useEffect(() => {
-    const [initial] = animatedClass({ from, to, options })
-    setInitialClass(initial)
-  }, [from, to, options, setInitialClass])
-
-  React.useEffect(() => {
-    const [remove, removeName] = animatedClass({
+    const initial = animatedClass({ from, to, options })
+    const remove = animatedClass({
       from: to,
       to: exit || {},
       options,
     })
 
-    removeNameRef.current = removeName
+    setInitialClass(initial)
+    removeNameRef.current = `spring-${remove}`
 
     setRemoveClass(remove)
-  }, [to, exit, options, setRemoveClass])
+  }, [from, to, options, setInitialClass, exit, setRemoveClass])
 
   const onAnimationEnd = (e: React.AnimationEvent) =>
     !show && e.animationName === removeNameRef.current && setRender(false)
 
   return (
     shouldRender && (
-      <div
-        className={cx(className, !show ? initialClass : removeClass)}
+      //@ts-ignore
+      <Tag
+        {...rest}
+        className={cx(className, show ? initialClass : removeClass)}
         onAnimationEnd={onAnimationEnd}
-        style={style}
-        {...rest}>
+        style={style}>
         {children}
-      </div>
+      </Tag>
     )
   )
 }

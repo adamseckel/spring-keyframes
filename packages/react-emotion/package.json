@@ -1,5 +1,5 @@
 {
-  "name": "@spring-keyframes/react",
+  "name": "@spring-keyframes/react-emotion",
   "version": "0.0.6",
   "main": "lib/index.js",
   "files": [
