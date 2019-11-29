@@ -2,7 +2,7 @@ import React from 'react'
 import logo from './logo.svg'
 import './App.css'
 import { default as driver } from '@spring-keyframes/driver'
-import animated from '@spring-keyframes/react-emotion'
+import { animated } from '@spring-keyframes/react-emotion'
 
 const list = [1, 2, 3, 4, 5]
 
