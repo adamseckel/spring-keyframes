@@ -16,12 +16,13 @@ function App() {
   )
   return (
     <div className="App">
+      <animated.base></animated.base>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         {duration}
         {list.map(i => {
           return (
-            <animated.li
+            <animated.div
               key={i}
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -32,10 +33,10 @@ function App() {
                 delay: i * 100,
               }}
               exit={{ opacity: 1, scale: 2 }}
-              show={visible}
+              visible={visible}
               onClick={() => setVisible(!visible)}>
               Edit <code>src/App.js</code> and save to reload.
-            </animated.li>
+            </animated.div>
           )
         })}
 

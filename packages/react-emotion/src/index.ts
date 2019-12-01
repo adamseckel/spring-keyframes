@@ -4,7 +4,7 @@ import { AnimatedProps } from './Component'
 import springDriver from '@spring-keyframes/driver'
 
 //@ts-ignore
-let makeAnimated: Record<Tags, React.ComponentProps<AnimatedProps>> = {}
+let makeAnimated: Record<Tags, React.FunctionComponent<AnimatedProps>> = {}
 
 tags.forEach(tag => {
   makeAnimated[tag] = newAnimated(tag)

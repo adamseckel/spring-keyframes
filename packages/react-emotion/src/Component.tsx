@@ -43,7 +43,7 @@ function animatedClass({
 
 export interface AnimatedProps extends React.HTMLProps<HTMLElement> {
   /** Remove the Animated component and trigger its @exit animation. */
-  show?: boolean
+  visible?: boolean
   /** A @Frame to animated to when @show is toggled to false. */
   exit?: Frame
   /** A @Frame to animate to when the Animated component mounts. */
@@ -60,7 +60,7 @@ export function Animated({
   initial: from,
   transition: options,
   exit,
-  show,
+  visible = true,
 
   children,
   style,
@@ -69,15 +69,15 @@ export function Animated({
   Tag = 'div',
 
   ...rest
-}: AnimatedProps) {
-  const [shouldRender, setRender] = React.useState(show)
+}: AnimatedProps): JSX.Element | false {
+  const [shouldRender, setRender] = React.useState(visible)
   const [initialClass, setInitialClass] = React.useState('')
   const [removeClass, setRemoveClass] = React.useState('')
   const removeNameRef = React.useRef<string>()
 
   React.useEffect(() => {
-    if (show) setRender(true)
-  }, [show])
+    if (visible) setRender(true)
+  }, [visible])
 
   React.useEffect(() => {
     const [initial] = animatedClass({ from, to, options })
@@ -97,14 +97,14 @@ export function Animated({
   }, [to, exit, options, setRemoveClass])
 
   const onAnimationEnd = (e: React.AnimationEvent) =>
-    !show && e.animationName === removeNameRef.current && setRender(false)
+    !visible && e.animationName === removeNameRef.current && setRender(false)
 
   return (
     shouldRender && (
       //@ts-ignore
       <Tag
         {...rest}
-        className={cx(className, show ? initialClass : removeClass)}
+        className={cx(className, visible ? initialClass : removeClass)}
         onAnimationEnd={onAnimationEnd}
         style={style}>
         {children}
