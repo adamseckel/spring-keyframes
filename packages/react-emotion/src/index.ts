@@ -1,6 +1,6 @@
 import { animated as newAnimated } from './animated'
 import { tags, Tags } from './tags'
-import { AnimatedProps } from './Component'
+export { AnimatedProps, Animated } from './Component'
 import springDriver from '@spring-keyframes/driver'
 
 //@ts-ignore
@@ -12,3 +12,4 @@ tags.forEach(tag => {
 
 export const driver = springDriver
 export const animated = makeAnimated
+

@@ -1,42 +1,35 @@
 import React from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { default as driver } from '@spring-keyframes/driver'
-import { animated } from '@spring-keyframes/react-emotion'
+import { animated, Animated } from '@spring-keyframes/react-emotion'
 
-const list = [1, 2, 3, 4, 5]
+const list = [1]
 
 function App() {
   const [visible, setVisible] = React.useState(true)
-  const [frames, duration, ease] = driver(
-    {
-      opacity: 0,
-    },
-    { opacity: 1 }
-  )
+  const [paused, setPaused] = React.useState(false)
+  setTimeout(() => {
+    setVisible(false)
+  }, 800)
   return (
     <div className="App">
-      <animated.base></animated.base>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        {duration}
         {list.map(i => {
           return (
-            <animated.div
+            <Animated
               key={i}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ scale: 0.1, opacity: 0, y: 0 }}
+              animate={{ scale: 1, opacity: 1, y: 100 }}
+              exit={{scale: 0.1, opacity: 0, y: 0}}
               transition={{
-                stiffness: 280,
-                damping: 8,
+                stiffness: 400,
+                damping: 4,
                 mass: 1,
-                delay: i * 100,
               }}
-              exit={{ opacity: 1, scale: 2 }}
-              visible={visible}
-              onClick={() => setVisible(!visible)}>
+              visible={visible}>
               Edit <code>src/App.js</code> and save to reload.
-            </animated.div>
+            </Animated>
           )
         })}
 
