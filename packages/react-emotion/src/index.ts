@@ -1,15 +1,21 @@
-import { animated as newAnimated } from './animated'
 import { tags, Tags } from './tags'
-export { AnimatedProps, Animated } from './Component'
+import { Animated } from './Animated'
 import springDriver from '@spring-keyframes/driver'
 
-//@ts-ignore
-let makeAnimated: Record<Tags, React.FunctionComponent<AnimatedProps>> = {}
+const makeAnimated = {}
+
+export function newAnimated(tag: Tags) {
+  return function() {
+    let args = arguments[0]
+
+    return Animated({ Tag: tag, ...args })
+  }
+}
 
 tags.forEach(tag => {
+  //@ts-ignore
   makeAnimated[tag] = newAnimated(tag)
 })
 
 export const driver = springDriver
 export const animated = makeAnimated
-
