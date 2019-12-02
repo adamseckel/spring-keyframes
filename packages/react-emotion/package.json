@@ -1,13 +1,13 @@
 {
   "name": "@spring-keyframes/react-emotion",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "main": "lib/index.js",
   "files": [
     "lib"
   ],
   "license": "MIT",
   "dependencies": {
-    "@spring-keyframes/driver": "^0.0.8"
+    "@spring-keyframes/driver": "^0.0.9"
   },
   "devDependencies": {
     "emotion": "^10.0.23",
