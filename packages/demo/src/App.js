@@ -11,19 +11,25 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img
-          src={logo}
-          className="App-logo"
-          alt="logo"
-          onClick={() => setVisible(!visible)}
-        />
+        <animated.li
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{
+            stiffness: 200,
+            damping: 4,
+            mass: 1,
+          }}
+          whileTap={{ scale: 2, opacity: 1 }}>
+          <img src={logo} className="App-logo" alt="logo" />
+        </animated.li>
+        <button onClick={() => setVisible(!visible)}> toggle </button>
         {list.map(i => {
           return (
             <animated.li
               key={i}
-              initial={{ x: 0 }}
+              initial={{ x: 0.1 }}
               animate={{ x: 400 }}
-              exit={{ y: 0 }}
+              exit={{ x: 0.1 }}
               transition={{
                 stiffness: 200,
                 damping: 4,

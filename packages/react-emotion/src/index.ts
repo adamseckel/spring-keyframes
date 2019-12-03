@@ -1,6 +1,7 @@
 import { tags, Tags } from './tags'
-import { Animated } from './Animated'
-import springDriver from '@spring-keyframes/driver'
+import { Animated, AnimatedProps } from './Animated'
+export { default as springDriver } from '@spring-keyframes/driver'
+export { useInterupt as useSpring } from './useInterupt'
 
 const makeAnimated = {}
 
@@ -17,5 +18,7 @@ tags.forEach(tag => {
   makeAnimated[tag] = newAnimated(tag)
 })
 
-export const driver = springDriver
-export const animated = makeAnimated
+export const animated = makeAnimated as Record<
+  Tags,
+  React.FunctionComponent<AnimatedProps>
+>

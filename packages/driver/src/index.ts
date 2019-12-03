@@ -57,7 +57,7 @@ type TransformProperty = 'scale' | 'x' | 'y' | 'rotate'
 type CSSProperty = keyof React.CSSProperties
 type CSSFrame = [CSSProperty, number | string]
 type TransformFrame = [TransformProperty, number]
-type Property = CSSProperty | TransformProperty
+export type Property = CSSProperty | TransformProperty
 export type Frame = { [K in Property]?: number }
 
 const transforms = ['scale', 'x', 'y', 'rotate']
@@ -136,14 +136,19 @@ const interpolate = (
   inputMax: number = 0,
   inputMin: number = 0,
   ouputMax: number = 0,
-  outputMin: number = 0
+  outputMin: number = 0,
+  withEase?: (v: number) => number,
+  roundTo: number = 100
 ) => (value: number) => {
+  const fn = withEase ? withEase : (v: number) => v
+
   return (
     Math.round(
-      (((value - inputMin) / (inputMax - inputMin)) * (ouputMax - outputMin) +
-        outputMin) *
-        100
-    ) / 100
+      fn(
+        ((value - inputMin) / (inputMax - inputMin)) * (ouputMax - outputMin) +
+          outputMin
+      ) * roundTo
+    ) / roundTo
   )
 }
 
@@ -157,24 +162,6 @@ function convertMaxesToKeyframes(
     toFrame(index),
     toValue(value, from, to),
   ])
-}
-
-function toSprungValue(
-  value: number,
-  from: Frame,
-  to: Frame
-): [Property, number][] {
-  let style: [Property, number][] = []
-  const keys = Object.keys(from) as Property[]
-
-  keys.forEach(key => {
-    style.push([key, interpolate(1, 0, from[key], to[key])(value)] as [
-      Property,
-      number
-    ])
-  })
-
-  return style
 }
 
 function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
@@ -261,60 +248,37 @@ const defaults = {
 }
 
 const closestFrameIndexForFrame = (counts: Maxes, goal: number) =>
-  counts.reduce((prev, curr) => {
-    return Math.abs(curr[1] - goal) < Math.abs(prev[1] - goal) ? curr : prev
-  })
+  counts.reduce((prev, curr) =>
+    Math.abs(curr[1] - goal) < Math.abs(prev[1] - goal) ? curr : prev
+  )
 
-const playTimeToFrameAndVelocity = (
+const highLowFrame = (maxes: Maxes, frame: number, i: number) => {
+  if (frame > maxes[i][1]) {
+    return [maxes[i], maxes[i + 1]]
+  }
+  return [maxes[i - 1], maxes[i]]
+}
+
+const playTimeToApproxVelocity = (
   toFrame: (val: number) => number,
-  maxes: Maxes,
-  from: Frame,
-  to: Frame
-) => (playTime: number): [Frame, number] => {
-  let value = 0,
-    velocity = 0
+  maxes: Maxes
+) => (playTime: number): number => {
   const index = playTime / msPerFrame
-
-  // Why do we need to do this?
   const frame = toFrame(index)
 
   // Get the closest known Max for the frame
   const max = closestFrameIndexForFrame(maxes, frame)
   const i = maxes.indexOf(max)
-  const [closestVal, closestF, closestVel] = maxes[i]
+  const [high, low] = highLowFrame(maxes, frame, i)
 
-  const nextFrame = frame > closestF && maxes[i + 1]
-  const lastFrame = frame < closestF && maxes[i - 1]
-
-  // Ensure that the interpolation is performed in the correct direction.
-  if (nextFrame) {
-    value = interpolate(nextFrame[1], closestF, nextFrame[0], closestVal)(frame)
-    velocity = interpolate(nextFrame[1], closestF, nextFrame[2], closestVel)(
-      frame
-    )
-  } else if (lastFrame) {
-    value = interpolate(closestF, lastFrame[1], closestVal, lastFrame[0])(frame)
-    velocity = interpolate(closestF, lastFrame[1], closestVel, lastFrame[2])(
-      frame
-    )
-  }
-
-  // Convert the linear value to a value on the curve.
-  value = ease(value)
-  velocity = ease(velocity)
-
-  let f: Frame = {}
-  toSprungValue(value, from, to).forEach(([k, v]) => {
-    f[k] = v
-  })
-  return [f, velocity]
+  return interpolate(high[1], low[1], high[2], low[2], ease)(frame)
 }
 
 export default function main(
   from: Frame,
   to: Frame,
   options?: Options
-): [string, string, string, (frame: number) => [Frame, number]] {
+): [string, string, string, (frame: number) => number] {
   const optionsWithDefaults = {
     ...defaults,
     ...options,
@@ -323,6 +287,7 @@ export default function main(
 
   // Interpolate between keyframe values of 0 - 100 and frame indexes of 0 - x where x is the lastFrame.
   const toFrame = interpolate(0, lastFrame, 0, 100)
+  const toPreciseFrame = interpolate(0, lastFrame, 0, 100, v => v, 1)
 
   // Generate keyframe, styled value tuples.
   const keyframes = convertMaxesToKeyframes(maxes, toFrame, from, to)
@@ -335,12 +300,10 @@ export default function main(
 
   // Create a function to return a frame for a play time.
   // Enables interupting animations by creating new ones that start from the current velocity and frame.
-  const convertTimeToFrame = playTimeToFrameAndVelocity(
-    toFrame,
-    maxes,
-    from,
-    to
+  const convertTimeToApproxVelocity = playTimeToApproxVelocity(
+    toPreciseFrame,
+    maxes
   )
 
-  return [cssKeyframes, duration, EASE, convertTimeToFrame]
+  return [cssKeyframes, duration, EASE, convertTimeToApproxVelocity]
 }
