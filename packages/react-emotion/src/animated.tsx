@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Frame, Options } from '@spring-keyframes/driver'
 import { Tags } from './tags'
-import { useInterupt } from './useInterupt'
+import { useAnimated } from './useAnimated'
 
 interface Transition extends Options {
   delay?: number
@@ -25,9 +25,9 @@ export interface AnimatedProps extends React.HTMLProps<HTMLElement> {
   initial: Frame
   /** Define options for all of the Animated components transitions, including the spring, and delay. */
   transition?: Transition
-
   /** A @Frame to animate from while the Animated component is tapped. */
   whileTap: Frame
+  
   Tag?: Tags
 }
 
@@ -58,7 +58,7 @@ export function Animated({
     }
   }
 
-  const { ref, animateToFrame, _mount, _unMount } = useInterupt({
+  const { ref, animateToFrame, _mount, _unMount } = useAnimated({
     from,
     to,
     onEnd,

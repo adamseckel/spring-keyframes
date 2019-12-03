@@ -1,7 +1,7 @@
 import { tags, Tags } from './tags'
 import { Animated, AnimatedProps } from './Animated'
-export { default as springDriver } from '@spring-keyframes/driver'
-export { useInterupt as useSpring } from './useInterupt'
+export { default as driver } from '@spring-keyframes/driver'
+export { useAnimated } from './useAnimated'
 
 const makeAnimated = {}
 

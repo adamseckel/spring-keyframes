@@ -40,7 +40,7 @@
       "^.+\\.tsx?$": "ts-jest"
     }
   },
-  "gitHead": "bfc6e57e8e107871963fdb2fd55151807efc26ba",
+  "gitHead": "d72e374ac391d0e7b12903bc8298ec749468472c",
   "dependencies": {
     "bezier-easing": "^2.1.0"
   }

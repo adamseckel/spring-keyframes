@@ -107,7 +107,7 @@ interface Props {
 
 type toApproxFn = (v: number) => number
 
-export function useInterupt({ from, to, options, onEnd }: Props) {
+export function useAnimated({ from, to, options, onEnd }: Props) {
   const ref = useRef<HTMLElement>(null)
   const animationStartRef = useRef<number>(0)
   const currentAnimationToApproxVelocityRef = useRef<toApproxFn | null>(null)
