@@ -2,13 +2,15 @@ import * as React from 'react'
 import { Frame, Options } from '@spring-keyframes/driver'
 import { Tags } from './tags'
 import { useAnimated } from './useAnimated'
+import { useWhileInteraction } from './useWhileInteraction'
+import useDeepCompareEffect from 'use-deep-compare-effect'
 
 interface Transition extends Options {
   delay?: number
 }
 const defaults = {
-  stiffness: 180,
-  damping: 12,
+  stiffness: 380,
+  damping: 20,
   mass: 1,
   precision: 0.01,
   velocity: 0,
@@ -17,18 +19,41 @@ const defaults = {
 export interface AnimatedProps extends React.HTMLProps<HTMLElement> {
   /** Remove the Animated component and trigger its @exit animation. */
   visible?: boolean
-  /** A @Frame to animated to when @show is toggled to false. */
-  exit?: Frame
   /** A @Frame to animate to when the Animated component mounts. */
   animate: Frame
   /** A @Frame to animate from when the Animated component mounts. */
   initial: Frame
   /** Define options for all of the Animated components transitions, including the spring, and delay. */
   transition?: Transition
+  /** A @Frame to animated to when @show is toggled to false. */
+  exit?: Frame
   /** A @Frame to animate from while the Animated component is tapped. */
-  whileTap: Frame
-  
+  whileTap?: Frame
+  /** A @Frame to animate from while the Animated component is hovered. */
+  whileHover?: Frame
+
   Tag?: Tags
+}
+
+export type Handler = {
+  _mount: () => void
+  _unMount: () => void
+}
+
+type Listeners = Record<string, Handler | null>
+
+function removeAllListeners(listeners: Listeners) {
+  Object.keys(listeners).forEach(key => {
+    let handler = listeners[key]
+    if (handler) handler._unMount()
+  })
+}
+
+function restoreAllListeners(listeners: Listeners) {
+  Object.keys(listeners).forEach(key => {
+    let handler = listeners[key]
+    if (handler) handler._mount()
+  })
 }
 
 export function Animated({
@@ -39,10 +64,10 @@ export function Animated({
   visible = true,
 
   whileTap,
+  whileHover,
 
   children,
   style,
-  className,
 
   Tag = 'div',
 
@@ -53,12 +78,12 @@ export function Animated({
 
   const onEnd = () => {
     if (!visibilityRef.current) {
-      _unMount()
+      removeAllListeners(FIXMEMountRef.current)
       setRender(false)
     }
   }
 
-  const { ref, animateToFrame, _mount, _unMount } = useAnimated({
+  const { ref, animateToFrame, handler } = useAnimated({
     from,
     to,
     onEnd,
@@ -68,26 +93,37 @@ export function Animated({
     },
   })
 
-  React.useEffect(() => {
-    if (visible) {
+  const FIXMEMountRef = React.useRef<Record<string, Handler | null>>({
+    initial: handler,
+  })
+
+  if (whileTap || whileHover) {
+    FIXMEMountRef.current.tap = useWhileInteraction({
+      ref,
+      animateToFrame,
+      from: to,
+      whileHover,
+      whileTap,
+    })
+  }
+
+  // Deep compare the `animate|to` @Frame so that we can animate updates.
+  useDeepCompareEffect(() => {
+    if (visible && visible !== visibilityRef.current) {
       setRender(true)
-      // Wait for the ref to be recreated.
-      // This goes away when the component doesn't handle it's own visibility,
-      // by implementing an AnimatePresence wrapper.
+
       setTimeout(() => {
-        _mount()
+        restoreAllListeners(FIXMEMountRef.current)
         animateToFrame(to)
       }, 1)
-    }
-    if (!visible && exit) {
+    } else if (!visible && visible !== visibilityRef.current && exit) {
       animateToFrame(exit)
+    } else if (visible) {
+      animateToFrame(to)
     }
 
     visibilityRef.current = visible
-  }, [visible])
-
-  const handleTouchEnd = () => animateToFrame(to)
-  const handleTouchStart = () => animateToFrame(whileTap)
+  }, [visible, to])
 
   return (
     <>
@@ -95,12 +131,8 @@ export function Animated({
         //@ts-ignore
         <Tag
           //@ts-ignore
+          style={{ willChange: 'animation' }}
           {...rest}
-          className={className}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          onMouseDown={handleTouchStart}
-          onMouseUp={handleTouchEnd}
           ref={ref}>
           {children}
         </Tag>

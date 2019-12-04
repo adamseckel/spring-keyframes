@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { keyframes } from 'emotion'
 import {
   default as spring,
@@ -6,14 +6,16 @@ import {
   Options,
   Property,
 } from '@spring-keyframes/driver'
-const pattern = /-?\d+\.?\d+|\d+/g
+import { Handler } from './Animated'
+
+import Unmatrix from 'unmatrix'
 
 interface Transition extends Options {
   delay?: number
 }
 const defaults = {
-  stiffness: 180,
-  damping: 12,
+  stiffness: 380,
+  damping: 20,
   mass: 1,
   precision: 0.01,
   velocity: 0,
@@ -55,41 +57,25 @@ function animatedClass({
   }
 }
 
-function toTransformFrame(transforms: RegExpMatchArray | null) {
-  if (!transforms) return {} as Frame
-  const frameTransforms: Frame = {}
-  transforms.forEach((v: any, i: number) => {
-    switch (i) {
-      case 0:
-        frameTransforms.scale = v
-        break
-      case 4:
-        frameTransforms.x = v
-        break
-      case 5:
-        frameTransforms.y = v
-        break
-      default:
-        break
-    }
-  })
-
-  return frameTransforms
-}
-
 function computedFrom(to: Frame, ref: React.MutableRefObject<Element | null>) {
   if (!ref.current) return {} as Frame
 
   // @TODO: Optionally infer unset from from element style.
   const frame: Frame = {}
   const style = getComputedStyle(ref.current)
-  const transforms = style.transform.match(pattern)
-  const frameTransforms = toTransformFrame(transforms)
+  const frameTransforms = Unmatrix.getTransform(ref.current) || {}
   const keys = Object.keys(to) as Property[]
-
   keys.forEach(key => {
     if (frameTransforms[key]) {
       frame[key] = frameTransforms[key]
+    } else if (key === 'scale') {
+      frame[key] = frameTransforms.scaleX
+    } else if (key === 'y') {
+      frame[key] = frameTransforms.translateY
+    } else if (key === 'x') {
+      frame[key] = frameTransforms.translateX
+
+      // Must come last as computedStyle has x and y keys that clash with transform shorthand.
     } else if (style[key as any]) {
       frame[key] = parseInt(style[key as any], 10)
     }
@@ -107,7 +93,18 @@ interface Props {
 
 type toApproxFn = (v: number) => number
 
-export function useAnimated({ from, to, options, onEnd }: Props) {
+export type AnimateToFrame = (frame: Frame) => void
+
+export function useAnimated({
+  from,
+  to,
+  options,
+  onEnd,
+}: Props): {
+  animateToFrame: AnimateToFrame
+  ref: React.MutableRefObject<Element | null>
+  handler: Handler
+} {
   const ref = useRef<HTMLElement>(null)
   const animationStartRef = useRef<number>(0)
   const currentAnimationToApproxVelocityRef = useRef<toApproxFn | null>(null)
@@ -161,11 +158,5 @@ export function useAnimated({ from, to, options, onEnd }: Props) {
     fromRef.current = frame
   }
 
-  useEffect(() => {
-    _mount()
-
-    return _unMount
-  }, [])
-
-  return { ref, animateToFrame, _mount, _unMount }
+  return { ref, animateToFrame, handler: { _mount, _unMount } }
 }

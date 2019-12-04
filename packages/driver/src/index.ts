@@ -1,7 +1,6 @@
 import BezierEasing from 'bezier-easing'
-
+import * as CSS from 'csstype'
 // ---------- @CHENGLOU's STEPPER ----------
-
 // stepper is used a lot. Saves allocation to return the same array wrapper.
 // This is fine and danger-free against mutations because the callsite
 // immediately destructures it and gets the numbers inside without passing the
@@ -46,7 +45,6 @@ function stepper(
 }
 
 // ---------- @spring-keyframes/driver ----------
-
 const msPerFrame = 1000 / 60
 const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 const ease = BezierEasing(0.445, 0.05, 0.55, 0.95)
@@ -54,7 +52,7 @@ const ease = BezierEasing(0.445, 0.05, 0.55, 0.95)
 type Max = [number, number, number]
 type Maxes = Max[]
 type TransformProperty = 'scale' | 'x' | 'y' | 'rotate'
-type CSSProperty = keyof React.CSSProperties
+type CSSProperty = keyof CSS.Properties
 type CSSFrame = [CSSProperty, number | string]
 type TransformFrame = [TransformProperty, number]
 export type Property = CSSProperty | TransformProperty
@@ -73,9 +71,9 @@ function spring({
   let lastValue = 1,
     lastVelocity = velocity,
     uncommitted = false,
-    lastUncommitedValue = 1,
-    lastUncommitedFrame = 0,
-    lastUncommitedVelocity = velocity,
+    lastUncommittedValue = 1,
+    lastUncommittedFrame = 0,
+    lastUncommittedVelocity = velocity,
     frame = 0,
     lastFrame: number = 0,
     maxes: Maxes = [[1, 0, velocity]]
@@ -102,15 +100,15 @@ function spring({
 
     if (Math.abs(value) > Math.abs(lastValue)) {
       uncommitted = true
-      lastUncommitedValue = value
-      lastUncommitedFrame = frame
-      lastUncommitedVelocity = velocity
+      lastUncommittedValue = value
+      lastUncommittedFrame = frame
+      lastUncommittedVelocity = velocity
     } else {
       if (uncommitted) {
         maxes.push([
-          lastUncommitedValue,
-          lastUncommitedFrame,
-          lastUncommitedVelocity,
+          lastUncommittedValue,
+          lastUncommittedFrame,
+          lastUncommittedVelocity,
         ])
       }
       uncommitted = false
@@ -135,7 +133,7 @@ type Keyframe = [
 const interpolate = (
   inputMax: number = 0,
   inputMin: number = 0,
-  ouputMax: number = 0,
+  outputMax: number = 0,
   outputMin: number = 0,
   withEase?: (v: number) => number,
   roundTo: number = 100
@@ -145,7 +143,7 @@ const interpolate = (
   return (
     Math.round(
       fn(
-        ((value - inputMin) / (inputMax - inputMin)) * (ouputMax - outputMin) +
+        ((value - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin) +
           outputMin
       ) * roundTo
     ) / roundTo
@@ -164,24 +162,28 @@ function convertMaxesToKeyframes(
   ])
 }
 
+// const tweened: Property[] = ['opacity', 'color', 'backgroundColor']
+
 function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
   let style: CSSFrame[] = []
   let transform: TransformFrame[] = []
   const keys = Object.keys(from) as Property[]
 
-  keys.forEach(key => {
-    if (transforms.includes(key)) {
-      transform.push([
-        key,
-        interpolate(1, 0, from[key], to[key])(value),
-      ] as TransformFrame)
-    } else {
-      style.push([
-        key,
-        interpolate(1, 0, from[key], to[key])(value),
-      ] as CSSFrame)
-    }
-  })
+  keys
+    // .filter(key => !tweened.includes(key))
+    .forEach(key => {
+      if (transforms.includes(key)) {
+        transform.push([
+          key,
+          interpolate(1, 0, from[key], to[key])(value),
+        ] as TransformFrame)
+      } else {
+        style.push([
+          key,
+          interpolate(1, 0, from[key], to[key])(value),
+        ] as CSSFrame)
+      }
+    })
 
   if (transform.length > 0) {
     style.push(['transform', createTransformBlock(transform)])
@@ -206,7 +208,7 @@ function createTransformBlock(transforms: TransformFrame[]): string {
     block.push(`translate3d(${x || 0}px, ${y || 0}px, 0)`)
   }
   if (rotate) {
-    block.push(`rotate3d(1, 0, 0, ${rotate}deg)`)
+    block.push(`rotate3d(0, 0, 1, ${rotate}deg)`)
   }
   if (scale) {
     block.push(`scale3d(${scale}, ${scale}, 1)`)
@@ -269,10 +271,47 @@ const playTimeToApproxVelocity = (
   // Get the closest known Max for the frame
   const max = closestFrameIndexForFrame(maxes, frame)
   const i = maxes.indexOf(max)
+  if (maxes.length === i + 1) return 0
   const [high, low] = highLowFrame(maxes, frame, i)
 
-  return interpolate(high[1], low[1], high[2], low[2], ease)(frame)
+  if (!low) return high[2]
+
+  try {
+    return interpolate(high[1], low[1], high[2], low[2], ease)(frame)
+  } catch (error) {
+    console.error(error, high, low)
+    return 0
+  }
 }
+
+// function augmentSpringKeyframesWithTweened(
+//   keyframes: Keyframe[],
+//   from: Frame,
+//   to: Frame
+// ) {
+//   let [fromKeys, toKeys] = [Object.keys(from), Object.keys(to)] as [
+//     Property[],
+//     Property[]
+//   ]
+
+//   console.log({ keyframes })
+//   let frames = [...keyframes]
+
+//   fromKeys = fromKeys.filter(key => tweened.includes(key))
+//   toKeys = toKeys.filter(key => tweened.includes(key))
+
+//   fromKeys.forEach(key => {
+//     let frame = [key, from[key]]
+//     console.log(frame, frames[0])
+//     if (frame[0] && frame[1]) return frames[0][1].push(frame)
+//   })
+//   toKeys.forEach(key => {
+//     let frame = [key, to[key]]
+//     if (frame[0] && frame[1]) return frames[keyframes.length - 1][1].push(frame)
+//   })
+
+//   return frames
+// }
 
 export default function main(
   from: Frame,
@@ -290,16 +329,17 @@ export default function main(
   const toPreciseFrame = interpolate(0, lastFrame, 0, 100, v => v, 1)
 
   // Generate keyframe, styled value tuples.
-  const keyframes = convertMaxesToKeyframes(maxes, toFrame, from, to)
+  const springKeyframes = convertMaxesToKeyframes(maxes, toFrame, from, to)
+  // const keyframes = augmentSpringKeyframesWithTweened(springKeyframes, from, to)
 
   // Convert to keyframe syntax.
-  const cssKeyframes = convertKeyframesToCSS(keyframes)
+  const cssKeyframes = convertKeyframesToCSS(springKeyframes)
 
   // Calculate duration based on the number of frames.
   const duration = Math.round(msPerFrame * lastFrame * 100) / 100 + 'ms'
 
   // Create a function to return a frame for a play time.
-  // Enables interupting animations by creating new ones that start from the current velocity and frame.
+  // Enables interrupting animations by creating new ones that start from the current velocity and frame.
   const convertTimeToApproxVelocity = playTimeToApproxVelocity(
     toPreciseFrame,
     maxes
