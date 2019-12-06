@@ -59,7 +59,7 @@ export type Property = CSSProperty | TransformProperty
 export type Frame = { [K in Property]?: number }
 
 const transforms = ['scale', 'x', 'y', 'rotate']
-const unitless = ['opacity', 'transform']
+const unitless = ['opacity', 'transform', 'color', 'background']
 
 function spring({
   stiffness,
@@ -162,28 +162,26 @@ function convertMaxesToKeyframes(
   ])
 }
 
-// const tweened: Property[] = ['opacity', 'color', 'backgroundColor']
+const tweenedProperties: Property[] = ['opacity', 'color', 'backgroundColor']
 
 function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
   let style: CSSFrame[] = []
   let transform: TransformFrame[] = []
   const keys = Object.keys(from) as Property[]
 
-  keys
-    // .filter(key => !tweened.includes(key))
-    .forEach(key => {
-      if (transforms.includes(key)) {
-        transform.push([
-          key,
-          interpolate(1, 0, from[key], to[key])(value),
-        ] as TransformFrame)
-      } else {
-        style.push([
-          key,
-          interpolate(1, 0, from[key], to[key])(value),
-        ] as CSSFrame)
-      }
-    })
+  keys.forEach(key => {
+    if (transforms.includes(key)) {
+      transform.push([
+        key,
+        interpolate(1, 0, from[key], to[key])(value),
+      ] as TransformFrame)
+    } else {
+      style.push([
+        key,
+        interpolate(1, 0, from[key], to[key])(value),
+      ] as CSSFrame)
+    }
+  })
 
   if (transform.length > 0) {
     style.push(['transform', createTransformBlock(transform)])
@@ -204,13 +202,13 @@ function createTransformBlock(transforms: TransformFrame[]): string {
   const block = []
 
   // @TODO: Probably better to use a matrix3d here.
-  if (x || y) {
-    block.push(`translate3d(${x || 0}px, ${y || 0}px, 0)`)
+  if (x !== undefined || y !== undefined) {
+    block.push(`translate3d(${x || 0}px, ${y || 0}px, 0px)`)
   }
-  if (rotate) {
+  if (rotate !== undefined) {
     block.push(`rotate3d(0, 0, 1, ${rotate}deg)`)
   }
-  if (scale) {
+  if (scale !== undefined) {
     block.push(`scale3d(${scale}, ${scale}, 1)`)
   }
 
@@ -230,7 +228,7 @@ function unitForProp(prop: Property) {
 function convertKeyframesToCSS(keyframes: Keyframe[]): string {
   return keyframes
     .map(([frame, value]) => `${frame}% {${createBlock(value)};}`)
-    .join('\n  ')
+    .join('\n ')
 }
 
 export interface Options {
@@ -273,67 +271,70 @@ const playTimeToApproxVelocity = (
   const i = maxes.indexOf(max)
   if (maxes.length === i + 1) return 0
   const [high, low] = highLowFrame(maxes, frame, i)
-
   if (!low) return high[2]
 
   try {
     return interpolate(high[1], low[1], high[2], low[2], ease)(frame)
   } catch (error) {
-    console.error(error, high, low)
     return 0
   }
 }
 
-// function augmentSpringKeyframesWithTweened(
-//   keyframes: Keyframe[],
-//   from: Frame,
-//   to: Frame
-// ) {
-//   let [fromKeys, toKeys] = [Object.keys(from), Object.keys(to)] as [
-//     Property[],
-//     Property[]
-//   ]
+function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
+  return [[0, from], [100, to]]
+}
 
-//   console.log({ keyframes })
-//   let frames = [...keyframes]
+function breakupFrame(frame: Frame): [CSSFrame[], Frame] {
+  let tweened: CSSFrame[] = []
+  let sprung: Frame = {}
 
-//   fromKeys = fromKeys.filter(key => tweened.includes(key))
-//   toKeys = toKeys.filter(key => tweened.includes(key))
+  const keys = Object.keys(frame) as Property[]
 
-//   fromKeys.forEach(key => {
-//     let frame = [key, from[key]]
-//     console.log(frame, frames[0])
-//     if (frame[0] && frame[1]) return frames[0][1].push(frame)
-//   })
-//   toKeys.forEach(key => {
-//     let frame = [key, to[key]]
-//     if (frame[0] && frame[1]) return frames[keyframes.length - 1][1].push(frame)
-//   })
+  keys.forEach(key => {
+    if (tweenedProperties.includes(key)) {
+      // @ts-ignore
+      tweened.push([key, frame[key]])
+    } else {
+      sprung[key] = frame[key]
+    }
+  })
 
-//   return frames
-// }
+  return [tweened, sprung]
+}
 
 export default function main(
   from: Frame,
   to: Frame,
   options?: Options
-): [string, string, string, (frame: number) => number] {
+): [string[], string, string, (frame: number) => number] {
   const optionsWithDefaults = {
     ...defaults,
     ...options,
   }
+
+  const animations: string[] = []
+
   const [maxes, lastFrame] = spring(optionsWithDefaults)
 
   // Interpolate between keyframe values of 0 - 100 and frame indexes of 0 - x where x is the lastFrame.
   const toFrame = interpolate(0, lastFrame, 0, 100)
   const toPreciseFrame = interpolate(0, lastFrame, 0, 100, v => v, 1)
 
-  // Generate keyframe, styled value tuples.
-  const springKeyframes = convertMaxesToKeyframes(maxes, toFrame, from, to)
-  // const keyframes = augmentSpringKeyframesWithTweened(springKeyframes, from, to)
+  // Separate Tweened and Sprung properties.
+  const [tFrom, sFrom] = breakupFrame(from)
+  const [tTo, sTo] = breakupFrame(to)
 
-  // Convert to keyframe syntax.
-  const cssKeyframes = convertKeyframesToCSS(springKeyframes)
+  console.log(tFrom, sFrom)
+
+  // Generate keyframe, styled value tuples.
+  if (Object.keys(sFrom).length || Object.keys(sTo).length) {
+    const springKeyframes = convertMaxesToKeyframes(maxes, toFrame, sFrom, sTo)
+    animations.push(convertKeyframesToCSS(springKeyframes))
+  }
+  if (tFrom.length || tTo.length) {
+    const tweenedKeyframes = createTweenedKeyframes(tFrom, tTo)
+    animations.push(convertKeyframesToCSS(tweenedKeyframes))
+  }
 
   // Calculate duration based on the number of frames.
   const duration = Math.round(msPerFrame * lastFrame * 100) / 100 + 'ms'
@@ -345,5 +346,5 @@ export default function main(
     maxes
   )
 
-  return [cssKeyframes, duration, EASE, convertTimeToApproxVelocity]
+  return [animations, duration, EASE, convertTimeToApproxVelocity]
 }

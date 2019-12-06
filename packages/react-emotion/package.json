@@ -26,7 +26,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "gitHead": "d72e374ac391d0e7b12903bc8298ec749468472c"
 }

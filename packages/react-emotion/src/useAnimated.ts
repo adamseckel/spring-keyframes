@@ -45,14 +45,17 @@ function animatedClass({
     mass,
     precision,
   })
-
-  const animationName = keyframes`${frames}`
-
+  const animations = frames.map(animation => keyframes`${animation}`)
   return {
-    animation: `${animationName} ${ease} ${duration} ${
-      delay ? `${delay}ms` : ''
-    } 1 both`,
-    animationName,
+    animation: animations
+      .map(
+        (animation, i) =>
+          `${animation} ${
+            i === 1 ? 'cubic-bezier(0.42, 0.01, 0, 1)' : ease
+          } ${duration} ${delay ? `${delay}ms` : ''} 1 both`
+      )
+      .join(', '),
+    animationName: animations[0],
     toApproxVelocity,
   }
 }
@@ -77,10 +80,9 @@ function computedFrom(to: Frame, ref: React.MutableRefObject<Element | null>) {
 
       // Must come last as computedStyle has x and y keys that clash with transform shorthand.
     } else if (style[key as any]) {
-      frame[key] = parseInt(style[key as any], 10)
+      frame[key] = parseFloat(style[key as any])
     }
   })
-
   return frame
 }
 

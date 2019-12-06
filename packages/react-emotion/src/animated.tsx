@@ -109,6 +109,7 @@ export function Animated({
 
   // Deep compare the `animate|to` @Frame so that we can animate updates.
   useDeepCompareEffect(() => {
+    console.log({ visible, to })
     if (visible && visible !== visibilityRef.current) {
       setRender(true)
 

@@ -1,50 +1,72 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`returns a keyframe array, duration, and ease 1`] = `
-Array [
-  "0% {opacity: 0; width: 100px; transform: translate3d(0px, 100px, 0);}
-  33.33% {opacity: 1.19; width: 218.68px; transform: translate3d(23.74px, 40.66px, 0) scale3d(1.19, 1.19, 1);}
-  66.67% {opacity: 0.97; width: 196.51px; transform: translate3d(19.3px, 51.75px, 0) scale3d(0.97, 0.97, 1);}
-  100% {opacity: 1; width: 200px; transform: translate3d(20px, 50px, 0) scale3d(1, 1, 1);}",
-  "750ms",
-  "cubic-bezier(0.445,  0.050, 0.550, 0.950)",
-]
+exports[`returns an array of keyframe strings, and duration for a long spring 1`] = `
+"0% {width: 100px;}
+ 4.62% {width: 279.74px;}
+ 9.23% {width: 137.01px;}
+ 13.85% {width: 249.28px;}
+ 18.97% {width: 161.15px;}
+ 23.59% {width: 230.83px;}
+ 28.21% {width: 175.77px;}
+ 33.33% {width: 218.89px;}
+ 37.95% {width: 184.94px;}
+ 42.56% {width: 211.89px;}
+ 47.18% {width: 190.7px;}
+ 52.31% {width: 207.34px;}
+ 56.92% {width: 194.18px;}
+ 61.54% {width: 204.57px;}
+ 66.67% {width: 196.43px;}
+ 71.28% {width: 202.84px;}
+ 75.9% {width: 197.76px;}
+ 80.51% {width: 201.75px;}
+ 85.64% {width: 198.61px;}
+ 90.26% {width: 201.1px;}
+ 94.87% {width: 199.14px;}
+ 100% {width: 200px;}"
 `;
 
-exports[`returns a keyframe array, duration, and ease for a long spring 1`] = `
-Array [
-  "0% {opacity: 0;}
-  4.62% {opacity: 1.8;}
-  9.23% {opacity: 0.37;}
-  13.85% {opacity: 1.49;}
-  18.97% {opacity: 0.61;}
-  23.59% {opacity: 1.31;}
-  28.21% {opacity: 0.76;}
-  33.33% {opacity: 1.19;}
-  37.95% {opacity: 0.85;}
-  42.56% {opacity: 1.12;}
-  47.18% {opacity: 0.91;}
-  52.31% {opacity: 1.07;}
-  56.92% {opacity: 0.94;}
-  61.54% {opacity: 1.05;}
-  66.67% {opacity: 0.96;}
-  71.28% {opacity: 1.03;}
-  75.9% {opacity: 0.98;}
-  80.51% {opacity: 1.02;}
-  85.64% {opacity: 0.99;}
-  90.26% {opacity: 1.01;}
-  94.87% {opacity: 0.99;}
-  100% {opacity: 1;}",
-  "3250ms",
-  "cubic-bezier(0.445,  0.050, 0.550, 0.950)",
-]
+exports[`returns an array of keyframe strings, and duration for a long spring 2`] = `"3250ms"`;
+
+exports[`returns an array of keyframe strings, and duration for a short spring 1`] = `
+"0% {width: 0px;}
+ 100% {width: 200px;}"
 `;
 
-exports[`returns a keyframe array, duration, and ease for a short spring 1`] = `
-Array [
-  "0% {opacity: 0;}
-  100% {opacity: 1;}",
-  "5350ms",
-  "cubic-bezier(0.445,  0.050, 0.550, 0.950)",
-]
+exports[`returns an array of keyframe strings, and duration for a short spring 2`] = `"5350ms"`;
+
+exports[`returns an array of keyframe strings, and duration for a tweened and sprung animation 1`] = `
+"0% {transform: translate3d(0px, 0px, 0px);}
+ 9.57% {transform: translate3d(161.87px, 0px, 0px);}
+ 19.68% {transform: translate3d(61.76px, 0px, 0px);}
+ 29.79% {transform: translate3d(123.61px, 0px, 0px);}
+ 39.89% {transform: translate3d(85.44px, 0px, 0px);}
+ 50% {transform: translate3d(108.97px, 0px, 0px);}
+ 59.57% {transform: translate3d(94.45px, 0px, 0px);}
+ 69.68% {transform: translate3d(103.43px, 0px, 0px);}
+ 79.79% {transform: translate3d(97.88px, 0px, 0px);}
+ 89.89% {transform: translate3d(101.31px, 0px, 0px);}
+ 100% {transform: translate3d(100px, 0px, 0px);}"
 `;
+
+exports[`returns an array of keyframe strings, and duration for a tweened and sprung animation 2`] = `
+"0% {opacity: 0;}
+ 100% {opacity: 1;}"
+`;
+
+exports[`returns an array of keyframe strings, and duration for a tweened and sprung animation 3`] = `"3133.33ms"`;
+
+exports[`returns an array of keyframe strings, and duration for a tweened animation 1`] = `
+"0% {opacity: 0;}
+ 100% {opacity: 1;}"
+`;
+
+exports[`returns an array of keyframe strings, and duration for a tweened animation 2`] = `"3133.33ms"`;
+
+exports[`returns an array of keyframe strings, duration 1`] = `
+"0% {width: 100px; transform: translate3d(0px, 100px, 0px) scale3d(0, 0, 1);}
+ 33.33% {width: 218.68px; transform: translate3d(23.74px, 40.66px, 0px) scale3d(1.19, 1.19, 1);}
+ 66.67% {width: 196.51px; transform: translate3d(19.3px, 51.75px, 0px) scale3d(0.97, 0.97, 1);}
+ 100% {width: 200px; transform: translate3d(20px, 50px, 0px) scale3d(1, 1, 1);}"
+`;
+
+exports[`returns an array of keyframe strings, duration 2`] = `"750ms"`;

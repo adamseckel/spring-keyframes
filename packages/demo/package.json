@@ -9,6 +9,7 @@
     "react-scripts": "3.2.0"
   },
   "scripts": {
+    "watch": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

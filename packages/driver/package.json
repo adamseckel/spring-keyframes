@@ -18,7 +18,8 @@
   ],
   "scripts": {
     "test": "NODE_ENV=test jest --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "publishConfig": {
     "access": "public"

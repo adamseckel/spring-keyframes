@@ -86,6 +86,7 @@ export const tags = [
   'rt',
   'ruby',
   's',
+  'svg',
   'samp',
   'script',
   'section',
