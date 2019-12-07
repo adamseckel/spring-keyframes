@@ -1,17 +1,23 @@
 import React from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { animated } from '@spring-keyframes/react-emotion'
+import { animated, useSpring } from '@spring-keyframes/react-emotion'
 import { motion } from 'framer-motion'
 const list = [1]
 
 function App() {
   const [visible, setVisible] = React.useState(true)
   const [warp, setWarp] = React.useState(false)
+  const { ref } = useSpring({
+    initial: { scale: 0, rotate: -45 },
+    animate: { scale: 1, rotate: 0 },
+    transition: { stiffness: 200, damping: 4, mass: 1 },
+  })
 
   return (
     <div className="App">
       <header className="App-header">
+        <div ref={ref}> wowowowowow</div>
         <animated.li
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
