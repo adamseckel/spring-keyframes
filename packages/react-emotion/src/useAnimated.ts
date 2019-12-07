@@ -6,7 +6,7 @@ import {
   Options,
   Property,
 } from '@spring-keyframes/driver'
-import { Handler } from './Animated'
+import { Handler } from './useSpring'
 
 import Unmatrix from 'unmatrix'
 
@@ -94,7 +94,6 @@ interface Props {
 }
 
 type toApproxFn = (v: number) => number
-
 export type AnimateToFrame = (frame: Frame) => void
 
 export function useAnimated({

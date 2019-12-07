@@ -60,6 +60,7 @@ export type Frame = { [K in Property]?: number }
 
 const transforms = ['scale', 'x', 'y', 'rotate']
 const unitless = ['opacity', 'transform', 'color', 'background']
+const tweenedProperties: Property[] = ['color', 'backgroundColor', 'background']
 
 function spring({
   stiffness,
@@ -161,8 +162,6 @@ function convertMaxesToKeyframes(
     toValue(value, from, to),
   ])
 }
-
-const tweenedProperties: Property[] = ['opacity', 'color', 'backgroundColor']
 
 function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
   let style: CSSFrame[] = []
@@ -323,8 +322,6 @@ export default function main(
   // Separate Tweened and Sprung properties.
   const [tFrom, sFrom] = breakupFrame(from)
   const [tTo, sTo] = breakupFrame(to)
-
-  console.log(tFrom, sFrom)
 
   // Generate keyframe, styled value tuples.
   if (Object.keys(sFrom).length || Object.keys(sTo).length) {

@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { AnimateToFrame } from './useAnimated'
 import { Frame } from '@spring-keyframes/driver'
-import { Handler } from './Animated'
+import { Handler } from './useSpring'
 
 interface Props {
   ref: React.MutableRefObject<Element | null>
