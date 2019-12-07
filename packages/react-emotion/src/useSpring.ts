@@ -1,7 +1,6 @@
 import { useAnimated } from './useAnimated'
 import { useWhileInteraction } from './useWhileInteraction'
 import { useState, useRef } from 'react'
-import { Handler } from '../lib/Animated'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 import { Frame, Options } from '@spring-keyframes/driver'
 
