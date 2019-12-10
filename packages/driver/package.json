@@ -21,8 +21,8 @@
     "test": "NODE_ENV=test jest --watch",
     "build": "rollup -c",
     "clean": "rimraf lib",
-    "prebuild": "npm run clean",
-    "prepublish": "npm run lint && npm run build",
+    "prebuild": "yarn run clean",
+    "prepublish": "yarn run build",
     "type-check": "tsc --noEmit",
     "watch": "rollup -cw"
   },
@@ -49,7 +49,7 @@
       "^.+\\.tsx?$": "ts-jest"
     }
   },
-  "gitHead": "d72e374ac391d0e7b12903bc8298ec749468472c",
+  "gitHead": "222eac348e01f521b04ba4398f2de892c027e654",
   "dependencies": {
     "bezier-easing": "^2.1.0",
     "csstype": "^2.6.7"
