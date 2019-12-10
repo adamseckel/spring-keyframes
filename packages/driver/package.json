@@ -3,8 +3,9 @@
   "description": "Use javascript to generate css keyframe animations based on spring physics",
   "version": "0.0.14",
   "main": "lib/index.js",
-  "private": false,
+  "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
+  "private": false,
   "files": [
     "lib"
   ],
@@ -18,8 +19,12 @@
   ],
   "scripts": {
     "test": "NODE_ENV=test jest --watch",
-    "build": "tsc",
-    "watch": "tsc --watch"
+    "build": "rollup -c",
+    "clean": "rimraf lib",
+    "prebuild": "npm run clean",
+    "prepublish": "npm run lint && npm run build",
+    "type-check": "tsc --noEmit",
+    "watch": "rollup -cw"
   },
   "publishConfig": {
     "access": "public"
@@ -30,7 +35,11 @@
     "jest": "24.9.0",
     "prettier": "1.18.2",
     "ts-jest": "24.0.2",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "rollup": "^1.27.9",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-typescript2": "^0.25.3"
   },
   "jest": {
     "roots": [

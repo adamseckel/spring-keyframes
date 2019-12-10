@@ -2,6 +2,7 @@ import { tags, Tags } from './tags'
 import { Animated, AnimatedProps } from './Animated'
 export { default as driver } from '@spring-keyframes/driver'
 export { useSpring } from './useSpring'
+export { AnimateExit } from './AnimateExit'
 
 const makeAnimated = {}
 

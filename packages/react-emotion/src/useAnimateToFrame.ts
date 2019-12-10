@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { keyframes } from 'emotion'
 import {
   default as spring,
@@ -6,13 +6,12 @@ import {
   Options,
   Property,
 } from '@spring-keyframes/driver'
-import { Handler } from './useSpring'
-
 import Unmatrix from 'unmatrix'
 
 interface Transition extends Options {
   delay?: number
 }
+
 const defaults = {
   stiffness: 380,
   damping: 20,
@@ -96,7 +95,7 @@ interface Props {
 type toApproxFn = (v: number) => number
 export type AnimateToFrame = (frame: Frame) => void
 
-export function useAnimated({
+export function useAnimateToFrame({
   from,
   to,
   options,
@@ -104,7 +103,6 @@ export function useAnimated({
 }: Props): {
   animateToFrame: AnimateToFrame
   ref: React.MutableRefObject<Element | null>
-  handler: Handler
 } {
   const ref = useRef<HTMLElement>(null)
   const animationStartRef = useRef<number>(0)
@@ -119,16 +117,16 @@ export function useAnimated({
     onEnd && onEnd()
   }
 
-  function _unMount() {
-    if (!ref.current) return
-    animationStartRef.current = 0
-    ref.current.removeEventListener('animationend', handleAnimationEnd)
-  }
-
-  function _mount() {
+  useEffect(() => {
     if (!ref.current) return
     ref.current.addEventListener('animationend', handleAnimationEnd)
-  }
+
+    return () => {
+      if (!ref.current) return
+      animationStartRef.current = 0
+      ref.current.removeEventListener('animationend', handleAnimationEnd)
+    }
+  }, [])
 
   function animateToFrame(frame: Frame) {
     const diff = performance.now() - animationStartRef.current
@@ -159,5 +157,5 @@ export function useAnimated({
     fromRef.current = frame
   }
 
-  return { ref, animateToFrame, handler: { _mount, _unMount } }
+  return { ref, animateToFrame }
 }

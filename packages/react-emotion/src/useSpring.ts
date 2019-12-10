@@ -1,8 +1,9 @@
-import { useAnimated } from './useAnimated'
+import { useAnimateToFrame } from './useAnimateToFrame'
 import { useWhileInteraction } from './useWhileInteraction'
-import { useState, useRef } from 'react'
+import { useRef, useContext, useEffect } from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 import { Frame, Options } from '@spring-keyframes/driver'
+import { SpringContext } from './AnimateExit'
 
 const defaults = {
   stiffness: 380,
@@ -11,28 +12,6 @@ const defaults = {
   precision: 0.01,
   velocity: 0,
 }
-
-export type Handler = {
-  _mount: () => void
-  _unMount: () => void
-}
-
-type Listeners = Record<string, Handler | null>
-
-function removeAllListeners(listeners: Listeners) {
-  Object.keys(listeners).forEach(key => {
-    let handler = listeners[key]
-    if (handler) handler._unMount()
-  })
-}
-
-function restoreAllListeners(listeners: Listeners) {
-  Object.keys(listeners).forEach(key => {
-    let handler = listeners[key]
-    if (handler) handler._mount()
-  })
-}
-
 interface Transition extends Options {
   delay?: number
 }
@@ -58,21 +37,27 @@ export function useSpring({
   initial: from,
   transition: options,
   exit,
-  visible = true,
   whileTap,
   whileHover,
 }: Props) {
-  const [shouldRender, setRender] = useState(true)
   const visibilityRef = useRef(false)
+  const context = useContext(SpringContext)
+  const exitRef = useRef(context)
+  const { isExiting, onExitComplete } = context || {}
+  const isVisible = !isExiting
+
+  useEffect(() => {
+    exitRef.current = { isExiting, onExitComplete }
+  }, [isExiting, onExitComplete])
 
   const onEnd = () => {
-    if (!visibilityRef.current) {
-      removeAllListeners(FIXMEMountRef.current)
-      setRender(false)
+    if (exitRef.current && exitRef.current.isExiting && exit) {
+      if (!exitRef.current.onExitComplete) return
+      exitRef.current.onExitComplete()
     }
   }
 
-  const { ref, animateToFrame, handler } = useAnimated({
+  const { ref, animateToFrame } = useAnimateToFrame({
     from,
     to,
     onEnd,
@@ -82,12 +67,8 @@ export function useSpring({
     },
   })
 
-  const FIXMEMountRef = useRef<Record<string, Handler | null>>({
-    initial: handler,
-  })
-
   if (whileTap || whileHover) {
-    FIXMEMountRef.current.tap = useWhileInteraction({
+    useWhileInteraction({
       ref,
       animateToFrame,
       from: to,
@@ -98,24 +79,18 @@ export function useSpring({
 
   // Deep compare the `animate|to` @Frame so that we can animate updates.
   useDeepCompareEffect(() => {
-    if (visible && visible !== visibilityRef.current) {
-      setRender(true)
-
-      setTimeout(() => {
-        restoreAllListeners(FIXMEMountRef.current)
-        animateToFrame(to)
-      }, 1)
-    } else if (!visible && visible !== visibilityRef.current && exit) {
+    if (isVisible && isVisible !== visibilityRef.current) {
+      animateToFrame(to)
+    } else if (!isVisible && isVisible !== visibilityRef.current && exit) {
       animateToFrame(exit)
-    } else if (visible) {
+    } else if (isVisible) {
       animateToFrame(to)
     }
 
-    visibilityRef.current = visible
-  }, [visible, to])
+    visibilityRef.current = isVisible
+  }, [isVisible, to])
 
   return {
     ref,
-    visible: shouldRender,
   }
 }

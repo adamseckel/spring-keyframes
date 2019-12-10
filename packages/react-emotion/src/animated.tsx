@@ -8,8 +8,6 @@ interface Transition extends Options {
 }
 
 export interface AnimatedProps extends React.HTMLProps<HTMLElement> {
-  /** Remove the Animated component and trigger its @exit animation. */
-  visible?: boolean
   /** A @Frame to animate to when the Animated component mounts. */
   animate: Frame
   /** A @Frame to animate from when the Animated component mounts. */
@@ -31,7 +29,6 @@ export function Animated({
   initial,
   transition,
   exit,
-  visible = true,
 
   whileTap,
   whileHover,
@@ -43,28 +40,23 @@ export function Animated({
 
   ...rest
 }: AnimatedProps): JSX.Element | false {
-  const { ref, visible: render } = useSpring({
+  const { ref } = useSpring({
     animate,
     initial,
     transition,
     exit,
-    visible,
     whileTap,
     whileHover,
   })
 
   return (
-    <>
-      {render && (
-        //@ts-ignore
-        <Tag
-          //@ts-ignore
-          style={{ willChange: 'animation' }}
-          {...rest}
-          ref={ref}>
-          {children}
-        </Tag>
-      )}
-    </>
+    //@ts-ignore
+    <Tag
+      //@ts-ignore
+      style={{ willChange: 'animation' }}
+      {...rest}
+      ref={ref}>
+      {children}
+    </Tag>
   )
 }

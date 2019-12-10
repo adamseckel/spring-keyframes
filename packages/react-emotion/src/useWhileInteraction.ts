@@ -1,7 +1,6 @@
-import { useRef } from 'react'
-import { AnimateToFrame } from './useAnimated'
+import { useRef, useEffect } from 'react'
+import { AnimateToFrame } from './useAnimateToFrame'
 import { Frame } from '@spring-keyframes/driver'
-import { Handler } from './useSpring'
 
 interface Props {
   ref: React.MutableRefObject<Element | null>
@@ -17,7 +16,7 @@ export function useWhileInteraction({
   from,
   whileTap,
   whileHover,
-}: Props): Handler {
+}: Props): void {
   const isHoveredRef = useRef(false)
 
   function handleTap() {
@@ -44,7 +43,7 @@ export function useWhileInteraction({
     animateToFrame(from)
   }
 
-  function _mount() {
+  useEffect(() => {
     if (!ref.current) return
     if (whileHover) {
       ref.current.addEventListener('mouseenter', handleMouseEnter)
@@ -56,24 +55,19 @@ export function useWhileInteraction({
       ref.current.addEventListener('touchstart', handleTap)
       ref.current.addEventListener('touchend', handleTapEnd)
     }
-  }
 
-  function _unMount() {
-    if (!ref.current) return
-    if (whileHover) {
-      ref.current.addEventListener('mouseenter', handleMouseEnter)
-      ref.current.addEventListener('mouseleave', handleMouseEnterEnd)
+    return () => {
+      if (!ref.current) return
+      if (whileHover) {
+        ref.current.addEventListener('mouseenter', handleMouseEnter)
+        ref.current.addEventListener('mouseleave', handleMouseEnterEnd)
+      }
+      if (whileTap) {
+        ref.current.removeEventListener('mousedown', handleTap)
+        ref.current.removeEventListener('mouseup', handleTapEnd)
+        ref.current.removeEventListener('touchstart', handleTap)
+        ref.current.removeEventListener('touchend', handleTapEnd)
+      }
     }
-    if (whileTap) {
-      ref.current.removeEventListener('mousedown', handleTap)
-      ref.current.removeEventListener('mouseup', handleTapEnd)
-      ref.current.removeEventListener('touchstart', handleTap)
-      ref.current.removeEventListener('touchend', handleTapEnd)
-    }
-  }
-
-  return {
-    _mount,
-    _unMount,
-  }
+  }, [])
 }

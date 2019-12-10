@@ -1,7 +1,11 @@
 import React from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { animated, useSpring } from '@spring-keyframes/react-emotion'
+import {
+  animated,
+  useSpring,
+  AnimateExit,
+} from '@spring-keyframes/react-emotion'
 import { motion } from 'framer-motion'
 const list = [1]
 
@@ -257,23 +261,25 @@ function App() {
         <div style={{ marginBottom: 100 }}></div>
         <button onClick={() => setVisible(!visible)}> toggle </button>
         <div style={{ marginBottom: 100 }}></div>
-        {list.map(i => {
-          return (
-            <animated.li
-              key={i}
-              initial={{ x: 0.1 }}
-              animate={{ x: 400 }}
-              exit={{ x: 0.1 }}
-              transition={{
-                stiffness: 200,
-                damping: 4,
-                mass: 1,
-              }}
-              visible={visible}>
-              Edit <code>src/App.js</code> and save to reload.
-            </animated.li>
-          )
-        })}
+        <AnimateExit>
+          {list.map(
+            i =>
+              visible && (
+                <animated.li
+                  key={i}
+                  initial={{ x: 0.1 }}
+                  animate={{ x: 400 }}
+                  exit={{ x: 0.1 }}
+                  transition={{
+                    stiffness: 200,
+                    damping: 4,
+                    mass: 1,
+                  }}>
+                  Edit <code>src/App.js</code> and save to reload.
+                </animated.li>
+              )
+          )}
+        </AnimateExit>
       </header>
     </div>
   )
