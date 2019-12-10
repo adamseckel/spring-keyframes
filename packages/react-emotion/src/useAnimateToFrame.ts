@@ -6,11 +6,27 @@ import {
   Options,
   Property,
 } from '@spring-keyframes/driver'
-import Unmatrix from 'unmatrix'
+import Unmatrix from './unmatrix'
+
+const unmatrix = new Unmatrix()
 
 interface Transition extends Options {
   delay?: number
 }
+
+type TransformProperty =
+  | 'scaleX'
+  | 'perspective'
+  | 'translateX'
+  | 'translateY'
+  | 'translateZ'
+  | 'rotate'
+  | 'rotateX'
+  | 'rotateY'
+  | 'rotateZ'
+  | 'scaleX'
+  | 'scaleY'
+  | 'scaleZ'
 
 const defaults = {
   stiffness: 380,
@@ -65,10 +81,14 @@ function computedFrom(to: Frame, ref: React.MutableRefObject<Element | null>) {
   // @TODO: Optionally infer unset from from element style.
   const frame: Frame = {}
   const style = getComputedStyle(ref.current)
-  const frameTransforms = Unmatrix.getTransform(ref.current) || {}
+  const frameTransforms: Partial<Record<TransformProperty, any>> =
+    unmatrix.getTransform(ref.current) || {}
   const keys = Object.keys(to) as Property[]
+
   keys.forEach(key => {
+    //@ts-ignore
     if (frameTransforms[key]) {
+      //@ts-ignore
       frame[key] = frameTransforms[key]
     } else if (key === 'scale') {
       frame[key] = frameTransforms.scaleX

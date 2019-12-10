@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "demo": "yarn build & cd ./demo && yarn dev",
-    "release": "yarn build && lerna publish",
+    "release": "lerna publish",
     "build": "lerna run build --stream",
     "watch": "lerna run --parallel watch"
   },

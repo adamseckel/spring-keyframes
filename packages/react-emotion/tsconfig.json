@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
-  "exclude": ["./src/*.test.ts", "./lib"],
-  "include": ["./src", "../../unmatrix.d.ts"],
+  "exclude": ["./src/*.test.ts", "./lib", "./src/unmatrix.ts"],
+  "include": ["src"],
   "compilerOptions": {
     "module": "ESNext" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
     "outDir": "./lib",
