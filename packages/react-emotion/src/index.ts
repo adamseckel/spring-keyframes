@@ -1,6 +1,6 @@
 import { tags, Tags } from './tags'
 // @ts-ignore
-import { Animated, AnimatedProps } from './Animated'
+import { Animated, AnimatedProps } from './animated'
 export { default as driver } from '@spring-keyframes/driver'
 export { useSpring } from './useSpring'
 export { AnimateExit } from './AnimateExit'
