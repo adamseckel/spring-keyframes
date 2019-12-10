@@ -40,6 +40,7 @@ export function useSpring({
   whileTap,
   whileHover,
 }: Props) {
+  const mountRef = useRef(false)
   const visibilityRef = useRef(false)
   const context = useContext(SpringContext)
   const exitRef = useRef(context)
@@ -77,14 +78,19 @@ export function useSpring({
     })
   }
 
+  useEffect(() => {
+    animateToFrame(to, true)
+    mountRef.current = true
+  }, [])
+
   // Deep compare the `animate|to` @Frame so that we can animate updates.
   useDeepCompareEffect(() => {
+    if (!mountRef.current) return
+
     if (isVisible && isVisible !== visibilityRef.current) {
-      animateToFrame(to)
-    } else if (!isVisible && isVisible !== visibilityRef.current && exit) {
-      animateToFrame(exit)
-    } else if (isVisible) {
       animateToFrame(to, true)
+    } else if (!isVisible && isVisible !== visibilityRef.current && exit) {
+      animateToFrame(exit, true)
     }
 
     visibilityRef.current = isVisible
