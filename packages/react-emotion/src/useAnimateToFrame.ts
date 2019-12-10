@@ -39,10 +39,12 @@ const defaults = {
 function animatedClass({
   from,
   to,
+  withDelay,
   options = {},
 }: {
   from: Frame
   to: Frame
+  withDelay?: boolean
   options?: Transition
 }): {
   animation: string
@@ -67,7 +69,7 @@ function animatedClass({
         (animation, i) =>
           `${animation} ${
             i === 1 ? 'cubic-bezier(0.42, 0.01, 0, 1)' : ease
-          } ${duration} ${delay ? `${delay}ms` : ''} 1 both`
+          } ${duration} ${delay ? `${withDelay ? delay : 0}ms` : ''} 1 both`
       )
       .join(', '),
     animationName: animations[0],
@@ -113,7 +115,7 @@ interface Props {
 }
 
 type toApproxFn = (v: number) => number
-export type AnimateToFrame = (frame: Frame) => void
+export type AnimateToFrame = (frame: Frame, withDelay?: boolean) => void
 
 export function useAnimateToFrame({
   from,
@@ -148,7 +150,7 @@ export function useAnimateToFrame({
     }
   }, [])
 
-  function animateToFrame(frame: Frame) {
+  function animateToFrame(frame: Frame, withDelay?: boolean) {
     const diff = performance.now() - animationStartRef.current
 
     if (!ref.current) return
@@ -165,6 +167,7 @@ export function useAnimateToFrame({
     const { animation, animationName, toApproxVelocity } = animatedClass({
       from: animationStartRef.current ? computedFrom(to, ref) : fromRef.current,
       to: frame,
+      withDelay,
       options: { ...options, velocity },
     })
 

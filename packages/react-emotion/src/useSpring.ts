@@ -84,7 +84,7 @@ export function useSpring({
     } else if (!isVisible && isVisible !== visibilityRef.current && exit) {
       animateToFrame(exit)
     } else if (isVisible) {
-      animateToFrame(to)
+      animateToFrame(to, true)
     }
 
     visibilityRef.current = isVisible
