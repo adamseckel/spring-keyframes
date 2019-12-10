@@ -1,6 +1,6 @@
 {
   "name": "@spring-keyframes/react-emotion",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@spring-keyframes/driver": "^0.0.15",
+    "@spring-keyframes/driver": "^0.0.16",
     "unmatrix": "^1.0.6",
     "use-deep-compare-effect": "^1.3.0"
   },
