@@ -114,7 +114,7 @@ const Home = () => (
 )
 
 const Content = styled(Row)`
-  max-width: 1105px;
+  max-width: 1000px;
   > div:first-of-type {
     margin-right: 80px;
     margin-top: 44px;
@@ -129,8 +129,8 @@ const Hero = styled(Row)`
     position: absolute;
     right: 0;
     content: '';
-    width: 882px;
-    height: 629px;
+    width: 55vw;
+    height: 60vh;
     overflow: hidden;
     z-index: -1;
     background: linear-gradient(90deg, #000 0%, #0f0f0f 100%);
@@ -142,6 +142,7 @@ const Title = styled(animated.h1)`
   letter-spacing: 0px;
   line-height: 1.2;
   font-weight: 600;
+  user-select: none;
 `
 
 const HeroColumn = styled(Column)`
@@ -157,6 +158,7 @@ const Subtitle = styled(animated.p)`
   line-height: 1.4;
   font-weight: 500;
   max-width: 483px;
+  user-select: none;
 `
 
 const Button = styled('a')`
@@ -171,6 +173,7 @@ const Button = styled('a')`
   text-align: center;
   text-transform: none;
   text-decoration: none;
+  user-select: none;
   &:active {
     color: initial;
   }
