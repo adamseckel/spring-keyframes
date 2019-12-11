@@ -11152,6 +11152,11 @@ react-error-overlay@^6.0.3:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.3.tgz#c378c4b0a21e88b2e159a3e62b2f531fd63bf60d"
   integrity sha512-bOUvMWFQVk5oz8Ded9Xb7WVdEi3QGLC8tH7HmYP0Fdp4Bn3qw0tRFmr5TW6mvahzvmrK4a6bqWGfCevBflP+Xw==
 
+react-hook-inview@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/react-hook-inview/-/react-hook-inview-4.1.2.tgz#0d0ecdf6f2c0255842debe95f5567702fc2b4083"
+  integrity sha512-+NO6NKSYWEtc2vAWfaJMoeBVqt9NbncPygoCrSPJGLxu/UpiPWnsybX2lOfqQMrwIAXkQmrGTx0hnnRFXUfuzw==
+
 react-is@16.8.6:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
