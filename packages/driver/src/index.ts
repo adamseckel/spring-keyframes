@@ -7,16 +7,21 @@ const ease = BezierEasing(0.445, 0.05, 0.55, 0.95)
 
 type Max = [number, number, number]
 type Maxes = Max[]
-type TransformProperty = 'scale' | 'x' | 'y' | 'rotate'
+type TransformProperty = 'scale' | 'x' | 'y' | 'rotate' | 'scaleX' | 'scaleY'
 type CSSProperty = keyof CSS.Properties
 type CSSFrame = [CSSProperty, number | string]
 type TransformFrame = [TransformProperty, number]
 export type Property = CSSProperty | TransformProperty
 export type Frame = { [K in Property]?: number }
 
-const transforms = ['scale', 'x', 'y', 'rotate']
+const transforms = ['scale', 'x', 'y', 'rotate', 'scaleX', 'scaleY']
 const unitless = ['opacity', 'transform', 'color', 'background']
-const tweenedProperties: Property[] = ['color', 'backgroundColor', 'background']
+const tweenedProperties: Property[] = [
+  'color',
+  'backgroundColor',
+  'background',
+  'borderRadius',
+]
 
 function spring({
   stiffness,
@@ -152,7 +157,7 @@ function createTransformBlock(transforms: TransformFrame[]): string {
     props[key] = value
   })
 
-  const { x, y, scale, rotate } = props
+  const { x, y, scale, rotate, scaleX, scaleY } = props
 
   const block = []
 
@@ -166,9 +171,24 @@ function createTransformBlock(transforms: TransformFrame[]): string {
   if (scale !== undefined) {
     block.push(`scale3d(${scale}, ${scale}, 1)`)
   }
+  if (scaleX !== undefined || scaleY !== undefined) {
+    block.push(
+      `scale3d(${scaleX !== undefined ? scaleX : 1}, ${
+        scaleY !== undefined ? scaleY : 1
+      }, 1)`
+    )
+  }
 
   return block.join(' ')
 }
+
+// function transformProp(string: string) {
+//   string
+//     .replace(/([A-Z])([A-Z])/g, '$1-$2')
+//     .replace(/([a-z])([A-Z])/g, '$1-$2')
+//     .replace(/[\s_]+/g, '-')
+//     .toLowerCase()
+// }
 
 function createBlock(value: CSSFrame[]) {
   return value
@@ -298,6 +318,5 @@ export default function main(
     toPreciseFrame,
     maxes
   )
-
   return [animations, duration, EASE, convertTimeToApproxVelocity]
 }

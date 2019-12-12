@@ -18,6 +18,7 @@ export function useWhileInteraction({
   whileHover,
 }: Props): void {
   const isHoveredRef = useRef(false)
+  const isTouchDeviceRef = useRef(false)
 
   function handleTap() {
     if (!whileTap) return
@@ -44,8 +45,11 @@ export function useWhileInteraction({
   }
 
   useEffect(() => {
+    isTouchDeviceRef.current =
+      typeof window !== 'undefined' && 'ontouchstart' in window
+
     if (!ref.current) return
-    if (whileHover) {
+    if (whileHover && !isTouchDeviceRef.current) {
       ref.current.addEventListener('mouseenter', handleMouseEnter)
       ref.current.addEventListener('mouseleave', handleMouseEnterEnd)
     }
@@ -58,7 +62,7 @@ export function useWhileInteraction({
 
     return () => {
       if (!ref.current) return
-      if (whileHover) {
+      if (whileHover && !isTouchDeviceRef.current) {
         ref.current.addEventListener('mouseenter', handleMouseEnter)
         ref.current.addEventListener('mouseleave', handleMouseEnterEnd)
       }

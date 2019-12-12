@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import Head from 'next/head'
 import styled from '@emotion/styled'
 import { css, Global } from '@emotion/core'
@@ -10,7 +10,7 @@ import { animated } from '@spring-keyframes/react-emotion'
 
 const Home = () => {
   const [ref, isVisible] = useInView({
-    threshold: 0.5,
+    threshold: 1,
     unobserveOnEnter: true,
   })
 
@@ -18,6 +18,35 @@ const Home = () => {
     threshold: 0.5,
     unobserveOnEnter: true,
   })
+
+  const [currentFeatureIndex, setCurentFeatureIndex] = useState(0)
+  const currentFeatureRef = useRef(currentFeatureIndex)
+
+  const features = [
+    { title: 'Sequence', color: '#FF0069' },
+    { title: 'Animate on exit', color: '#0052FF' },
+    { title: 'Animate to new props', color: '#FD200F' },
+    { title: 'Interruptable interactions', color: '#06FDFF' },
+  ]
+
+  useEffect(() => {
+    if (!sectionTwoIsVisible) return
+
+    const interval = setInterval(() => {
+      currentFeatureRef.current =
+        currentFeatureRef.current + 1 === features.length
+          ? 0
+          : currentFeatureRef.current + 1
+      setCurentFeatureIndex(currentFeatureRef.current)
+    }, 5000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [sectionTwoIsVisible, currentFeatureIndex])
+
+  const animate = visible =>
+    visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
 
   return (
     <div>
@@ -87,7 +116,13 @@ const Home = () => {
                   delay: 600,
                 }}>
                 Lightning fast, fire-and-forget, interruptible, <br /> physics
-                based, <span style={{ color: 'white' }}>css animations.</span>
+                based,{' '}
+                <a
+                  style={{ color: 'white', textDecoration: 'none' }}
+                  target="_blank"
+                  href="https://developer.mozilla.org/en-US/docs/Web/CSS/animation">
+                  css animations.
+                </a>
               </Subtitle>
               <ButtonRow align="center" justify="start">
                 <animated.div
@@ -109,7 +144,9 @@ const Home = () => {
                     mass: 1,
                     delay: 800,
                   }}>
-                  <Button href="https://github.com/hemlok/spring-keyframes">
+                  <Button
+                    href="https://github.com/hemlok/spring-keyframes"
+                    target="_blank">
                     Github
                   </Button>
                 </animated.div>
@@ -135,6 +172,7 @@ const Home = () => {
                   <Author
                     align="center"
                     justify="start"
+                    target="_blank"
                     as="a"
                     href="https://twitter.com/hemlok_">
                     <Avatar />
@@ -149,113 +187,181 @@ const Home = () => {
           </Row>
         </Content>
       </Hero>
-      {/* <Section>
-        <Row align="center" justify="center">
-          <SectionColumn
-            align="start"
-            justify="start"
-            ref={ref}
-            style={{ height: 400 }}>
-            {isVisible && (
-              <animated.div
-                initial={{ opacity: 0, y: 50, scale: 1 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{
-                  stiffness: 200,
-                  damping: 10,
-                  mass: 1,
-                  delay: 800,
-                }}>
-                <SectionSubtitle>What's the big deal?</SectionSubtitle>
-                <SectionTitle>
-                  Native CSS animations mean no slow down when the main thread
-                  is busy.
-                </SectionTitle>
-                <SectionText
-                  initial={{ opacity: 0, y: 50, scale: 1 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{
-                    stiffness: 200,
-                    damping: 10,
-                    mass: 1,
-                    delay: 1200,
-                  }}>
-                  Spring-keyframes calculates the minimum number of keyframes
-                  required to animate from one state to the next before the
-                  animation has even started. Once the animation begins, no
-                  javascript is required to keep it going. This means animations
-                  will always run smoothly and at full speed, and when your app
-                  or website is first loaded.
-                </SectionText>
-              </animated.div>
-            )}
-          </SectionColumn>
-        </Row>
-      </Section>
+
       <Section>
         <Row align="center" justify="center">
           <SectionColumn
             align="start"
             justify="start"
             ref={sectionTwoRef}
-            style={{ height: 400 }}>
-            {sectionTwoIsVisible && (
-              <animated.div
-                initial={{ opacity: 0, y: 50, scale: 1 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
+            style={{ height: 500 }}>
+            <animated.div
+              initial={{ opacity: 0, y: 50, scale: 1 }}
+              animate={animate(sectionTwoIsVisible)}
+              transition={{
+                stiffness: 200,
+                damping: 10,
+                mass: 1,
+              }}>
+              <Row align="stretch" justify="start">
+                <Row
+                  grow
+                  justify="start"
+                  align="center"
+                  style={{ maxWidth: '33%' }}>
+                  <ExampleBox
+                    initial={{ scale: 0, rotate: -90 }}
+                    animate={{ scale: 1.4, rotate: 45 }}
+                    whileHover={{ scale: 1, rotate: 45 }}
+                    whileTap={{ scale: 1.4, rotate: 0 }}
+                    color={features[currentFeatureIndex].color}
+                    transition={{
+                      stiffness: 400,
+                      damping: 8,
+                      mass: 1.5,
+                      delay: 800,
+                    }}
+                  />
+                </Row>
+                <div style={{ marginLeft: 24 }}>
+                  <SectionTitle>
+                    Easily implement everyday animations.
+                  </SectionTitle>
+                  <SectionText
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={animate(sectionTwoIsVisible)}
+                    transition={{
+                      stiffness: 200,
+                      damping: 10,
+                      mass: 1,
+                      delay: 300,
+                    }}>
+                    By using native css animations, you don't have to compromise
+                    between top performance and your vision.
+                  </SectionText>
+                  <div style={{ maxWidth: 300, marginTop: 42 }}>
+                    {features.map((feature, i) => {
+                      return (
+                        <animated.div
+                          key={feature.title}
+                          initial={{ opacity: 0, y: 50, scale: 1 }}
+                          animate={animate(sectionTwoIsVisible)}
+                          transition={{
+                            stiffness: 200,
+                            damping: 16,
+                            mass: 1,
+                            delay: 400 + i * 200,
+                          }}>
+                          <animated.div
+                            initial={{ scale: 1 }}
+                            animate={{ scale: 1 }}
+                            whileHover={{
+                              scale: 1.04,
+                            }}
+                            whileTap={{
+                              scale: 0.94,
+                            }}
+                            transition={{
+                              stiffness: 200,
+                              damping: 10,
+                              mass: 1,
+                            }}
+                            onClick={() => setCurentFeatureIndex(i)}>
+                            <div
+                              style={{
+                                cursor: 'pointer',
+                                margin: '14px 0',
+                                color:
+                                  currentFeatureIndex === i
+                                    ? feature.color
+                                    : '#1d1d1d',
+                              }}>
+                              <Text
+                                style={{
+                                  color: 'currentColor',
+                                  marginBottom: '8px',
+                                  fontWeight: 600,
+                                  fontSize: 22,
+                                  transition:
+                                    'color .5s ease, opacity .5s ease',
+                                }}>
+                                {feature.title}
+                              </Text>
+                              <Track>
+                                {currentFeatureIndex === i && (
+                                  <Runner
+                                    initial={{ scaleX: 0 }}
+                                    animate={{
+                                      scaleX: 1,
+                                    }}
+                                    transition={{
+                                      stiffness: 100,
+                                      damping: 40,
+                                      mass: 700,
+                                    }}
+                                  />
+                                )}
+                              </Track>
+                            </div>
+                          </animated.div>
+                        </animated.div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </Row>
+            </animated.div>
+          </SectionColumn>
+        </Row>
+      </Section>
+
+      <Section>
+        <Row align="center" justify="center">
+          <SectionColumn
+            align="start"
+            justify="start"
+            ref={ref}
+            style={{ height: 500 }}>
+            <animated.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={animate(isVisible)}
+              transition={{
+                stiffness: 200,
+                damping: 10,
+                mass: 1,
+              }}>
+              <SectionSubtitle>What's the big deal?</SectionSubtitle>
+              <SectionTitle>
+                Native CSS animations mean no slow down when the main thread is
+                busy.
+              </SectionTitle>
+              <SectionText
+                initial={{ opacity: 0, y: 50 }}
+                animate={animate(isVisible)}
                 transition={{
                   stiffness: 200,
                   damping: 10,
                   mass: 1,
-                  delay: 800,
+                  delay: 300,
                 }}>
-                <Row align="start" justify="start">
-                  <div>
-                    <ExampleBox
-                      initial={{ scale: 0, rotate: 91 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      whileHover={{ scale: 2, rotate: 45 }}
-                      whileTap={{ scale: 1.4, rotate: 90 }}
-                      transition={{
-                        stiffness: 400,
-                        damping: 8,
-                        mass: 1.5,
-                        delay: 1000,
-                      }}
-                    />
-                  </div>
-                  <SectionTitle>
-                    Easily implement everyday interactions, and stop worrying
-                    about performance.
-                  </SectionTitle>
-                </Row>
-                <SectionText
-                  initial={{ opacity: 0, y: 50, scale: 1 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{
-                    stiffness: 200,
-                    damping: 10,
-                    mass: 1,
-                    delay: 1200,
-                  }}>
-                  Spring-keyframes calculates the minimum number of keyframes
-                  required to animate from one state to the next before the
-                  animation has even started. Once the animation begins, no
-                  javascript is required to keep it going. This means animations
-                  will always run smoothly and at full speed, and when your app
-                  or website is first loaded.
-                </SectionText>
-              </animated.div>
-            )}
+                Spring-keyframes calculates the minimum number of keyframes
+                required to animate from one state to the next before the
+                animation has even started. Once the animation begins, no
+                javascript is required to keep it going. This means animations
+                will always run smoothly and at full speed, and when your app or
+                website is first loaded.
+              </SectionText>
+            </animated.div>
           </SectionColumn>
         </Row>
-      </Section> */}
+      </Section>
     </div>
   )
 }
 
 const Section = styled('section')`
-  height: 70vh;
+  height: 75vh;
+  padding: 100px 0;
 `
 
 const Content = styled(Row)`
@@ -357,7 +463,7 @@ const SectionColumn = styled(Column)`
 `
 
 const SectionSubtitle = styled('h3')`
-  font-size: 36px;
+  font-size: 32px;
   letter-spacing: 0px;
   line-height: 1.2;
   font-weight: 699;
@@ -380,14 +486,34 @@ const SectionText = styled(animated.p)`
   line-height: 1.4;
   font-weight: 500;
   user-select: none;
-  margin-top: 42px;
+  margin-top: 28px;
 `
 
 const ExampleBox = styled(animated.div)`
-  border-radius: 16px;
-  background: #06fdff;
-  width: 100px;
-  height: 100px;
+  border-radius: 24px;
+  background: ${props => props.color};
+  transition: background 0.5s ease;
+  width: 140px;
+  height: 140px;
+`
+
+const Track = styled('div')`
+  height: 4px;
+  background-color: #1d1d1d;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+`
+
+const Runner = styled(animated.div)`
+  height: 4px;
+  background-color: currentColor;
+  position: absolute;
+  left: 0;
+  right: 0;
+  transform: scale3d(0, 1, 1);
+  transform-origin: left;
 `
 
 export default Home

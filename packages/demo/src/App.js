@@ -12,28 +12,28 @@ const list = [1]
 function App() {
   const [visible, setVisible] = React.useState(true)
   const [warp, setWarp] = React.useState(false)
-  const { ref } = useSpring({
-    initial: { scale: 0, rotate: -45 },
-    animate: { scale: 1, rotate: 0 },
-    transition: { stiffness: 200, damping: 4, mass: 1 },
-  })
+  // const { ref } = useSpring({
+  //   initial: { scale: 0, rotate: -45 },
+  //   animate: { scale: 1, rotate: 0 },
+  //   transition: { stiffness: 200, damping: 4, mass: 1 },
+  // })
 
   return (
     <div className="App">
       <header className="App-header">
-        <div ref={ref}> wowowowowow</div>
-        <animated.li
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
+        {/* <div ref={ref}> wowowowowow</div> */}
+        <animated.div
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: 0.8, opacity: 1 }}
           transition={{
-            stiffness: 200,
-            damping: 4,
+            stiffness: 400,
+            damping: 10,
             mass: 1,
           }}
-          whileTap={{ scale: 2, opacity: 1 }}>
-          <img src={logo} className="App-logo" alt="logo" />
-        </animated.li>
-        <animated.div
+          whileTap={{ scaleX: 2, opacity: 1 }}>
+          <div style={{ background: 'red', height: 200, width: 200 }}> </div>
+        </animated.div>
+        {/* <animated.div
           initial={{ scale: 0.1, opacity: 0.1, rotate: 0.1 }}
           whileHover={{ scale: 1.5, opacity: 1, rotate: 90 }}
           whileTap={{ scale: 2, opacity: 1, rotate: 45 }}
@@ -46,7 +46,7 @@ function App() {
           whileTap={{ scale: 2, opacity: 1, rotate: 45 }}
           whileHover={{ scale: 1.5, opacity: 1, rotate: 90 }}>
           <img src={logo} className="App-logo" alt="logo" />
-        </motion.div>
+        </motion.div> */}
         {/* <animated.div
           initial={{
             scale: 0,
@@ -159,7 +159,7 @@ function App() {
             </animated.div>
           </div>
         </animated.div> */}
-        <animated.div
+        {/* <animated.div
           initial={{
             scale: 0,
             rotate: -50,
@@ -279,7 +279,7 @@ function App() {
                 </animated.li>
               )
           )}
-        </AnimateExit>
+        </AnimateExit> */}
       </header>
     </div>
   )

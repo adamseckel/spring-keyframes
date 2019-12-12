@@ -63,6 +63,7 @@ function animatedClass({
     precision,
   })
   const animations = frames.map(animation => keyframes`${animation}`)
+
   return {
     animation: animations
       .map(
@@ -89,7 +90,7 @@ function computedFrom(to: Frame, ref: React.MutableRefObject<Element | null>) {
 
   keys.forEach(key => {
     //@ts-ignore
-    if (frameTransforms[key]) {
+    if (frameTransforms[key] !== undefined) {
       //@ts-ignore
       frame[key] = frameTransforms[key]
     } else if (key === 'scale') {
