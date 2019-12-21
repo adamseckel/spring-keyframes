@@ -1,18 +1,31 @@
-import BezierEasing from 'bezier-easing'
 import * as CSS from 'csstype'
-import { stepper } from './stepper'
-const msPerFrame = 1000 / 60
-const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
-const ease = BezierEasing(0.445, 0.05, 0.55, 0.95)
+import { spring } from './spring'
+import { interpolate } from './interpolate'
+// import BezierEasing from 'bezier-easing'
 
-type Max = [number, number, number]
-type Maxes = Max[]
-type TransformProperty = 'scale' | 'x' | 'y' | 'rotate' | 'scaleX' | 'scaleY'
-type CSSProperty = keyof CSS.Properties
-type CSSFrame = [CSSProperty, number | string]
-type TransformFrame = [TransformProperty, number]
+// import { velocityFromPlaytime } from './velocityFromPlaytime'
+
+export const msPerFrame = 1000 / 60
+export const ease = [0.445, 0.05, 0.55, 0.95]
+const EASE = `cubic-bezier(${ease.join(', ')})`
+// const easeFn = BezierEasing(0.445, 0.05, 0.55, 0.95)
+
+export type Max = [number, number, number]
+export type Maxes = Max[]
+export type TransformProperty =
+  | 'scale'
+  | 'x'
+  | 'y'
+  | 'rotate'
+  | 'scaleX'
+  | 'scaleY'
+export type CSSProperty = keyof CSS.Properties
+export type CSSFrame = [CSSProperty, number | string]
+export type TransformFrame = [TransformProperty, number]
 export type Property = CSSProperty | TransformProperty
 export type Frame = { [K in Property]?: number }
+
+type PropertyAmplitude = [Property, Maxes]
 
 const transforms = ['scale', 'x', 'y', 'rotate', 'scaleX', 'scaleY']
 const unitless = ['opacity', 'transform', 'color', 'background']
@@ -23,67 +36,7 @@ const tweenedProperties: Property[] = [
   'borderRadius',
 ]
 
-function spring({
-  stiffness,
-  damping,
-  precision,
-  mass,
-  velocity,
-}: Required<Options>): [Maxes, number] {
-  let lastValue = 1,
-    lastVelocity = velocity,
-    uncommitted = false,
-    lastUncommittedValue = 1,
-    lastUncommittedFrame = 0,
-    lastUncommittedVelocity = velocity,
-    frame = 0,
-    lastFrame: number = 0,
-    maxes: Maxes = [[1, 0, velocity]]
-
-  while (lastFrame === 0) {
-    let [value, velocity] = stepper(
-      msPerFrame / 1000,
-      lastValue,
-      lastVelocity,
-      0,
-      stiffness,
-      damping,
-      mass,
-      precision
-    )
-
-    frame += 1
-
-    if (velocity === 0) {
-      maxes.push([0, frame, 0])
-      lastFrame = frame
-      break
-    }
-
-    if (Math.abs(value) > Math.abs(lastValue)) {
-      uncommitted = true
-      lastUncommittedValue = value
-      lastUncommittedFrame = frame
-      lastUncommittedVelocity = velocity
-    } else {
-      if (uncommitted) {
-        maxes.push([
-          lastUncommittedValue,
-          lastUncommittedFrame,
-          lastUncommittedVelocity,
-        ])
-      }
-      uncommitted = false
-    }
-
-    lastValue = value
-    lastVelocity = velocity
-  }
-
-  return [maxes, lastFrame]
-}
-
-type FrameNumber = number
+type FrameNumber = number | string
 
 type Keyframe = [
   /** Frame */
@@ -92,63 +45,43 @@ type Keyframe = [
   CSSFrame[]
 ]
 
-const interpolate = (
-  inputMax: number = 0,
-  inputMin: number = 0,
-  outputMax: number = 0,
-  outputMin: number = 0,
-  withEase?: (v: number) => number,
-  roundTo: number = 100
-) => (value: number) => {
-  const fn = withEase ? withEase : (v: number) => v
+// function convertMaxesToKeyframes(
+//   maxes: Maxes,
+//   toFrame: (value: number) => number,
+//   from: Frame,
+//   to: Frame
+// ): Keyframe[] {
+//   return maxes.map(([value, index]) => [
+//     toFrame(index),
+//     toValue(value, from, to),
+//   ])
+// }
 
-  return (
-    Math.round(
-      fn(
-        ((value - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin) +
-          outputMin
-      ) * roundTo
-    ) / roundTo
-  )
-}
+// function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
+//   let style: CSSFrame[] = []
+//   let transform: TransformFrame[] = []
+//   const keys = Object.keys(from) as Property[]
 
-function convertMaxesToKeyframes(
-  maxes: Maxes,
-  toFrame: (value: number) => number,
-  from: Frame,
-  to: Frame
-): Keyframe[] {
-  return maxes.map(([value, index]) => [
-    toFrame(index),
-    toValue(value, from, to),
-  ])
-}
+//   keys.forEach(key => {
+//     if (transforms.includes(key)) {
+//       transform.push([
+//         key,
+//         interpolate(1, 0, from[key], to[key])(value),
+//       ] as TransformFrame)
+//     } else {
+//       style.push([
+//         key,
+//         interpolate(1, 0, from[key], to[key])(value),
+//       ] as CSSFrame)
+//     }
+//   })
 
-function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
-  let style: CSSFrame[] = []
-  let transform: TransformFrame[] = []
-  const keys = Object.keys(from) as Property[]
+//   if (transform.length > 0) {
+//     style.push(['transform', createTransformBlock(transform)])
+//   }
 
-  keys.forEach(key => {
-    if (transforms.includes(key)) {
-      transform.push([
-        key,
-        interpolate(1, 0, from[key], to[key])(value),
-      ] as TransformFrame)
-    } else {
-      style.push([
-        key,
-        interpolate(1, 0, from[key], to[key])(value),
-      ] as CSSFrame)
-    }
-  })
-
-  if (transform.length > 0) {
-    style.push(['transform', createTransformBlock(transform)])
-  }
-
-  return style
-}
+//   return style
+// }
 
 function createTransformBlock(transforms: TransformFrame[]): string {
   const props: Partial<Record<TransformProperty, number>> = {}
@@ -212,6 +145,7 @@ export interface Options {
   mass?: number
   precision?: number
   velocity?: number
+  complex?: boolean
 }
 
 const defaults = {
@@ -220,39 +154,7 @@ const defaults = {
   mass: 1,
   precision: 0.01,
   velocity: 0,
-}
-
-const closestFrameIndexForFrame = (counts: Maxes, goal: number) =>
-  counts.reduce((prev, curr) =>
-    Math.abs(curr[1] - goal) < Math.abs(prev[1] - goal) ? curr : prev
-  )
-
-const highLowFrame = (maxes: Maxes, frame: number, i: number) => {
-  if (frame > maxes[i][1]) {
-    return [maxes[i], maxes[i + 1]]
-  }
-  return [maxes[i - 1], maxes[i]]
-}
-
-const playTimeToApproxVelocity = (
-  toFrame: (val: number) => number,
-  maxes: Maxes
-) => (playTime: number): number => {
-  const index = playTime / msPerFrame
-  const frame = toFrame(index)
-
-  // Get the closest known Max for the frame
-  const max = closestFrameIndexForFrame(maxes, frame)
-  const i = maxes.indexOf(max)
-  if (maxes.length === i + 1) return 0
-  const [high, low] = highLowFrame(maxes, frame, i)
-  if (!low) return high[2]
-
-  try {
-    return interpolate(high[1], low[1], high[2], low[2], ease)(frame)
-  } catch (error) {
-    return 0
-  }
+  complex: true,
 }
 
 function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
@@ -277,6 +179,104 @@ function breakupFrame(frame: Frame): [CSSFrame[], Frame] {
   return [tweened, sprung]
 }
 
+function springEachProp({
+  from,
+  to,
+  options,
+}: {
+  from: Frame
+  to: Frame
+  options: Required<Options>
+}): [PropertyAmplitude[], number] {
+  let finalFrame = 0
+
+  const independentMaxes: [Property, Maxes][] = []
+  const keys = Object.keys(to) as Property[]
+
+  keys.forEach(property => {
+    const [maxes, lastFrame] = spring({
+      from: from[property] as number,
+      to: to[property] as number,
+      ...options,
+    })
+
+    independentMaxes.push([property, maxes])
+
+    // console.log(lastFrame, finalFrame)
+    if (lastFrame > finalFrame) {
+      finalFrame = lastFrame
+    }
+  })
+
+  console.log(finalFrame)
+
+  return [independentMaxes, finalFrame]
+}
+
+type FrameValues = Record<string, [Property, number][]>
+
+function groupAmplitudesByFrame(
+  propertyAmplitudes: PropertyAmplitude[],
+  toFrame: (v: number) => number,
+  to: Frame
+): [FrameValues, FrameValues] {
+  const frameVelocities: FrameValues = {}
+  const frameValues: FrameValues = {}
+
+  propertyAmplitudes.forEach(([property, maxes]) => {
+    for (let index = 0; index < maxes.length; index++) {
+      let [value, frame, velocity] = maxes[index]
+
+      frame = toFrame(frame)
+
+      if (frame === 100 && to[property]) {
+        value = to[property] as number
+      }
+
+      if (frameVelocities[frame]) {
+        frameValues[frame].push([property, Math.round(value * 100) / 100])
+        frameVelocities[frame].push([property, velocity])
+      } else {
+        frameValues[frame] = [[property, Math.round(value * 100) / 100]]
+        frameVelocities[frame] = [[property, velocity]]
+      }
+    }
+  })
+  const toKeys = Object.keys(to) as Property[]
+  //@ts-ignore
+  frameValues['100'] = toKeys.map(property => [property, to[property]])
+
+  return [frameValues, frameVelocities]
+}
+
+function keyframesFromFrameValues(frameValues: FrameValues) {
+  //@ts-ignore
+  let keyframes: [string, CSSFrame[]] = []
+  const frames = Object.keys(frameValues) as string[]
+
+  for (let index = 0; index < Object.keys(frameValues).length; index++) {
+    const frame = frames[index]
+    let transform: TransformFrame[] = []
+    let style: CSSFrame[] = []
+
+    frameValues[frame].forEach(([property, value]) => {
+      if (transforms.includes(property)) {
+        transform.push([property, value] as TransformFrame)
+      } else {
+        style.push([property, value] as CSSFrame)
+      }
+    })
+
+    if (transform.length > 0) {
+      style.push(['transform', createTransformBlock(transform)])
+    }
+    //@ts-ignore
+    keyframes.push([frame, style])
+  }
+
+  return keyframes
+}
+
 export default function main(
   from: Frame,
   to: Frame,
@@ -289,20 +289,45 @@ export default function main(
 
   const animations: string[] = []
 
-  const [maxes, lastFrame] = spring(optionsWithDefaults)
+  // const [maxes, lastFrame] = spring(optionsWithDefaults)
 
   // Interpolate between keyframe values of 0 - 100 and frame indexes of 0 - x where x is the lastFrame.
-  const toFrame = interpolate(0, lastFrame, 0, 100)
-  const toPreciseFrame = interpolate(0, lastFrame, 0, 100, v => v, 1)
+  // const toFrame = interpolate(0, lastFrame, 0, 100)
+  // const toPreciseFrame = interpolate(0, lastFrame, 0, 100, v => v, 1)
 
   // Separate Tweened and Sprung properties.
   const [tFrom, sFrom] = breakupFrame(from)
   const [tTo, sTo] = breakupFrame(to)
 
+  const [propertyAmplitudes, finalFrame] = springEachProp({
+    from: sFrom,
+    to: sTo,
+    options: optionsWithDefaults,
+  })
+
+  console.log(propertyAmplitudes)
+
+  const [frameValues] = groupAmplitudesByFrame(
+    propertyAmplitudes,
+    interpolate(0, finalFrame, 0, 100),
+    to
+  )
+
+  // ['rotate', [[value, frame, velocity], ...]][] - PropertyAmplitudes
+
+  // [frame, [['rotate', value], ['scaleX', value]]][] - FramePropertyAmplitudes
+
+  // [frame, string][] - CSSFrames
+
+  // [frame, [['rotate', velocity], ['scaleX', velocity]]][]
+
   // Generate keyframe, styled value tuples.
   if (Object.keys(sFrom).length || Object.keys(sTo).length) {
-    const springKeyframes = convertMaxesToKeyframes(maxes, toFrame, sFrom, sTo)
-    animations.push(convertKeyframesToCSS(springKeyframes))
+    // const springKeyframes = convertMaxesToKeyframes(maxes, toFrame, sFrom, sTo)
+    const complexSpringKeyframes = keyframesFromFrameValues(frameValues)
+    console.log(complexSpringKeyframes)
+    //@ts-ignore
+    animations.push(convertKeyframesToCSS(complexSpringKeyframes))
   }
   if (tFrom.length || tTo.length) {
     const tweenedKeyframes = createTweenedKeyframes(tFrom, tTo)
@@ -310,13 +335,13 @@ export default function main(
   }
 
   // Calculate duration based on the number of frames.
-  const duration = Math.round(msPerFrame * lastFrame * 100) / 100 + 'ms'
+  const duration = Math.round(msPerFrame * finalFrame * 100) / 100 + 'ms'
 
   // Create a function to return a frame for a play time.
   // Enables interrupting animations by creating new ones that start from the current velocity and frame.
-  const convertTimeToApproxVelocity = playTimeToApproxVelocity(
-    toPreciseFrame,
-    maxes
-  )
-  return [animations, duration, EASE, convertTimeToApproxVelocity]
+  // const convertTimeToApproxVelocity = velocityFromPlaytime(
+  //   toPreciseFrame,
+  //   maxes
+  // )
+  return [animations, duration, EASE, v => v]
 }

@@ -1,5 +1,12 @@
 import { default as spring } from './index'
 
+xit('returns an array of keyframe strings, duration', () => {
+  const [animation, duration] = spring({ width: 100 }, { width: 200 })
+
+  expect(animation[0]).toMatchSnapshot()
+  expect(duration).toMatchSnapshot()
+})
+
 it('returns an array of keyframe strings, duration', () => {
   const [animation, duration] = spring(
     { width: 100, x: 0, y: 100, scale: 0 },
@@ -10,7 +17,7 @@ it('returns an array of keyframe strings, duration', () => {
   expect(duration).toMatchSnapshot()
 })
 
-it('returns an array of keyframe strings, and duration for a long spring', () => {
+xit('returns an array of keyframe strings, and duration for a long spring', () => {
   const [animation, duration] = spring(
     { width: 100 },
     { width: 200 },
@@ -21,7 +28,7 @@ it('returns an array of keyframe strings, and duration for a long spring', () =>
   expect(duration).toMatchSnapshot()
 })
 
-it('returns an array of keyframe strings, and duration for a short spring', () => {
+xit('returns an array of keyframe strings, and duration for a short spring', () => {
   const [animation, duration] = spring(
     { width: 0 },
     { width: 200 },
@@ -32,7 +39,7 @@ it('returns an array of keyframe strings, and duration for a short spring', () =
   expect(duration).toMatchSnapshot()
 })
 
-it('returns an array of keyframe strings, and duration for a tweened animation', () => {
+xit('returns an array of keyframe strings, and duration for a tweened animation', () => {
   const [animation, duration] = spring(
     { opacity: 0 },
     { opacity: 1 },
@@ -43,7 +50,7 @@ it('returns an array of keyframe strings, and duration for a tweened animation',
   expect(duration).toMatchSnapshot()
 })
 
-it('returns an array of keyframe strings, and duration for a tweened and sprung animation', () => {
+xit('returns an array of keyframe strings, and duration for a tweened and sprung animation', () => {
   const [animations, duration] = spring(
     { opacity: 0, x: 0 },
     { opacity: 1, x: 100 },

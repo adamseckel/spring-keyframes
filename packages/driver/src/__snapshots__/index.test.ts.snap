@@ -64,9 +64,12 @@ exports[`returns an array of keyframe strings, and duration for a tweened animat
 
 exports[`returns an array of keyframe strings, duration 1`] = `
 "0% {width: 100px; transform: translate3d(0px, 100px, 0px) scale3d(0, 0, 1);}
- 33.33% {width: 218.68px; transform: translate3d(23.74px, 40.66px, 0px) scale3d(1.19, 1.19, 1);}
- 66.67% {width: 196.51px; transform: translate3d(19.3px, 51.75px, 0px) scale3d(0.97, 0.97, 1);}
- 100% {width: 200px; transform: translate3d(20px, 50px, 0px) scale3d(1, 1, 1);}"
+ 50% {width: 200.65px; transform: translate3d(20.13px, 0px, 0px) scale3d(1, 1, 1);}
+ 100% {width: 200px; transform: translate3d(20px, 50px, 0px) scale3d(1, 1, 1);}
+ 16.67% {width: 218.68px; transform: translate3d(23.74px, 0px, 0px) scale3d(1.19, 1.19, 1);}
+ 83.33% {width: 200.02px; transform: translate3d(20px, 0px, 0px);}
+ 33.33% {transform: translate3d(0px, 51.75px, 0px);}
+ 66.67% {transform: translate3d(0px, 50.06px, 0px);}"
 `;
 
-exports[`returns an array of keyframe strings, duration 2`] = `"750ms"`;
+exports[`returns an array of keyframe strings, duration 2`] = `"1500ms"`;
