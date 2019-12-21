@@ -23,16 +23,38 @@ function App() {
       <header className="App-header">
         {/* <div ref={ref}> wowowowowow</div> */}
         <animated.div
-          initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ scaleX: 0.8, opacity: 1 }}
+          initial={{
+            scale: 0,
+            opacity: 0,
+            rotate: -180,
+            borderRadius: 20,
+            backgroundColor: 'blue',
+          }}
+          animate={{
+            scale: 0.8,
+            opacity: 1,
+            rotate: 0,
+            borderRadius: 100,
+            backgroundColor: 'blue',
+          }}
           transition={{
-            stiffness: 400,
-            damping: 10,
+            stiffness: 300,
+            damping: 14,
             mass: 1,
           }}
-          whileTap={{ scaleX: 2, opacity: 1 }}>
-          <div style={{ background: 'red', height: 200, width: 200 }}> </div>
-        </animated.div>
+          style={{
+            background: 'blue',
+            height: 200,
+            cursor: 'pointer',
+            width: 200,
+          }}
+          whileTap={{
+            scale: 2,
+            opacity: 1,
+            rotate: 90,
+            backgroundColor: 'red',
+            borderRadius: 40,
+          }}></animated.div>
         {/* <animated.div
           initial={{ scale: 0.1, opacity: 0.1, rotate: 0.1 }}
           whileHover={{ scale: 1.5, opacity: 1, rotate: 90 }}

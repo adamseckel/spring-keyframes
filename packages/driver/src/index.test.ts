@@ -54,3 +54,25 @@ it('returns an array of keyframe strings, and duration for a tweened and sprung 
   expect(animations[1]).toMatchSnapshot()
   expect(duration).toMatchSnapshot()
 })
+
+it('returns an array of valid keyframes for camelCase properties', () => {
+  const [animations, duration] = spring(
+    { borderRadius: 0 },
+    { borderRadius: 20 },
+    { stiffness: 100, damping: 3 }
+  )
+
+  expect(animations[0]).toMatchSnapshot()
+  expect(duration).toMatchSnapshot()
+})
+
+it('returns an array of valid keyframes for backgroundColor', () => {
+  const [animations, duration] = spring(
+    { backgroundColor: 'red' },
+    { backgroundColor: 'blue' },
+    { stiffness: 100, damping: 3 }
+  )
+
+  expect(animations[0]).toMatchSnapshot()
+  expect(duration).toMatchSnapshot()
+})

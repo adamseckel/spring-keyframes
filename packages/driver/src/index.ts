@@ -12,15 +12,21 @@ type CSSProperty = keyof CSS.Properties
 type CSSFrame = [CSSProperty, number | string]
 type TransformFrame = [TransformProperty, number]
 export type Property = CSSProperty | TransformProperty
-export type Frame = { [K in Property]?: number }
+export type Frame = { [K in Property]?: number | string }
 
 const transforms = ['scale', 'x', 'y', 'rotate', 'scaleX', 'scaleY']
-const unitless = ['opacity', 'transform', 'color', 'background']
+const unitless = [
+  'opacity',
+  'transform',
+  'color',
+  'background',
+  'backgroundColor',
+]
 const tweenedProperties: Property[] = [
   'color',
   'backgroundColor',
   'background',
-  'borderRadius',
+  'opacity',
 ]
 
 function spring({
@@ -133,12 +139,12 @@ function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
     if (transforms.includes(key)) {
       transform.push([
         key,
-        interpolate(1, 0, from[key], to[key])(value),
+        interpolate(1, 0, from[key] as number, to[key] as number)(value),
       ] as TransformFrame)
     } else {
       style.push([
         key,
-        interpolate(1, 0, from[key], to[key])(value),
+        interpolate(1, 0, from[key] as number, to[key] as number)(value),
       ] as CSSFrame)
     }
   })
@@ -192,8 +198,14 @@ function createTransformBlock(transforms: TransformFrame[]): string {
 
 function createBlock(value: CSSFrame[]) {
   return value
-    .map(([prop, val]) => `${prop}: ${val}${unitForProp(prop)}`)
+    .map(
+      ([prop, val]) => `${camelCaseToDash(prop)}: ${val}${unitForProp(prop)}`
+    )
     .join('; ')
+}
+
+function camelCaseToDash(property: string) {
+  return property.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase()
 }
 
 function unitForProp(prop: Property) {

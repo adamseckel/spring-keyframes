@@ -53,7 +53,7 @@ export function Animated({
     //@ts-ignore
     <Tag
       //@ts-ignore
-      style={{ willChange: 'animation' }}
+      style={{ willChange: 'animation', ...initial, ...style }}
       {...rest}
       ref={ref}>
       {children}

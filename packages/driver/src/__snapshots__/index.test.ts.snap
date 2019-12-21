@@ -70,3 +70,26 @@ exports[`returns an array of keyframe strings, duration 1`] = `
 `;
 
 exports[`returns an array of keyframe strings, duration 2`] = `"750ms"`;
+
+exports[`returns an array of valid keyframes for backgroundColor 1`] = `
+"0% {background-color: red;}
+ 100% {background-color: blue;}"
+`;
+
+exports[`returns an array of valid keyframes for backgroundColor 2`] = `"3133.33ms"`;
+
+exports[`returns an array of valid keyframes for camelCase properties 1`] = `
+"0% {border-radius: 0px;}
+ 9.57% {border-radius: 32.37px;}
+ 19.68% {border-radius: 12.35px;}
+ 29.79% {border-radius: 24.72px;}
+ 39.89% {border-radius: 17.09px;}
+ 50% {border-radius: 21.79px;}
+ 59.57% {border-radius: 18.89px;}
+ 69.68% {border-radius: 20.69px;}
+ 79.79% {border-radius: 19.58px;}
+ 89.89% {border-radius: 20.26px;}
+ 100% {border-radius: 20px;}"
+`;
+
+exports[`returns an array of valid keyframes for camelCase properties 2`] = `"3133.33ms"`;

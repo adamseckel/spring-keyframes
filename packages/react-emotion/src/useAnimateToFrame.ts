@@ -69,7 +69,7 @@ function animatedClass({
       .map(
         (animation, i) =>
           `${animation} ${
-            i === 1 ? 'cubic-bezier(0.42, 0.01, 0, 1)' : ease
+            i === 1 ? 'cubic-bezier(0.15, 0, 0, 1)' : ease
           } ${duration} ${delay ? `${withDelay ? delay : 0}ms` : ''} 1 both`
       )
       .join(', '),
