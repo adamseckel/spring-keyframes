@@ -201,14 +201,10 @@ export default class Unmatrix {
   }
 
   // Returns an object with transform properties
-  getTransform(element: Element) {
-    // Check if element is an HTML element
-    if (!(element instanceof HTMLElement)) {
-      return null
-    }
+  getTransform(computedStyle: CSSStyleDeclaration) {
+    if (!computedStyle) return null
 
     // Check if element has transforms
-    let computedStyle = getComputedStyle(element)
     if (!('transform' in computedStyle) || computedStyle.transform === 'none') {
       return null
     }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import Head from 'next/head'
 import styled from '@emotion/styled'
-import { css, Global } from '@emotion/core'
+import { css, Global, keyframes } from '@emotion/core'
 import { Logo } from '../components/icons'
 import { Column, Row } from 'emotion-box'
 import { useInView } from 'react-hook-inview'
@@ -281,26 +281,16 @@ const Home = () => {
                                   color: 'currentColor',
                                   marginBottom: '8px',
                                   fontWeight: 600,
+                                  userSelect: 'none',
                                   fontSize: 22,
+
                                   transition:
                                     'color .5s ease, opacity .5s ease',
                                 }}>
                                 {feature.title}
                               </Text>
                               <Track>
-                                {currentFeatureIndex === i && (
-                                  <Runner
-                                    initial={{ scaleX: 0 }}
-                                    animate={{
-                                      scaleX: 1,
-                                    }}
-                                    transition={{
-                                      stiffness: 100,
-                                      damping: 40,
-                                      mass: 700,
-                                    }}
-                                  />
-                                )}
+                                {currentFeatureIndex === i && <Runner />}
                               </Track>
                             </div>
                           </animated.div>
@@ -504,15 +494,25 @@ const Track = styled('div')`
   overflow: hidden;
   position: relative;
   width: 100%;
+  z-index: 1;
 `
 
-const Runner = styled(animated.div)`
+const runnerAnimation = keyframes`
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+`
+
+const Runner = styled('div')`
   height: 4px;
   background-color: currentColor;
   position: absolute;
   left: 0;
   right: 0;
-  transform: scale3d(0, 1, 1);
+  animation: ${runnerAnimation} linear 5000ms both 1;
   transform-origin: left;
 `
 

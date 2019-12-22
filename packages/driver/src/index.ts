@@ -1,12 +1,13 @@
-import BezierEasing from 'bezier-easing'
 import * as CSS from 'csstype'
-import { stepper } from './stepper'
-const msPerFrame = 1000 / 60
+import { spring } from './spring'
+import { interpolate } from './interpolate'
+import { playtimeToVelocity } from './playtimeToVelocity'
+
+export const msPerFrame = 1000 / 60
 const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
-const ease = BezierEasing(0.445, 0.05, 0.55, 0.95)
 
 type Max = [number, number, number]
-type Maxes = Max[]
+export type Maxes = Max[]
 type TransformProperty = 'scale' | 'x' | 'y' | 'rotate' | 'scaleX' | 'scaleY'
 type CSSProperty = keyof CSS.Properties
 type CSSFrame = [CSSProperty, number | string]
@@ -29,66 +30,6 @@ const tweenedProperties: Property[] = [
   'opacity',
 ]
 
-function spring({
-  stiffness,
-  damping,
-  precision,
-  mass,
-  velocity,
-}: Required<Options>): [Maxes, number] {
-  let lastValue = 1,
-    lastVelocity = velocity,
-    uncommitted = false,
-    lastUncommittedValue = 1,
-    lastUncommittedFrame = 0,
-    lastUncommittedVelocity = velocity,
-    frame = 0,
-    lastFrame: number = 0,
-    maxes: Maxes = [[1, 0, velocity]]
-
-  while (lastFrame === 0) {
-    let [value, velocity] = stepper(
-      msPerFrame / 1000,
-      lastValue,
-      lastVelocity,
-      0,
-      stiffness,
-      damping,
-      mass,
-      precision
-    )
-
-    frame += 1
-
-    if (velocity === 0) {
-      maxes.push([0, frame, 0])
-      lastFrame = frame
-      break
-    }
-
-    if (Math.abs(value) > Math.abs(lastValue)) {
-      uncommitted = true
-      lastUncommittedValue = value
-      lastUncommittedFrame = frame
-      lastUncommittedVelocity = velocity
-    } else {
-      if (uncommitted) {
-        maxes.push([
-          lastUncommittedValue,
-          lastUncommittedFrame,
-          lastUncommittedVelocity,
-        ])
-      }
-      uncommitted = false
-    }
-
-    lastValue = value
-    lastVelocity = velocity
-  }
-
-  return [maxes, lastFrame]
-}
-
 type FrameNumber = number
 
 type Keyframe = [
@@ -97,26 +38,6 @@ type Keyframe = [
   /** value */
   CSSFrame[]
 ]
-
-const interpolate = (
-  inputMax: number = 0,
-  inputMin: number = 0,
-  outputMax: number = 0,
-  outputMin: number = 0,
-  withEase?: (v: number) => number,
-  roundTo: number = 100
-) => (value: number) => {
-  const fn = withEase ? withEase : (v: number) => v
-
-  return (
-    Math.round(
-      fn(
-        ((value - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin) +
-          outputMin
-      ) * roundTo
-    ) / roundTo
-  )
-}
 
 function convertMaxesToKeyframes(
   maxes: Maxes,
@@ -234,39 +155,6 @@ const defaults = {
   velocity: 0,
 }
 
-const closestFrameIndexForFrame = (counts: Maxes, goal: number) =>
-  counts.reduce((prev, curr) =>
-    Math.abs(curr[1] - goal) < Math.abs(prev[1] - goal) ? curr : prev
-  )
-
-const highLowFrame = (maxes: Maxes, frame: number, i: number) => {
-  if (frame > maxes[i][1]) {
-    return [maxes[i], maxes[i + 1]]
-  }
-  return [maxes[i - 1], maxes[i]]
-}
-
-const playTimeToApproxVelocity = (
-  toFrame: (val: number) => number,
-  maxes: Maxes
-) => (playTime: number): number => {
-  const index = playTime / msPerFrame
-  const frame = toFrame(index)
-
-  // Get the closest known Max for the frame
-  const max = closestFrameIndexForFrame(maxes, frame)
-  const i = maxes.indexOf(max)
-  if (maxes.length === i + 1) return 0
-  const [high, low] = highLowFrame(maxes, frame, i)
-  if (!low) return high[2]
-
-  try {
-    return interpolate(high[1], low[1], high[2], low[2], ease)(frame)
-  } catch (error) {
-    return 0
-  }
-}
-
 function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
   return [[0, from], [100, to]]
 }
@@ -326,9 +214,5 @@ export default function main(
 
   // Create a function to return a frame for a play time.
   // Enables interrupting animations by creating new ones that start from the current velocity and frame.
-  const convertTimeToApproxVelocity = playTimeToApproxVelocity(
-    toPreciseFrame,
-    maxes
-  )
-  return [animations, duration, EASE, convertTimeToApproxVelocity]
+  return [animations, duration, EASE, playtimeToVelocity(toPreciseFrame, maxes)]
 }

@@ -10,8 +10,11 @@ import Unmatrix from './unmatrix'
 
 const unmatrix = new Unmatrix()
 
-interface Transition extends Options {
+export interface Transition extends Options {
+  /** Duration to delay initial animations in ms. Will not prevent child animations from playing. */
   delay?: number
+  /** Duration to run all animations in ms. */
+  duration?: number
 }
 
 type TransformProperty =
@@ -68,9 +71,9 @@ function animatedClass({
     animation: animations
       .map(
         (animation, i) =>
-          `${animation} ${
-            i === 1 ? 'cubic-bezier(0.15, 0, 0, 1)' : ease
-          } ${duration} ${delay ? `${withDelay ? delay : 0}ms` : ''} 1 both`
+          `${animation} ${i === 1 ? 'cubic-bezier(0.15, 0, 0, 1)' : ease} ${
+            options.duration ? options.duration + 'ms' : duration
+          } ${delay ? `${withDelay ? delay : 0}ms` : ''} 1 both`
       )
       .join(', '),
     animationName: animations[0],
@@ -85,7 +88,8 @@ function computedFrom(to: Frame, ref: React.MutableRefObject<Element | null>) {
   const frame: Frame = {}
   const style = getComputedStyle(ref.current)
   const frameTransforms: Partial<Record<TransformProperty, any>> =
-    unmatrix.getTransform(ref.current) || {}
+    unmatrix.getTransform(style) || {}
+
   const keys = Object.keys(to) as Property[]
 
   keys.forEach(key => {

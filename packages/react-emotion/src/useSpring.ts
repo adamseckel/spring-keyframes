@@ -1,8 +1,8 @@
-import { useAnimateToFrame } from './useAnimateToFrame'
+import { useAnimateToFrame, Transition } from './useAnimateToFrame'
 import { useWhileInteraction } from './useWhileInteraction'
 import { useRef, useContext, useEffect } from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
-import { Frame, Options } from '@spring-keyframes/driver'
+import { Frame } from '@spring-keyframes/driver'
 import { SpringContext } from './AnimateExit'
 
 const defaults = {
@@ -12,12 +12,8 @@ const defaults = {
   precision: 0.01,
   velocity: 0,
 }
-interface Transition extends Options {
-  delay?: number
-}
 
 interface Props {
-  visible?: boolean
   /** A @Frame to animate to when the Animated component mounts. */
   animate: Frame
   /** A @Frame to animate from when the Animated component mounts. */

@@ -1,13 +1,14 @@
 import { default as spring } from './index'
 
-it('returns an array of keyframe strings, duration', () => {
-  const [animation, duration] = spring(
+it('returns an array of keyframe strings, duration, and ease', () => {
+  const [animation, duration, ease] = spring(
     { width: 100, x: 0, y: 100, scale: 0 },
     { width: 200, x: 20, y: 50, scale: 1 }
   )
 
   expect(animation[0]).toMatchSnapshot()
   expect(duration).toMatchSnapshot()
+  expect(ease).toMatchSnapshot()
 })
 
 it('returns an array of keyframe strings, and duration for a long spring', () => {
@@ -75,4 +76,17 @@ it('returns an array of valid keyframes for backgroundColor', () => {
 
   expect(animations[0]).toMatchSnapshot()
   expect(duration).toMatchSnapshot()
+})
+
+it('returns a velocity for a in-progress animation', () => {
+  const [animations, duration, ease, convert] = spring(
+    { x: 0 },
+    { x: 400 },
+    { stiffness: 100, damping: 2 }
+  )
+
+  expect(convert(400)).toMatchSnapshot()
+  expect(ease).toBeDefined()
+  expect(animations).toBeDefined()
+  expect(duration).toBeDefined()
 })

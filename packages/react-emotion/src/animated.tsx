@@ -1,11 +1,8 @@
 import * as React from 'react'
-import { Frame, Options } from '@spring-keyframes/driver'
+import { Frame } from '@spring-keyframes/driver'
 import { Tags } from './tags'
 import { useSpring } from './useSpring'
-
-interface Transition extends Options {
-  delay?: number
-}
+import { Transition } from './useAnimateToFrame'
 
 export interface AnimatedProps extends React.HTMLProps<HTMLElement> {
   /** A @Frame to animate to when the Animated component mounts. */
@@ -50,7 +47,6 @@ export function Animated({
   })
 
   return (
-    //@ts-ignore
     <Tag
       //@ts-ignore
       style={{ willChange: 'animation', ...initial, ...style }}

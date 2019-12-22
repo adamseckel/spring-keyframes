@@ -54,8 +54,10 @@ export function useWhileInteraction({
       ref.current.addEventListener('mouseleave', handleMouseEnterEnd)
     }
     if (whileTap) {
-      ref.current.addEventListener('mousedown', handleTap)
-      ref.current.addEventListener('mouseup', handleTapEnd)
+      if (!isTouchDeviceRef.current) {
+        ref.current.addEventListener('mousedown', handleTap)
+        ref.current.addEventListener('mouseup', handleTapEnd)
+      }
       ref.current.addEventListener('touchstart', handleTap)
       ref.current.addEventListener('touchend', handleTapEnd)
     }
