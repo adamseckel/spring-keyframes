@@ -7,7 +7,7 @@ it('returns an array of keyframe strings, duration, and ease', () => {
   )
 
   expect(animation[0]).toMatchSnapshot()
-  expect(duration).toMatchSnapshot()
+  expect(duration).toBe('750ms')
   expect(ease).toMatchSnapshot()
 })
 
@@ -19,7 +19,7 @@ it('returns an array of keyframe strings, and duration for a long spring', () =>
   )
 
   expect(animation[0]).toMatchSnapshot()
-  expect(duration).toMatchSnapshot()
+  expect(duration).toBe('3250ms')
 })
 
 it('returns an array of keyframe strings, and duration for a short spring', () => {
@@ -30,7 +30,7 @@ it('returns an array of keyframe strings, and duration for a short spring', () =
   )
 
   expect(animation[0]).toMatchSnapshot()
-  expect(duration).toMatchSnapshot()
+  expect(duration).toBe('5350ms')
 })
 
 it('returns an array of keyframe strings, and duration for a tweened animation', () => {
@@ -41,7 +41,7 @@ it('returns an array of keyframe strings, and duration for a tweened animation',
   )
 
   expect(animation[0]).toMatchSnapshot()
-  expect(duration).toMatchSnapshot()
+  expect(duration).toBe('3133.33ms')
 })
 
 it('returns an array of keyframe strings, and duration for a tweened and sprung animation', () => {
@@ -53,7 +53,7 @@ it('returns an array of keyframe strings, and duration for a tweened and sprung 
 
   expect(animations[0]).toMatchSnapshot()
   expect(animations[1]).toMatchSnapshot()
-  expect(duration).toMatchSnapshot()
+  expect(duration).toBe('3133.33ms')
 })
 
 it('returns an array of valid keyframes for camelCase properties', () => {
@@ -64,7 +64,30 @@ it('returns an array of valid keyframes for camelCase properties', () => {
   )
 
   expect(animations[0]).toMatchSnapshot()
-  expect(duration).toMatchSnapshot()
+  expect(duration).toBe('3133.33ms')
+})
+
+it('returns tweened animations for all tweened property values', () => {
+  const [animations, duration] = spring(
+    { opacity: 0, x: 0 },
+    { opacity: 1, x: 100 },
+    { stiffness: 100, damping: 3, tweenedProps: ['opacity', 'x'] }
+  )
+
+  expect(animations[0]).toMatchSnapshot()
+  expect(duration).toBe('3133.33ms')
+})
+
+it('returns tweened animations for custom tweened property values', () => {
+  const [animations, duration] = spring(
+    { opacity: 0, x: 0 },
+    { opacity: 1, x: 100 },
+    { stiffness: 100, damping: 3, tweenedProps: ['x'] }
+  )
+
+  expect(animations[0]).toMatchSnapshot()
+  expect(animations[1]).toMatchSnapshot()
+  expect(duration).toBe('3133.33ms')
 })
 
 it('returns an array of valid keyframes for backgroundColor', () => {
@@ -85,7 +108,7 @@ it('returns a velocity for a in-progress animation', () => {
     { stiffness: 100, damping: 2 }
   )
 
-  expect(convert(400)).toMatchSnapshot()
+  expect(convert(400)).toBe(-0.10951148823495502)
   expect(ease).toBeDefined()
   expect(animations).toBeDefined()
   expect(duration).toBeDefined()

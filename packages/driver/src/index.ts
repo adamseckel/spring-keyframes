@@ -243,7 +243,6 @@ export default function main(
 
   // Interpolate between keyframe values of 0 - 100 and frame indexes of 0 - x where x is the lastFrame.
   const toFrame = interpolate(0, lastFrame, 0, 100)
-  const toPreciseFrame = interpolate(0, lastFrame, 0, 100, v => v, 1)
 
   // Separate Tweened and Sprung properties.
   const [tFrom, sFrom] = breakupFrame(from, optionsWithDefaults.tweenedProps)
@@ -264,5 +263,5 @@ export default function main(
 
   // Create a function to return a frame for a play time.
   // Enables interrupting animations by creating new ones that start from the current velocity and frame.
-  return [animations, duration, EASE, playtimeToVelocity(toPreciseFrame, maxes)]
+  return [animations, duration, EASE, playtimeToVelocity(maxes)]
 }

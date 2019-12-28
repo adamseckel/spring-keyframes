@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`returns a velocity for a in-progress animation 1`] = `0.2`;
-
 exports[`returns an array of keyframe strings, and duration for a long spring 1`] = `
 "0% {width: 100px;}
  4.62% {width: 279.74px;}
@@ -27,14 +25,10 @@ exports[`returns an array of keyframe strings, and duration for a long spring 1`
  100% {width: 200px;}"
 `;
 
-exports[`returns an array of keyframe strings, and duration for a long spring 2`] = `"3250ms"`;
-
 exports[`returns an array of keyframe strings, and duration for a short spring 1`] = `
 "0% {width: 0px;}
  100% {width: 200px;}"
 `;
-
-exports[`returns an array of keyframe strings, and duration for a short spring 2`] = `"5350ms"`;
 
 exports[`returns an array of keyframe strings, and duration for a tweened and sprung animation 1`] = `
 "0% {transform: translate3d(0px, 0px, 0px);}
@@ -55,14 +49,10 @@ exports[`returns an array of keyframe strings, and duration for a tweened and sp
  100% {opacity: 1;}"
 `;
 
-exports[`returns an array of keyframe strings, and duration for a tweened and sprung animation 3`] = `"3133.33ms"`;
-
 exports[`returns an array of keyframe strings, and duration for a tweened animation 1`] = `
 "0% {opacity: 0;}
  100% {opacity: 1;}"
 `;
-
-exports[`returns an array of keyframe strings, and duration for a tweened animation 2`] = `"3133.33ms"`;
 
 exports[`returns an array of keyframe strings, duration, and ease 1`] = `
 "0% {width: 100px; transform: translate3d(0px, 100px, 0px) scale3d(0, 0, 1);}
@@ -71,9 +61,7 @@ exports[`returns an array of keyframe strings, duration, and ease 1`] = `
  100% {width: 200px; transform: translate3d(20px, 50px, 0px) scale3d(1, 1, 1);}"
 `;
 
-exports[`returns an array of keyframe strings, duration, and ease 2`] = `"750ms"`;
-
-exports[`returns an array of keyframe strings, duration, and ease 3`] = `"cubic-bezier(0.445, 0.050, 0.550, 0.950)"`;
+exports[`returns an array of keyframe strings, duration, and ease 2`] = `"cubic-bezier(0.445, 0.050, 0.550, 0.950)"`;
 
 exports[`returns an array of valid keyframes for backgroundColor 1`] = `
 "0% {background-color: red;}
@@ -96,4 +84,26 @@ exports[`returns an array of valid keyframes for camelCase properties 1`] = `
  100% {border-radius: 20px;}"
 `;
 
-exports[`returns an array of valid keyframes for camelCase properties 2`] = `"3133.33ms"`;
+exports[`returns tweened animations for all tweened property values 1`] = `
+"0% {opacity: 0; x: 0px;}
+ 100% {opacity: 1; x: 100px;}"
+`;
+
+exports[`returns tweened animations for custom tweened property values 1`] = `
+"0% {opacity: 0;}
+ 9.57% {opacity: 1.62;}
+ 19.68% {opacity: 0.62;}
+ 29.79% {opacity: 1.24;}
+ 39.89% {opacity: 0.85;}
+ 50% {opacity: 1.09;}
+ 59.57% {opacity: 0.94;}
+ 69.68% {opacity: 1.03;}
+ 79.79% {opacity: 0.98;}
+ 89.89% {opacity: 1.01;}
+ 100% {opacity: 1;}"
+`;
+
+exports[`returns tweened animations for custom tweened property values 2`] = `
+"0% {x: 0px;}
+ 100% {x: 100px;}"
+`;

@@ -25,7 +25,7 @@ export function spring({
       lastVelocity,
       0,
       stiffness,
-      damping,
+      damping === 0 ? 0.01 : damping,
       mass,
       precision
     )

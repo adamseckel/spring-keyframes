@@ -15,22 +15,25 @@ const highLowFrame = (maxes: Maxes, frame: number, i: number) => {
   return [maxes[i - 1], maxes[i]]
 }
 
-export const playtimeToVelocity = (
-  toFrame: (val: number) => number,
-  maxes: Maxes
-) => (playTime: number): number => {
+export const playtimeToVelocity = (maxes: Maxes) => (
+  playTime: number
+): number => {
   const index = playTime / msPerFrame
-  const frame = toFrame(index)
 
-  // Get the closest known Max for the frame
-  const max = closestFrameIndexForFrame(maxes, frame)
+  // Get the closest known Max for the frameIndex
+  const max = closestFrameIndexForFrame(maxes, index)
   const i = maxes.indexOf(max)
+
   if (maxes.length === i + 1) return 0
-  const [high, low] = highLowFrame(maxes, frame, i)
+
+  const [high, low] = highLowFrame(maxes, index, i)
+
   if (!low) return high[2]
 
   try {
-    return interpolate(high[1], low[1], high[2], low[2], ease)(frame)
+    const tween = ease(interpolate(high[1], low[1], 0, 1)(index))
+
+    return interpolate(high[1], low[1], high[2], low[2])(index) * tween
   } catch (error) {
     return 0
   }
