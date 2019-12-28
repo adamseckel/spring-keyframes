@@ -1,4 +1,4 @@
-import { default as spring } from './index'
+import { default as spring, EASE } from './index'
 
 it('returns an array of keyframe strings, duration, and ease', () => {
   const [animation, duration, ease] = spring(
@@ -8,7 +8,7 @@ it('returns an array of keyframe strings, duration, and ease', () => {
 
   expect(animation[0]).toMatchSnapshot()
   expect(duration).toBe('750ms')
-  expect(ease).toMatchSnapshot()
+  expect(ease).toBe(EASE)
 })
 
 it('returns an array of keyframe strings, and duration for a long spring', () => {

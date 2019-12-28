@@ -61,8 +61,6 @@ exports[`returns an array of keyframe strings, duration, and ease 1`] = `
  100% {width: 200px; transform: translate3d(20px, 50px, 0px) scale3d(1, 1, 1);}"
 `;
 
-exports[`returns an array of keyframe strings, duration, and ease 2`] = `"cubic-bezier(0.445, 0.050, 0.550, 0.950)"`;
-
 exports[`returns an array of valid keyframes for backgroundColor 1`] = `
 "0% {background-color: red;}
  100% {background-color: blue;}"

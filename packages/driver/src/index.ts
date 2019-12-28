@@ -4,7 +4,7 @@ import { interpolate } from './interpolate'
 import { playtimeToVelocity } from './playtimeToVelocity'
 
 export const msPerFrame = 1000 / 60
-const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
+export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 
 type Max = [number, number, number]
 export type Maxes = Max[]
