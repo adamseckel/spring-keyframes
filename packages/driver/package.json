@@ -18,7 +18,7 @@
     "react-motion"
   ],
   "scripts": {
-    "test": "NODE_ENV=test jest --watch",
+    "test": "NODE_ENV=test jest",
     "build": "rollup -c",
     "clean": "rimraf lib",
     "prebuild": "yarn run clean",

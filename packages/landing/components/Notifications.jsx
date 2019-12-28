@@ -64,8 +64,9 @@ function StackedNotification({ index, offset, onClick }) {
         stiffness: 300,
         damping: 10,
         mass: 1,
+        tweenedProps: [],
       }}
-      exit={{ y: index * 60, opacity: 0, scale: 0 }}
+      exit={{ y: index * 60, opacity: 0, scale: 0.2 }}
     />
   )
 }
