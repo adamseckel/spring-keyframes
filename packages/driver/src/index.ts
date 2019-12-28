@@ -8,14 +8,38 @@ const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 
 type Max = [number, number, number]
 export type Maxes = Max[]
-type TransformProperty = 'scale' | 'x' | 'y' | 'rotate' | 'scaleX' | 'scaleY'
+type TransformProperty =
+  | 'x'
+  | 'y'
+  | 'z'
+  | 'rotate'
+  | 'rotateX'
+  | 'rotateY'
+  | 'rotateZ'
+  | 'scale'
+  | 'scaleX'
+  | 'scaleY'
+  | 'scaleZ'
+
 type CSSProperty = keyof CSS.Properties
 type CSSFrame = [CSSProperty, number | string]
 type TransformFrame = [TransformProperty, number]
 export type Property = CSSProperty | TransformProperty
 export type Frame = { [K in Property]?: number | string }
 
-const transforms = ['scale', 'x', 'y', 'rotate', 'scaleX', 'scaleY']
+const transforms = [
+  'x',
+  'y',
+  'z',
+  'rotate',
+  'rotateX',
+  'rotateY',
+  'rotateZ',
+  'scale',
+  'scaleX',
+  'scaleY',
+  'scaleZ',
+]
 const unitless = [
   'opacity',
   'transform',
@@ -23,7 +47,8 @@ const unitless = [
   'background',
   'backgroundColor',
 ]
-const tweenedProperties: Property[] = [
+
+export const tweenedProperties: Property[] = [
   'color',
   'backgroundColor',
   'background',
@@ -84,26 +109,46 @@ function createTransformBlock(transforms: TransformFrame[]): string {
     props[key] = value
   })
 
-  const { x, y, scale, rotate, scaleX, scaleY } = props
+  const {
+    x,
+    y,
+    z,
+    scale,
+    rotate,
+    rotateX,
+    rotateY,
+    rotateZ,
+    scaleX,
+    scaleY,
+    scaleZ,
+  } = props
 
   const block = []
 
   // @TODO: Probably better to use a matrix3d here.
-  if (x !== undefined || y !== undefined) {
-    block.push(`translate3d(${x || 0}px, ${y || 0}px, 0px)`)
+  if (x !== undefined || y !== undefined || z !== undefined) {
+    block.push(`translate3d(${x || 0}px, ${y || 0}px, ${z || 0}px)`)
   }
-  if (rotate !== undefined) {
-    block.push(`rotate3d(0, 0, 1, ${rotate}deg)`)
+
+  // Stack rotates.
+  if (rotate !== undefined || rotateZ !== undefined) {
+    block.push(`rotate3d(0, 0, 1, ${rotate || rotateZ}deg)`)
   }
+  if (rotateY !== undefined) {
+    block.push(`rotate3d(0, 1, 0, ${rotateY}deg)`)
+  }
+  if (rotateX !== undefined) {
+    block.push(`rotate3d(1, 0, 0, ${rotateY}deg)`)
+  }
+
   if (scale !== undefined) {
     block.push(`scale3d(${scale}, ${scale}, 1)`)
-  }
-  if (scaleX !== undefined || scaleY !== undefined) {
-    block.push(
-      `scale3d(${scaleX !== undefined ? scaleX : 1}, ${
-        scaleY !== undefined ? scaleY : 1
-      }, 1)`
-    )
+  } else if (
+    scaleX !== undefined ||
+    scaleY !== undefined ||
+    scaleZ !== undefined
+  ) {
+    block.push(`scale3d(${scaleX || 1}, ${scaleY || 1}, ${scaleZ || 1})`)
   }
 
   return block.join(' ')
@@ -145,6 +190,7 @@ export interface Options {
   mass?: number
   precision?: number
   velocity?: number
+  tweenedProps?: Property[]
 }
 
 const defaults = {
@@ -153,20 +199,24 @@ const defaults = {
   mass: 1,
   precision: 0.01,
   velocity: 0,
+  tweenedProps: tweenedProperties,
 }
 
 function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
   return [[0, from], [100, to]]
 }
 
-function breakupFrame(frame: Frame): [CSSFrame[], Frame] {
+function breakupFrame(
+  frame: Frame,
+  tweenedProps: Property[]
+): [CSSFrame[], Frame] {
   let tweened: CSSFrame[] = []
   let sprung: Frame = {}
 
   const keys = Object.keys(frame) as Property[]
 
   keys.forEach(key => {
-    if (tweenedProperties.includes(key)) {
+    if (tweenedProps.includes(key)) {
       // @ts-ignore
       tweened.push([key, frame[key]])
     } else {
@@ -196,8 +246,8 @@ export default function main(
   const toPreciseFrame = interpolate(0, lastFrame, 0, 100, v => v, 1)
 
   // Separate Tweened and Sprung properties.
-  const [tFrom, sFrom] = breakupFrame(from)
-  const [tTo, sTo] = breakupFrame(to)
+  const [tFrom, sFrom] = breakupFrame(from, optionsWithDefaults.tweenedProps)
+  const [tTo, sTo] = breakupFrame(to, optionsWithDefaults.tweenedProps)
 
   // Generate keyframe, styled value tuples.
   if (Object.keys(sFrom).length || Object.keys(sTo).length) {

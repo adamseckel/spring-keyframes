@@ -5,6 +5,7 @@ import {
   Frame,
   Options,
   Property,
+  tweenedProperties,
 } from '@spring-keyframes/driver'
 import Unmatrix from './unmatrix'
 
@@ -15,11 +16,11 @@ export interface Transition extends Options {
   delay?: number
   /** Duration to run all animations in ms. */
   duration?: number
+  type?: 'spring' | 'ease'
+  easeFn?: string
 }
 
 type TransformProperty =
-  | 'scaleX'
-  | 'perspective'
   | 'translateX'
   | 'translateY'
   | 'translateZ'
@@ -37,6 +38,9 @@ const defaults = {
   mass: 1,
   precision: 0.01,
   velocity: 0,
+  tweenedProps: tweenedProperties,
+  type: 'spring',
+  easeFn: 'cubic-bezier(0.15, 0, 0, 1)',
 }
 
 function animatedClass({
@@ -54,29 +58,45 @@ function animatedClass({
   animationName: string
   toApproxVelocity: (v: number) => number
 } {
-  const { stiffness, damping, mass, precision, delay } = {
-    ...defaults,
-    ...options,
-  }
-
-  const [frames, duration, ease, toApproxVelocity] = spring(from, to, {
+  const {
     stiffness,
     damping,
     mass,
     precision,
+    delay,
+    tweenedProps,
+    duration,
+    type,
+    easeFn,
+  } = {
+    ...defaults,
+    ...options,
+  }
+
+  const [frames, springDuration, ease, toApproxVelocity] = spring(from, to, {
+    stiffness,
+    damping,
+    mass,
+    precision,
+    tweenedProps:
+      type === 'ease' ? (Object.keys(from) as Property[]) : tweenedProps,
   })
+
+  // @TODO: Optionally use window.matchMedia to use tweened animations only if "prefers-reduced-motion" is "reduce".
   const animations = frames.map(animation => keyframes`${animation}`)
+  const animationDuration = duration ? duration + 'ms' : springDuration
+  const animationDelay = delay && withDelay ? `${delay}ms` : '0ms'
+
+  const animationName = type === 'ease' ? animations[1] : animations[0]
+
+  const animateEaseFn = (i: number) =>
+    type === 'ease' ? easeFn : i === 0 ? ease : easeFn
+  const toAnimationString = (a: string, i: number) =>
+    `${a} ${animateEaseFn(i)} ${animationDuration} ${animationDelay} 1 both`
 
   return {
-    animation: animations
-      .map(
-        (animation, i) =>
-          `${animation} ${i === 1 ? 'cubic-bezier(0.15, 0, 0, 1)' : ease} ${
-            options.duration ? options.duration + 'ms' : duration
-          } ${delay ? `${withDelay ? delay : 0}ms` : ''} 1 both`
-      )
-      .join(', '),
-    animationName: animations[0],
+    animation: animations.map(toAnimationString).join(', '),
+    animationName,
     toApproxVelocity,
   }
 }
@@ -93,7 +113,7 @@ function computedFrom(to: Frame, ref: React.MutableRefObject<Element | null>) {
   const keys = Object.keys(to) as Property[]
 
   keys.forEach(key => {
-    //@ts-ignore
+    // @ts-ignore
     if (frameTransforms[key] !== undefined) {
       //@ts-ignore
       frame[key] = frameTransforms[key]

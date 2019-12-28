@@ -1,23 +1,8 @@
 import * as React from 'react'
-import { Frame } from '@spring-keyframes/driver'
 import { Tags } from './tags'
-import { useSpring } from './useSpring'
-import { Transition } from './useAnimateToFrame'
+import { useSpring, Props } from './useSpring'
 
-export interface AnimatedProps extends React.HTMLProps<HTMLElement> {
-  /** A @Frame to animate to when the Animated component mounts. */
-  animate: Frame
-  /** A @Frame to animate from when the Animated component mounts. */
-  initial: Frame
-  /** Define options for all of the Animated components transitions, including the spring, and delay. */
-  transition?: Transition
-  /** A @Frame to animated to when @show is toggled to false. */
-  exit?: Frame
-  /** A @Frame to animate from while the Animated component is tapped. */
-  whileTap?: Frame
-  /** A @Frame to animate from while the Animated component is hovered. */
-  whileHover?: Frame
-
+export interface AnimatedProps extends Props, React.HTMLProps<HTMLElement> {
   Tag?: Tags
 }
 
@@ -29,6 +14,8 @@ export function Animated({
 
   whileTap,
   whileHover,
+
+  onEnd,
 
   children,
   style,
@@ -44,6 +31,7 @@ export function Animated({
     exit,
     whileTap,
     whileHover,
+    onEnd,
   })
 
   return (
