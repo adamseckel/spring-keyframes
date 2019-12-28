@@ -1,6 +1,6 @@
 {
   "name": "@spring-keyframes/react-emotion",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@spring-keyframes/driver": "^0.0.23",
+    "@spring-keyframes/driver": "^0.0.24",
     "@types/sylvester-es6": "^0.0.1",
     "sylvester-es6": "^0.0.2",
     "use-deep-compare-effect": "^1.3.0"
