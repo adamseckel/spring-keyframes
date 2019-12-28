@@ -7,7 +7,7 @@ import {
   AnimateExit,
 } from '@spring-keyframes/react-emotion'
 import { motion } from 'framer-motion'
-const list = [1]
+const list = [1, 2, 3, 4]
 
 function App() {
   const [visible, setVisible] = React.useState(true)
@@ -18,9 +18,94 @@ function App() {
   //   transition: { stiffness: 200, damping: 4, mass: 1 },
   // })
 
+  const [list, setList] = React.useState([1, 2, 3, 4])
+
+  function push() {
+    list.splice(0, 1)
+    setList([...list, list[list.length - 1] + 1])
+  }
+
+  const [sequence, setSequence] = React.useState(0)
+  const currentSequenceRef = React.useRef(sequence)
+  const incrementRef = React.useRef(true)
+
+  const nextSequence = () => {
+    const next = currentSequenceRef.current + (incrementRef.current ? 1 : -1)
+    currentSequenceRef.current = next
+    setSequence(next)
+  }
+
+  const sequenceMap = [
+    { x: 200, y: 0 },
+    { x: 200, y: 200 },
+    { x: 0, y: 200 },
+    { x: 0, y: 0 },
+  ]
+  const [sequenceList, setSequenceList] = React.useState([0.123456])
+  const addToList = () => {
+    setSequenceList(list => [...list, Math.random()])
+  }
+
   return (
     <div className="App">
       <header className="App-header">
+        <animated.div
+          style={{
+            width: 200,
+            height: 200,
+            background: 'red',
+            borderRadius: 20,
+          }}
+          initial={{ ...sequenceMap[3], rotateZ: 0, rotateY: 0 }}
+          animate={{
+            ...sequenceMap[sequence % 4],
+            rotateZ: (sequence + 1) * 90,
+            rotateY: (sequence + 1) * 40,
+            rotateX: (sequence + 1) * 30,
+          }}
+          onEnd={nextSequence}
+          transition={{
+            stiffness: 400,
+            damping: 12,
+            mass: 1,
+          }}
+        />
+        <div
+          style={{
+            width: 200,
+            height: 200,
+            display: 'grid',
+            gridTemplateColumns: 'auto auto auto auto',
+            gridColumnGap: 10,
+            gridRowGap: 10,
+          }}>
+          <AnimateExit>
+            {sequenceList.map(item => (
+              <animated.div
+                key={item}
+                initial={{ scale: 0, opacity: 0, y: 10 }}
+                exit={{ scale: 0, opacity: 0, y: 10 }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                  y: 0,
+                }}
+                onEnd={addToList}
+                transition={{
+                  stiffness: 400,
+                  damping: 12,
+                  mass: 1,
+                }}
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 100,
+                  background: 'blue',
+                }}
+              />
+            ))}
+          </AnimateExit>
+        </div>
         {/* <div ref={ref}> wowowowowow</div> */}
         <animated.div
           initial={{
@@ -269,8 +354,9 @@ function App() {
           }}>
           <img src={logo} className="App-logo" alt="logo" />
         </animated.div>
+        */}
         <div style={{ marginBottom: 100 }}></div>
-        <button onClick={() => setVisible(!visible)}> toggle </button>
+        <button onClick={() => push()}> toggle </button>
         <div style={{ marginBottom: 100 }}></div>
         <AnimateExit>
           {list.map(
@@ -290,7 +376,7 @@ function App() {
                 </animated.li>
               )
           )}
-        </AnimateExit> */}
+        </AnimateExit>
       </header>
     </div>
   )
