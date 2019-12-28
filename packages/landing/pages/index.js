@@ -157,22 +157,7 @@ const Home = () => {
         </Content>
       </Hero>
 
-      <Section>
-        {({ isVisible }) => (
-          <animated.div
-            initial={{ opacity: 0, y: 50, scale: 1 }}
-            animate={animate(isVisible)}
-            transition={{
-              stiffness: 200,
-              damping: 10,
-              mass: 1,
-            }}>
-            <Features isVisible={isVisible} animate={animate} />
-          </animated.div>
-        )}
-      </Section>
-
-      <Section>
+      <Section size="lg">
         {({ isVisible }) => (
           <animated.div
             initial={{ opacity: 0, y: 50 }}
@@ -207,6 +192,21 @@ const Home = () => {
         )}
       </Section>
 
+      <Section size="lg">
+        {({ isVisible }) => (
+          <animated.div
+            initial={{ opacity: 0, y: 50, scale: 1 }}
+            animate={animate(isVisible)}
+            transition={{
+              stiffness: 200,
+              damping: 10,
+              mass: 1,
+            }}>
+            <Features isVisible={isVisible} animate={animate} />
+          </animated.div>
+        )}
+      </Section>
+
       <Section>
         <Notifications></Notifications>
       </Section>
@@ -218,7 +218,7 @@ const Home = () => {
 }
 
 const Content = styled(Row)`
-  max-width: 1000px;
+  max-width: 1150px;
   > div:first-of-type {
     margin-right: 80px;
     margin-top: 44px;

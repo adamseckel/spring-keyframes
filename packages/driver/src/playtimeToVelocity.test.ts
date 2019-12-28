@@ -27,3 +27,12 @@ it('determines a negative eased velocity for maxes', () => {
 
   expect(velocity).toBe(-0.10064477651386015)
 })
+
+it('returns 0 for playtimes greater than the final frame', () => {
+  const maxes = [[1, 0, 0], [0.7, 40, -0.4], [0, 61, 0]] as Maxes
+  const playtimeAtFrame = 62 * msPerFrame
+
+  const velocity = playtimeToVelocity(maxes)(playtimeAtFrame)
+
+  expect(velocity).toBe(0)
+})

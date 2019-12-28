@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import * as React from 'react'
 import { useInView } from 'react-hook-inview'
 
-export const Section = ({ children, size, threshold }) => {
+export const Section = ({ children, size, threshold = 0.5 }) => {
   const [ref, isVisible] = useInView({
     threshold,
     unobserveOnEnter: true,

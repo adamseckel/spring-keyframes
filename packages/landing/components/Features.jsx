@@ -93,7 +93,7 @@ export function Features({ isVisible, animate }) {
                     damping: 10,
                     mass: 1,
                   }}
-                  onClick={() => setCurentFeatureIndex(i)}>
+                  onClick={() => setCurrentFeatureIndex(i)}>
                   <div
                     style={{
                       cursor: 'pointer',
