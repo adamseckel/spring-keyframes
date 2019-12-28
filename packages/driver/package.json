@@ -39,6 +39,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "24.0.17",
+    "csstype": "^2.6.7",
     "jest": "24.9.0",
     "prettier": "1.18.2",
     "rollup": "^1.27.9",
@@ -58,7 +59,6 @@
   },
   "gitHead": "2743eb028cd5656c9c200a38cdf432b81ffb0bfe",
   "dependencies": {
-    "bezier-easing": "^2.1.0",
-    "csstype": "^2.6.7"
+    "bezier-easing": "^2.1.0"
   }
 }
