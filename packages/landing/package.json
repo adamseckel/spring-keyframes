@@ -1,6 +1,6 @@
 {
   "name": "landing",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "private": true,
   "scripts": {
     "watch": "next dev -p 5000",
@@ -10,7 +10,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.23",
-    "@spring-keyframes/react-emotion": "^0.0.24",
+    "@spring-keyframes/react-emotion": "^0.0.25",
     "@weco/next-plugin-transpile-modules": "^2.2.1",
     "emotion": "^10.0.23",
     "emotion-box": "^2.0.0",
