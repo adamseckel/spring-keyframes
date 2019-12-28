@@ -1,5 +1,6 @@
-import { Options, Maxes, msPerFrame } from './'
+import { msPerFrame } from './msPerFrame'
 import { stepper } from './stepper'
+import { Maxes, Options } from './types'
 
 export function spring({
   stiffness,

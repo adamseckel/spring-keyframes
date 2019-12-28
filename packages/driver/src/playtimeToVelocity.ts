@@ -1,7 +1,8 @@
-import { Maxes, msPerFrame } from '.'
+import { msPerFrame } from './msPerFrame'
 import BezierEasing from 'bezier-easing'
 import { interpolate } from './interpolate'
 const ease = BezierEasing(0.445, 0.05, 0.55, 0.95)
+import { Maxes } from './types'
 
 const closestFrameIndexForFrame = (counts: Maxes, goal: number) =>
   counts.reduce((prev, curr) =>

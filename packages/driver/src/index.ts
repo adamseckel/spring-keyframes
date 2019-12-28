@@ -1,31 +1,20 @@
-import * as CSS from 'csstype'
 import { spring } from './spring'
 import { interpolate } from './interpolate'
 import { playtimeToVelocity } from './playtimeToVelocity'
-
-export const msPerFrame = 1000 / 60
+import {
+  TransformFrame,
+  Property,
+  Maxes,
+  Frame,
+  CSSFrame,
+  TransformProperty,
+  Keyframe,
+  Options,
+} from './types'
+import { msPerFrame } from './msPerFrame'
 export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 
-type Max = [number, number, number]
-export type Maxes = Max[]
-type TransformProperty =
-  | 'x'
-  | 'y'
-  | 'z'
-  | 'rotate'
-  | 'rotateX'
-  | 'rotateY'
-  | 'rotateZ'
-  | 'scale'
-  | 'scaleX'
-  | 'scaleY'
-  | 'scaleZ'
-
-type CSSProperty = keyof CSS.Properties
-type CSSFrame = [CSSProperty, number | string]
-type TransformFrame = [TransformProperty, number]
-export type Property = CSSProperty | TransformProperty
-export type Frame = { [K in Property]?: number | string }
+export { Options, Frame, Property } from './types'
 
 const transforms = [
   'x',
@@ -40,9 +29,10 @@ const transforms = [
   'scaleY',
   'scaleZ',
 ]
+
 const unitless = [
-  'opacity',
   'transform',
+  'opacity',
   'color',
   'background',
   'backgroundColor',
@@ -53,15 +43,6 @@ export const tweenedProperties: Property[] = [
   'backgroundColor',
   'background',
   'opacity',
-]
-
-type FrameNumber = number
-
-type Keyframe = [
-  /** Frame */
-  FrameNumber,
-  /** value */
-  CSSFrame[]
 ]
 
 function convertMaxesToKeyframes(
@@ -182,15 +163,6 @@ function convertKeyframesToCSS(keyframes: Keyframe[]): string {
   return keyframes
     .map(([frame, value]) => `${frame}% {${createBlock(value)};}`)
     .join('\n ')
-}
-
-export interface Options {
-  stiffness?: number
-  damping?: number
-  mass?: number
-  precision?: number
-  velocity?: number
-  tweenedProps?: Property[]
 }
 
 const defaults = {
