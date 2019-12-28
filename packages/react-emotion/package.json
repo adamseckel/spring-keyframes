@@ -41,5 +41,5 @@
     "type-check": "tsc --noEmit",
     "watch": "rollup -cw"
   },
-  "gitHead": "24919353cff95f3651c087670ab8e2f6cf2345ba"
+  "gitHead": "2743eb028cd5656c9c200a38cdf432b81ffb0bfe"
 }

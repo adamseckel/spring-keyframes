@@ -49,7 +49,7 @@
       "^.+\\.tsx?$": "ts-jest"
     }
   },
-  "gitHead": "24919353cff95f3651c087670ab8e2f6cf2345ba",
+  "gitHead": "2743eb028cd5656c9c200a38cdf432b81ffb0bfe",
   "dependencies": {
     "bezier-easing": "^2.1.0",
     "csstype": "^2.6.7"
