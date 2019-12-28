@@ -19,7 +19,7 @@ it('returns an array of keyframe strings, and duration for a long spring', () =>
   )
 
   expect(animation[0]).toMatchSnapshot()
-  expect(duration).toBe('3250ms')
+  expect(duration).toBe('3251ms')
 })
 
 it('returns an array of keyframe strings, and duration for a short spring', () => {
