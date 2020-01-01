@@ -37,4 +37,6 @@ export interface Options {
   precision?: number
   velocity?: number
   tweenedProps?: Property[]
+  withInvertedScale?: boolean
+  withEveryFrame?: boolean
 }

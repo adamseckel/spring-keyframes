@@ -2,13 +2,28 @@ import { msPerFrame } from './msPerFrame'
 import { stepper } from './stepper'
 import { Maxes, Options } from './types'
 
+type Props = Required<
+  Pick<
+    Options,
+    | 'stiffness'
+    | 'damping'
+    | 'precision'
+    | 'mass'
+    | 'velocity'
+    | 'withInvertedScale'
+    | 'withEveryFrame'
+  >
+>
+
 export function spring({
   stiffness,
   damping,
   precision,
   mass,
   velocity,
-}: Required<Options>): [Maxes, number] {
+  withInvertedScale,
+  withEveryFrame,
+}: Props): [Maxes, number] {
   let lastValue = 1,
     lastVelocity = velocity,
     uncommitted = false,
@@ -38,8 +53,9 @@ export function spring({
       lastFrame = frame
       break
     }
-
-    if (Math.abs(value) > Math.abs(lastValue)) {
+    if ((withInvertedScale || withEveryFrame) && frame > 0) {
+      maxes.push([value, frame, velocity])
+    } else if (Math.abs(value) > Math.abs(lastValue)) {
       uncommitted = true
       lastUncommittedValue = value
       lastUncommittedFrame = frame

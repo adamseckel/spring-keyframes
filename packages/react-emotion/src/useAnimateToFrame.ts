@@ -1,5 +1,4 @@
 import { useRef, useEffect } from 'react'
-import { keyframes } from 'emotion'
 import {
   default as spring,
   Frame,
@@ -16,8 +15,15 @@ export interface Transition extends Options {
   delay?: number
   /** Duration to run all animations in ms. */
   duration?: number
+  /** Run a "spring" animation with some eased props, or use an "ease" timing function for all props. */
   type?: 'spring' | 'ease'
-  easeFn?: string
+  /** Specify a timing function to use with "type: 'ease'". */
+  timingFunction?: React.CSSProperties['animationTimingFunction']
+  /** Specify an "animationFillMode" to be applied to animations.
+   * By default, spring-keyframes applies the "initial" frame values to the element.
+   * This prevents flashes of content before the animation is added,
+   * so only "none", "both", and "backwards" have an effect. */
+  fillMode?: React.CSSProperties['animationFillMode']
 }
 
 type TransformProperty =
@@ -28,11 +34,12 @@ type TransformProperty =
   | 'rotateX'
   | 'rotateY'
   | 'rotateZ'
+  | 'scale'
   | 'scaleX'
   | 'scaleY'
   | 'scaleZ'
 
-const defaults = {
+const defaults: Transition = {
   stiffness: 380,
   damping: 20,
   mass: 1,
@@ -40,7 +47,23 @@ const defaults = {
   velocity: 0,
   tweenedProps: tweenedProperties,
   type: 'spring',
-  easeFn: 'cubic-bezier(0.15, 0, 0, 1)',
+  timingFunction: 'cubic-bezier(0.15, 0, 0, 1)',
+  fillMode: 'both',
+  withEveryFrame: false,
+  withInvertedScale: false,
+}
+
+const toTimingFunction = (
+  isEase: boolean,
+  isLinear: boolean,
+  ease: string,
+  userTimingFunction: string
+) => (i: number) => {
+  if (isEase) return userTimingFunction
+  if (i === 0 && isLinear) return 'linear'
+  if (i === 0 && !isLinear) return ease
+
+  return userTimingFunction
 }
 
 function animatedClass({
@@ -48,11 +71,13 @@ function animatedClass({
   to,
   withDelay,
   options = {},
+  keyframes,
 }: {
   from: Frame
   to: Frame
   withDelay?: boolean
   options?: Transition
+  keyframes: (...args: any) => any
 }): {
   animation: string
   animationName: string
@@ -67,32 +92,41 @@ function animatedClass({
     tweenedProps,
     duration,
     type,
-    easeFn,
+    timingFunction,
+    fillMode,
+    withInvertedScale,
+    withEveryFrame,
   } = {
     ...defaults,
     ...options,
-  }
+  } as Required<Transition>
 
   const [frames, springDuration, ease, toApproxVelocity] = spring(from, to, {
     stiffness,
     damping,
     mass,
     precision,
+    withInvertedScale,
+    withEveryFrame,
     tweenedProps:
       type === 'ease' ? (Object.keys(from) as Property[]) : tweenedProps,
   })
 
   // @TODO: Optionally use window.matchMedia to use tweened animations only if "prefers-reduced-motion" is "reduce".
   const animations = frames.map(animation => keyframes`${animation}`)
+
   const animationDuration = duration ? duration + 'ms' : springDuration
   const animationDelay = delay && withDelay ? `${delay}ms` : '0ms'
-
   const animationName = type === 'ease' ? animations[1] : animations[0]
+  const timing = toTimingFunction(
+    type === 'ease',
+    withEveryFrame || withInvertedScale,
+    ease,
+    timingFunction
+  )
 
-  const animateEaseFn = (i: number) =>
-    type === 'ease' ? easeFn : i === 0 ? ease : easeFn
   const toAnimationString = (a: string, i: number) =>
-    `${a} ${animateEaseFn(i)} ${animationDuration} ${animationDelay} 1 both`
+    `${a} ${timing(i)} ${animationDuration} ${animationDelay} 1 ${fillMode}`
 
   return {
     animation: animations.map(toAnimationString).join(', '),
@@ -115,7 +149,7 @@ function computedFrom(to: Frame, ref: React.MutableRefObject<Element | null>) {
   keys.forEach(key => {
     // @ts-ignore
     if (frameTransforms[key] !== undefined) {
-      //@ts-ignore
+      // @ts-ignore
       frame[key] = frameTransforms[key]
     } else if (key === 'scale') {
       frame[key] = frameTransforms.scaleX
@@ -137,6 +171,7 @@ interface Props {
   to: Frame
   options: Transition
   onEnd?: () => void
+  keyframes: (...args: any) => string
 }
 
 type toApproxFn = (v: number) => number
@@ -147,6 +182,7 @@ export function useAnimateToFrame({
   to,
   options,
   onEnd,
+  keyframes,
 }: Props): {
   animateToFrame: AnimateToFrame
   ref: React.MutableRefObject<Element | null>
@@ -175,9 +211,7 @@ export function useAnimateToFrame({
     }
   }, [])
 
-  function animateToFrame(frame: Frame, withDelay?: boolean) {
-    const diff = performance.now() - animationStartRef.current
-
+  function toFrame(diff: number, frame: Frame, withDelay?: boolean) {
     if (!ref.current) return
 
     let velocity = 0
@@ -189,20 +223,58 @@ export function useAnimateToFrame({
       velocity = currentAnimationToApproxVelocityRef.current(diff)
     }
 
+    const from = animationStartRef.current
+      ? computedFrom(to, ref)
+      : fromRef.current
+
     const { animation, animationName, toApproxVelocity } = animatedClass({
-      from: animationStartRef.current ? computedFrom(to, ref) : fromRef.current,
+      from,
       to: frame,
       withDelay,
-      options: { ...options, velocity },
+      options: {
+        ...options,
+        velocity,
+        withInvertedScale: false,
+        withEveryFrame: options.withInvertedScale,
+      },
+      keyframes,
     })
+
+    if (options.withInvertedScale) {
+      if (
+        ref.current.childNodes[0] &&
+        ref.current.childNodes[0].nodeType !== 3
+      ) {
+        const { animation } = animatedClass({
+          from,
+          to: frame,
+          withDelay,
+          options: { ...options, velocity, withInvertedScale: true },
+          keyframes,
+        })
+        ;(ref.current.childNodes[0] as HTMLElement).style.animation = animation
+      } else {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(
+            `@spring-keyframes: withInvertedScale requires a child DOM node to invert the scale onto.`
+          )
+        }
+      }
+    }
 
     currentAnimationToApproxVelocityRef.current = toApproxVelocity
 
     ref.current.style.animation = animation
     animationStartRef.current = performance.now()
-
     currentAnimationNameRef.current = animationName
+
     fromRef.current = frame
+  }
+
+  function animateToFrame(frame: Frame, withDelay?: boolean) {
+    requestAnimationFrame(now =>
+      toFrame(now - animationStartRef.current, frame, withDelay)
+    )
   }
 
   return { ref, animateToFrame }

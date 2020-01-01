@@ -29,6 +29,8 @@ export interface Props {
   whileHover?: Frame
   /** A callback to invoke whenever an animation fully completes. Interrupted animations will not trigger this callback. */
   onEnd?: () => void
+
+  keyframes: (...args: any) => string
 }
 
 function ensureFrames(to: Frame, from: Frame) {
@@ -53,6 +55,7 @@ export function useSpring({
   whileTap,
   whileHover,
   onEnd: onAnimationEnd,
+  keyframes,
 }: Props) {
   const mountRef = useRef(false)
   const context = useContext(SpringContext)
@@ -84,6 +87,7 @@ export function useSpring({
       ...defaults,
       ...options,
     },
+    keyframes,
   })
 
   if (whileTap || whileHover) {

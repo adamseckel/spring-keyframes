@@ -65,7 +65,7 @@ function updateChildLookup(
     if (process.env.NODE_ENV !== 'production' && seenChildren) {
       if (seenChildren.has(key)) {
         console.warn(
-          `Children of AnimatePresence require unique keys. "${key}" is a duplicate.`
+          `Children of AnimateExit require unique keys. "${key}" is a duplicate.`
         )
       }
 

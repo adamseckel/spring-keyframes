@@ -5,9 +5,35 @@ import {
   animated,
   useSpring,
   AnimateExit,
+  KeyframesProvider,
 } from '@spring-keyframes/react-emotion'
-import { motion } from 'framer-motion'
+import { motion, useInvertedScale } from 'framer-motion'
+import { keyframes, css, createGlobalStyle } from 'styled-components'
+// import { keyframes } from 'emotion'
+
+const keyframesFn = (...args) => {
+  const frames = keyframes(...args)
+
+  createGlobalStyle`
+    ${frames};
+  `
+
+  console.log(frames)
+
+  return frames.getName()
+}
+
 const list = [1, 2, 3, 4]
+
+function Child() {
+  const { scaleY, scaleX } = useInvertedScale()
+
+  return (
+    <motion.div style={{ scaleY: scaleY, scaleX: scaleX }}>
+      <p> some text </p>
+    </motion.div>
+  )
+}
 
 function App() {
   const [visible, setVisible] = React.useState(true)
@@ -45,18 +71,69 @@ function App() {
   const addToList = () => {
     setSequenceList(list => [...list, Math.random()])
   }
+  const removeFromList = () => {
+    setSequenceList(list => {
+      list.pop()
+      return list
+    })
+  }
+  const increment = React.useRef(true)
+  const next = list => {
+    if (list.length === 16) {
+      increment.current = false
+    }
+
+    if (list.length === 1) {
+      increment.current = true
+    }
+
+    increment.current ? addToList() : removeFromList()
+  }
 
   return (
     <div className="App">
       <header className="App-header">
-        <animated.div
+        <KeyframesProvider>
+          <animated.div
+            initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
+            animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
+            whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
+            style={{ background: 'red' }}
+            transition={{
+              stiffness: 400,
+              damping: 10,
+              mass: 3,
+              withInvertedScale: true,
+              tweenedProps: [],
+              delay: 0,
+            }}>
+            <p>some text</p>
+          </animated.div>
+        </KeyframesProvider>
+        <motion.div
+          initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
+          animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
+          whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
+          style={{ background: 'red', marginTop: 50 }}
+          transition={{
+            type: 'spring',
+            stiffness: 400,
+            damping: 10,
+            mass: 3,
+          }}>
+          {/* <div>
+            <p> some text </p>
+          </div> */}
+          <Child />
+        </motion.div>
+        {/* <animated.div
           style={{
             width: 200,
             height: 200,
             background: 'red',
             borderRadius: 20,
           }}
-          initial={{ ...sequenceMap[3], rotateZ: 0, rotateY: 0 }}
+          initial={{ ...sequenceMap[3], rotateZ: 0, rotateY: 0, rotateX: 0 }}
           animate={{
             ...sequenceMap[sequence % 4],
             rotateZ: (sequence + 1) * 90,
@@ -69,13 +146,14 @@ function App() {
             damping: 12,
             mass: 1,
           }}
-        />
-        <div
+        /> */}
+        {/* <div
           style={{
             width: 200,
             height: 200,
             display: 'grid',
-            gridTemplateColumns: 'auto auto auto auto',
+            gridTemplateColumns: '20px 20px 20px 20px',
+            gridTemplateRows: '20px 20px 20px 20px',
             gridColumnGap: 10,
             gridRowGap: 10,
           }}>
@@ -83,18 +161,18 @@ function App() {
             {sequenceList.map(item => (
               <animated.div
                 key={item}
-                initial={{ scale: 0, opacity: 0, y: 10 }}
-                exit={{ scale: 0, opacity: 0, y: 10 }}
+                initial={{ scale: 0, opacity: 0 }}
+                exit={{ scale: 0.4, opacity: 0 }}
                 animate={{
                   scale: 1,
                   opacity: 1,
-                  y: 0,
                 }}
-                onEnd={addToList}
+                onEnd={() => next(sequenceList)}
                 transition={{
                   stiffness: 400,
                   damping: 12,
-                  mass: 1,
+                  mass: 2,
+                  tweenedProps: [],
                 }}
                 style={{
                   width: 20,
@@ -105,9 +183,9 @@ function App() {
               />
             ))}
           </AnimateExit>
-        </div>
+        </div> */}
         {/* <div ref={ref}> wowowowowow</div> */}
-        <animated.div
+        {/* <animated.div
           initial={{
             scale: 0,
           }}
@@ -128,7 +206,7 @@ function App() {
           }}
           whileTap={{
             scale: 2,
-          }}></animated.div>
+          }}></animated.div> */}
         {/* <animated.div
           initial={{ scale: 0.1, opacity: 0.1, rotate: 0.1 }}
           whileHover={{ scale: 1.5, opacity: 1, rotate: 90 }}
@@ -355,7 +433,7 @@ function App() {
           <img src={logo} className="App-logo" alt="logo" />
         </animated.div>
         */}
-        <div style={{ marginBottom: 100 }}></div>
+        {/* <div style={{ marginBottom: 100 }}></div>
         <button onClick={() => push()}> toggle </button>
         <div style={{ marginBottom: 100 }}></div>
         <AnimateExit>
@@ -376,7 +454,7 @@ function App() {
                 </animated.li>
               )
           )}
-        </AnimateExit>
+        </AnimateExit> */}
       </header>
     </div>
   )

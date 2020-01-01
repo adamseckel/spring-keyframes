@@ -4,6 +4,7 @@ import { Animated, AnimatedProps } from './animated'
 export { default as driver } from '@spring-keyframes/driver'
 export { useSpring } from './useSpring'
 export { AnimateExit } from './AnimateExit'
+export { KeyframesProvider } from './Keyframes'
 
 const makeAnimated = {}
 

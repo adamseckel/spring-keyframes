@@ -16,6 +16,9 @@ export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 
 export { Options, Frame, Property } from './types'
 
+const valueOrDefault = (v: number | undefined, d: number) =>
+  v !== undefined ? v : d
+
 const transforms = [
   'x',
   'y',
@@ -49,18 +52,29 @@ function convertMaxesToKeyframes(
   maxes: Maxes,
   toFrame: (value: number) => number,
   from: Frame,
-  to: Frame
+  to: Frame,
+  withInvertedScale: boolean
 ): Keyframe[] {
   return maxes.map(([value, index]) => [
     toFrame(index),
-    toValue(value, from, to),
+    toValue(value, from, to, withInvertedScale),
   ])
 }
 
-function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
+function toValue(
+  value: number,
+  from: Frame,
+  to: Frame,
+  withInvertedScale: boolean
+): CSSFrame[] {
   let style: CSSFrame[] = []
   let transform: TransformFrame[] = []
-  const keys = Object.keys(from) as Property[]
+  let keys = Object.keys(from) as Property[]
+  const scales = ['scale', 'scaleX', 'scaleY']
+
+  if (withInvertedScale) {
+    keys = keys.filter(key => scales.includes(key))
+  }
 
   keys.forEach(key => {
     if (transforms.includes(key)) {
@@ -77,18 +91,33 @@ function toValue(value: number, from: Frame, to: Frame): CSSFrame[] {
   })
 
   if (transform.length > 0) {
-    style.push(['transform', createTransformBlock(transform)])
+    style.push([
+      'transform',
+      createTransformBlock(transform, withInvertedScale),
+    ])
   }
 
   return style
 }
 
-function createTransformBlock(transforms: TransformFrame[]): string {
+const maxScale = 100000
+const invertScale = (scale: number) => (scale > 0.001 ? 1 / scale : maxScale)
+
+function createTransformBlock(
+  transforms: TransformFrame[],
+  withInvertedScale: boolean
+): string {
   const props: Partial<Record<TransformProperty, number>> = {}
 
-  transforms.forEach(([key, value]) => {
-    props[key] = value
-  })
+  if (withInvertedScale) {
+    transforms.forEach(([key, value]) => {
+      props[key] = invertScale(value)
+    })
+  } else {
+    transforms.forEach(([key, value]) => {
+      props[key] = value
+    })
+  }
 
   const {
     x,
@@ -123,25 +152,24 @@ function createTransformBlock(transforms: TransformFrame[]): string {
   }
 
   if (scale !== undefined) {
-    block.push(`scale3d(${scale}, ${scale}, 1)`)
+    block.push(
+      `scale3d(${valueOrDefault(scale, 1)}, ${valueOrDefault(scale, 1)}, 1)`
+    )
   } else if (
     scaleX !== undefined ||
     scaleY !== undefined ||
     scaleZ !== undefined
   ) {
-    block.push(`scale3d(${scaleX || 1}, ${scaleY || 1}, ${scaleZ || 1})`)
+    block.push(
+      `scale3d(${valueOrDefault(scaleX, 1)}, ${valueOrDefault(
+        scaleY,
+        1
+      )}, ${valueOrDefault(scaleZ, 1)})`
+    )
   }
 
   return block.join(' ')
 }
-
-// function transformProp(string: string) {
-//   string
-//     .replace(/([A-Z])([A-Z])/g, '$1-$2')
-//     .replace(/([a-z])([A-Z])/g, '$1-$2')
-//     .replace(/[\s_]+/g, '-')
-//     .toLowerCase()
-// }
 
 function createBlock(value: CSSFrame[]) {
   return value
@@ -165,13 +193,14 @@ function convertKeyframesToCSS(keyframes: Keyframe[]): string {
     .join('\n ')
 }
 
-const defaults = {
+const defaults: Options = {
   stiffness: 180,
   damping: 12,
   mass: 1,
   precision: 0.01,
   velocity: 0,
   tweenedProps: tweenedProperties,
+  withInvertedScale: false,
 }
 
 function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
@@ -207,7 +236,7 @@ export default function main(
   const optionsWithDefaults = {
     ...defaults,
     ...options,
-  }
+  } as Required<Options>
 
   const animations: string[] = []
 
@@ -222,7 +251,13 @@ export default function main(
 
   // Generate keyframe, styled value tuples.
   if (Object.keys(sFrom).length || Object.keys(sTo).length) {
-    const springKeyframes = convertMaxesToKeyframes(maxes, toFrame, sFrom, sTo)
+    const springKeyframes = convertMaxesToKeyframes(
+      maxes,
+      toFrame,
+      sFrom,
+      sTo,
+      optionsWithDefaults.withInvertedScale
+    )
     animations.push(convertKeyframesToCSS(springKeyframes))
   }
   if (tFrom.length || tTo.length) {

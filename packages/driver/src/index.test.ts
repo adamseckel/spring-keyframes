@@ -22,6 +22,18 @@ it('returns an array of keyframe strings, and duration for a long spring', () =>
   expect(duration).toBe('3250ms')
 })
 
+it('returns an array of keyframes for 0 value animations', () => {
+  const [animation, duration] = spring(
+    { scaleX: 0, x: 0, opacity: 0 },
+    { scaleX: 1, x: 20, opacity: 1 },
+    { stiffness: 400, damping: 3 }
+  )
+
+  expect(animation[0]).toMatchSnapshot()
+  expect(animation[1]).toMatchSnapshot()
+  expect(duration).toBe('3250ms')
+})
+
 it('returns an array of keyframe strings, and duration for a short spring', () => {
   const [animation, duration] = spring(
     { width: 0 },
@@ -112,4 +124,15 @@ it('returns a velocity for a in-progress animation', () => {
   expect(ease).toBeDefined()
   expect(animations).toBeDefined()
   expect(duration).toBeDefined()
+})
+
+it('returns keyframes for scale props, for each frame when withInvertedScale is true', () => {
+  const [animations, duration] = spring(
+    { x: 0, scaleY: 0 },
+    { x: 400, scaleY: 1 },
+    { withInvertedScale: true }
+  )
+
+  expect(animations).toMatchSnapshot()
+  expect(duration).toMatchSnapshot()
 })
