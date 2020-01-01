@@ -47,8 +47,10 @@ export function Features({ isVisible, animate }) {
             damping: 8,
             mass: 1.5,
             delay: 800,
-          }}
-        />
+            withInvertedScale: true,
+          }}>
+          <p> wow </p>
+        </ExampleBox>
       </Row>
       <div style={{ marginLeft: 24 }}>
         <Title>Easily implement everyday animations.</Title>
@@ -131,6 +133,9 @@ const ExampleBox = styled(animated.div)`
   transition: background 0.5s ease;
   width: 140px;
   height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const Track = styled('div')`
