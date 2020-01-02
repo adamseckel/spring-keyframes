@@ -29,8 +29,6 @@ export interface Props {
   whileHover?: Frame
   /** A callback to invoke whenever an animation fully completes. Interrupted animations will not trigger this callback. */
   onEnd?: () => void
-
-  keyframes: (...args: any) => string
 }
 
 function ensureFrames(to: Frame, from: Frame) {
@@ -41,7 +39,7 @@ function ensureFrames(to: Frame, from: Frame) {
     if (fromKeys.length === toKeys.length) return
     if (fromKeys.every(key => toKeys.includes(key))) return
 
-    console.error(
+    console.warn(
       '@spring-keyframes: Frames "initial" and "animate" must have identical property keys, and can\'t be null or undefined.'
     )
   }
@@ -55,7 +53,6 @@ export function useSpring({
   whileTap,
   whileHover,
   onEnd: onAnimationEnd,
-  keyframes,
 }: Props) {
   const mountRef = useRef(false)
   const context = useContext(SpringContext)
@@ -87,8 +84,12 @@ export function useSpring({
       ...defaults,
       ...options,
     },
-    keyframes,
   })
+
+  useEffect(() => {
+    animateToFrame(to, true)
+    mountRef.current = true
+  }, [])
 
   if (whileTap || whileHover) {
     useWhileInteraction({
@@ -102,11 +103,9 @@ export function useSpring({
 
   // Deep compare the `animate|to` @Frame so that we can animate updates.
   useDeepCompareEffectNoCheck(() => {
-    if (!mountRef.current) {
-      animateToFrame(to, true)
-      mountRef.current = true
-      return
-    }
+    if (!mountRef.current) return
+
+    ensureFrames(to, from)
 
     if (!isVisible && exit) {
       animateToFrame(exit, true)

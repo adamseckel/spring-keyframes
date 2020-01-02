@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+import React from 'react'
 import Head from 'next/head'
 import styled from '@emotion/styled'
-import { css, Global, keyframes } from '@emotion/core'
+import { css, Global } from '@emotion/core'
 import { Logo } from '../components/icons'
 import { Column, Row } from 'emotion-box'
 import { Section } from '../components/Section'
@@ -167,27 +167,36 @@ const Home = () => {
               damping: 10,
               mass: 1,
             }}>
-            <SectionSubtitle>What's the big deal?</SectionSubtitle>
-            <SectionTitle>
-              Native CSS animations mean no slow down when the main thread is
-              busy.
-            </SectionTitle>
-            <SectionText
-              initial={{ opacity: 0, y: 50 }}
-              animate={animate(isVisible)}
-              transition={{
-                stiffness: 200,
-                damping: 10,
-                mass: 1,
-                delay: 300,
-              }}>
-              Spring-keyframes calculates the minimum number of keyframes
-              required to animate from one state to the next before the
-              animation has even started. Once the animation begins, no
-              javascript is required to keep it going. This means animations
-              will always run smoothly and at full speed, and when your app or
-              website is first loaded.
-            </SectionText>
+            <Row justify="start" align="start">
+              <Column justify="start" align="start">
+                <SectionSubtitle>What's the big deal?</SectionSubtitle>
+                <SectionTitle>
+                  Native CSS animations mean no slow down when the main thread
+                  is busy.
+                </SectionTitle>
+                <SectionText
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={animate(isVisible)}
+                  transition={{
+                    stiffness: 200,
+                    damping: 10,
+                    mass: 1,
+                    delay: 300,
+                  }}>
+                  Spring-keyframes calculates the minimum number of keyframes
+                  required to animate from one state to the next before the
+                  animation has even started. Once the animation begins, no
+                  javascript is required to keep it going. This means animations
+                  will always run smoothly and at full speed, and when your app
+                  or website is first loaded.
+                </SectionText>
+              </Column>
+              <Row
+                grow
+                justify="start"
+                align="center"
+                style={{ maxWidth: '33%' }}></Row>
+            </Row>
           </animated.div>
         )}
       </Section>
@@ -195,7 +204,7 @@ const Home = () => {
       <Section size="lg">
         {({ isVisible }) => (
           <animated.div
-            initial={{ opacity: 0, y: 50, scale: 1 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={animate(isVisible)}
             transition={{
               stiffness: 200,
@@ -203,6 +212,60 @@ const Home = () => {
               mass: 1,
             }}>
             <Features isVisible={isVisible} animate={animate} />
+          </animated.div>
+        )}
+      </Section>
+
+      <Section size="lg">
+        {({ isVisible }) => (
+          <animated.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={animate(isVisible)}
+            transition={{
+              stiffness: 200,
+              damping: 10,
+              mass: 1,
+            }}>
+            <Row justify="start" align="start">
+              <Column justify="start" align="start">
+                <SectionSubtitle>Static CSS support</SectionSubtitle>
+                <SectionTitle>
+                  Generate keyframes for use with static css-in-js tools like
+                  Linaria or Treat
+                </SectionTitle>
+                <SectionText
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={animate(isVisible)}
+                  transition={{
+                    stiffness: 200,
+                    damping: 10,
+                    mass: 1,
+                    delay: 300,
+                  }}>
+                  <b style={{ color: 'white' }}>@spring-keyframes/react</b>{' '}
+                  exports the underlying CSS driver. By passing values for a
+                  from and to frame, as well as the same spring options used by
+                  the react component or hook, the driver will return a keyframe
+                  string, duration, and the appropriate cubic-bezier timing
+                  function.
+                </SectionText>
+                <SectionText
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={animate(isVisible)}
+                  transition={{
+                    stiffness: 200,
+                    damping: 10,
+                    mass: 1,
+                    delay: 500,
+                  }}>
+                  <b style={{ color: 'white' }}>@spring-keyframes/driver</b> is
+                  also available as a framework independent package, and exports
+                  all the primitives needed to generate static keyframes, and
+                  the tools to spring-keyframes/react uses to generate
+                  interruptable animations.
+                </SectionText>
+              </Column>
+            </Row>
           </animated.div>
         )}
       </Section>

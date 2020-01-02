@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { Tags } from './tags'
 import { useSpring, Props } from './useSpring'
-import { KeyframesContext } from './Keyframes'
-import { useContext } from 'react'
 
 export interface AnimatedProps extends Props, React.HTMLProps<HTMLElement> {
   Tag?: Tags
@@ -26,8 +24,6 @@ export function Animated({
 
   ...rest
 }: AnimatedProps): JSX.Element | false {
-  const keyframes = useContext(KeyframesContext)
-
   const { ref } = useSpring({
     animate,
     initial,
@@ -36,7 +32,6 @@ export function Animated({
     whileTap,
     whileHover,
     onEnd,
-    keyframes,
   })
 
   return (

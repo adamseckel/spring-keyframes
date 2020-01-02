@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Row } from 'emotion-box'
-import { Title, Text as MainText } from './Section'
+import { Title, Text as MainText, Subtitle } from './Section'
 import { animated } from '@spring-keyframes/react-emotion'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/core'
@@ -35,24 +35,8 @@ export function Features({ isVisible, animate }) {
 
   return (
     <Row align="stretch" justify="start">
-      <Row grow justify="start" align="center" style={{ maxWidth: '33%' }}>
-        <ExampleBox
-          initial={{ scale: 0, rotate: -90 }}
-          animate={{ scale: 1.4, rotate: 45 }}
-          whileHover={{ scale: 1, rotate: 45 }}
-          whileTap={{ scale: 1.4, rotate: 0 }}
-          color={features[currentFeatureIndex].color}
-          transition={{
-            stiffness: 400,
-            damping: 8,
-            mass: 1.5,
-            delay: 800,
-            withInvertedScale: true,
-          }}>
-          <p> wow </p>
-        </ExampleBox>
-      </Row>
-      <div style={{ marginLeft: 24 }}>
+      <div style={{ marginRight: 24 }}>
+        <Subtitle> Some subtitle</Subtitle>
         <Title>Easily implement everyday animations.</Title>
         <animated.div
           initial={{ opacity: 0, y: 50 }}
@@ -73,7 +57,7 @@ export function Features({ isVisible, animate }) {
             return (
               <animated.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 50, scale: 1 }}
+                initial={{ opacity: 0, y: 50 }}
                 animate={animate(isVisible)}
                 transition={{
                   stiffness: 200,
@@ -123,6 +107,23 @@ export function Features({ isVisible, animate }) {
           })}
         </div>
       </div>
+      <Row grow justify="start" align="center" style={{ maxWidth: '33%' }}>
+        <ExampleBox
+          initial={{ scale: 0, rotate: -90 }}
+          animate={{ scale: 1.4, rotate: 45 }}
+          whileHover={{ scale: 1, rotate: 45 }}
+          whileTap={{ scale: 1.4, rotate: 0 }}
+          color={features[currentFeatureIndex].color}
+          transition={{
+            stiffness: 400,
+            damping: 8,
+            mass: 1.5,
+            delay: 800,
+            withInvertedScale: true,
+          }}>
+          <p> wow </p>
+        </ExampleBox>
+      </Row>
     </Row>
   )
 }

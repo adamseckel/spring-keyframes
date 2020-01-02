@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useContext } from 'react'
 import {
   default as spring,
   Frame,
@@ -7,6 +7,7 @@ import {
   tweenedProperties,
 } from '@spring-keyframes/driver'
 import Unmatrix from './unmatrix'
+import { KeyframesContext } from './Keyframes'
 
 const unmatrix = new Unmatrix()
 
@@ -171,7 +172,6 @@ interface Props {
   to: Frame
   options: Transition
   onEnd?: () => void
-  keyframes: (...args: any) => string
 }
 
 type toApproxFn = (v: number) => number
@@ -182,7 +182,6 @@ export function useAnimateToFrame({
   to,
   options,
   onEnd,
-  keyframes,
 }: Props): {
   animateToFrame: AnimateToFrame
   ref: React.MutableRefObject<Element | null>
@@ -191,6 +190,7 @@ export function useAnimateToFrame({
   const animationStartRef = useRef<number>(0)
   const currentAnimationToApproxVelocityRef = useRef<toApproxFn | null>(null)
   const currentAnimationNameRef = useRef<string | null>(null)
+  const keyframes = useContext(KeyframesContext)
 
   const fromRef = useRef<Frame>(from)
 
@@ -206,7 +206,6 @@ export function useAnimateToFrame({
 
     return () => {
       if (!ref.current) return
-      animationStartRef.current = 0
       ref.current.removeEventListener('animationend', handleAnimationEnd)
     }
   }, [])
@@ -265,13 +264,18 @@ export function useAnimateToFrame({
     currentAnimationToApproxVelocityRef.current = toApproxVelocity
 
     ref.current.style.animation = animation
-    animationStartRef.current = performance.now()
+    animationStartRef.current = performance && performance.now()
     currentAnimationNameRef.current = animationName
 
     fromRef.current = frame
   }
 
   function animateToFrame(frame: Frame, withDelay?: boolean) {
+    if (typeof window === 'undefined') {
+      toFrame(0, frame, withDelay)
+      return
+    }
+
     requestAnimationFrame(now =>
       toFrame(now - animationStartRef.current, frame, withDelay)
     )
