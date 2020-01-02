@@ -93,23 +93,35 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <KeyframesProvider>
-          <animated.div
-            initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
-            animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
-            whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
-            style={{ background: 'red' }}
-            transition={{
-              stiffness: 400,
-              damping: 10,
-              mass: 3,
-              withInvertedScale: true,
-              tweenedProps: [],
-              delay: 0,
-            }}>
-            <p>some text</p>
-          </animated.div>
-        </KeyframesProvider>
+        <animated.div
+          initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
+          animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
+          whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
+          style={{ background: 'red' }}
+          transition={{
+            stiffness: 400,
+            damping: 10,
+            mass: 3,
+            withInvertedScale: true,
+            tweenedProps: [],
+            delay: 0,
+          }}>
+          <p>some text</p>
+        </animated.div>
+        <animated.div
+          initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
+          animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
+          whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
+          style={{ background: 'red' }}
+          transition={{
+            stiffness: 400,
+            damping: 10,
+            mass: 3,
+            tweenedProps: [],
+            delay: 0,
+          }}>
+          <p>some text</p>
+        </animated.div>
         <motion.div
           initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
           animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}

@@ -37,7 +37,7 @@ export function Animated({
   return (
     <Tag
       //@ts-ignore
-      style={{ willChange: 'animation', ...initial, ...style }}
+      style={{ willChange: 'animation', ...style, ...initial }}
       {...rest}
       ref={ref}>
       {children}
