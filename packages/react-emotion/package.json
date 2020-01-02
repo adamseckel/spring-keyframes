@@ -1,6 +1,6 @@
 {
   "name": "@spring-keyframes/react-emotion",
-  "version": "0.0.27",
+  "version": "0.0.29",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
