@@ -6,12 +6,13 @@ import {
   useSpring,
   AnimateExit,
   KeyframesProvider,
-} from '@spring-keyframes/react-emotion'
+} from '@spring-keyframes/react'
 import { motion, useInvertedScale } from 'framer-motion'
 // import { keyframes, css, createGlobalStyle } from 'styled-components'
 // import { keyframes } from 'emotion'
+import { LayeredNotifications, Notifications } from './Notifications'
 
-const list = [1, 2, 3, 4]
+// const list = [1, 2, 3, 4]
 
 function Child() {
   const { scaleY, scaleX } = useInvertedScale()
@@ -24,7 +25,7 @@ function Child() {
 }
 
 function App() {
-  const [visible, setVisible] = React.useState(true)
+  const [visible, setVisible] = React.useState(false)
   const [warp, setWarp] = React.useState(false)
   // const { ref } = useSpring({
   //   initial: { scale: 0, rotate: -45 },
@@ -32,16 +33,24 @@ function App() {
   //   transition: { stiffness: 200, damping: 4, mass: 1 },
   // })
 
-  const [list, setList] = React.useState([1, 2, 3, 4])
+  const [list, setList] = React.useState([1])
 
   function push() {
-    list.splice(0, 1)
-    setList([...list, list[list.length - 1] + 1])
+    const next = Math.random()
+    // list.splice(0, 1)
+    console.log('call', next)
+    setList([next, ...list])
+  }
+
+  function remove(i) {
+    list.splice(i, 1)
+    setList([...list])
   }
 
   const [sequence, setSequence] = React.useState(0)
   const currentSequenceRef = React.useRef(sequence)
   const incrementRef = React.useRef(true)
+  const [randomContents, setRandomContents] = React.useState([10, 10])
 
   const nextSequence = () => {
     const next = currentSequenceRef.current + (incrementRef.current ? 1 : -1)
@@ -81,11 +90,81 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <animated.div
-          initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
-          animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
-          whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
-          style={{ background: 'red' }}
+        <div style={{ marginBottom: 100 }}></div>
+        {/* <button
+          style={{ position: 'absolute', top: 10, left: 200 }}
+          onClick={push}>
+          {' '}
+          toggle{' '}
+        </button> */}
+        <LayeredNotifications />
+        {/* <div style={{ marginBottom: 100 }}></div>
+        <div style={{ height: 400 }}>
+          {list.map((l, i) => (
+            <animated.div
+              withPositionTransition
+              key={l}
+              initial={{ opacity: 0, y: -70 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => remove(i)}
+              style={{
+                height: 100,
+                width: 100,
+                background: 'purple',
+                marginBottom: 50,
+              }}
+              transition={{
+                stiffness: 400,
+                damping: 10,
+                tweenedProps: [],
+              }}>
+              {l}
+            </animated.div>
+          ))}
+        </div>
+
+        <button
+          style={{ position: 'absolute', top: 40, left: 200 }}
+          onClick={() =>
+            setRandomContents([
+              Math.round(Math.random() * 10),
+              Math.round(Math.random() * 10),
+            ])
+          }>
+          {' '}
+          random size{' '}
+        </button> */}
+
+        {/* <animated.div
+          withSizeTransition
+          withPositionTransition
+          initial={{ opacity: 0, y: -70 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            background: 'purple',
+            marginBottom: 50,
+            marginTop: Math.max(randomContents[0] * 10, 10),
+            transformOrigin: 'center center',
+          }}
+          transition={{
+            stiffness: 400,
+            damping: 10,
+            tweenedProps: [],
+          }}>
+          <div
+            style={{
+              width: Math.max(randomContents[0] * 10, 10),
+
+              height: Math.max(randomContents[1] * 10, 10),
+            }}>
+          </div>
+        </animated.div> */}
+
+        {/* <animated.div
+          initial={{ scaleX: 1, scaleY: 1, x: 0, opacity: 0 }}
+          animate={{ scaleX: 2, scaleY: 2, x: 50, opacity: 1 }}
+          whileTap={{ scaleX: 3, scaleY: 3, x: 50, opacity: 1 }}
+          style={{ background: 'red', webkitUserSelect: 'none' }}
           transition={{
             stiffness: 400,
             damping: 10,
@@ -100,7 +179,7 @@ function App() {
           initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
           animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
           whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
-          style={{ background: 'red' }}
+          style={{ background: 'red', marginTop: 50, webkitUserSelect: 'none' }}
           transition={{
             stiffness: 400,
             damping: 10,
@@ -114,18 +193,19 @@ function App() {
           initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
           animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
           whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
-          style={{ background: 'red', marginTop: 50 }}
+          style={{
+            background: 'red',
+            marginTop: 50,
+            webkitUserSelect: 'none',
+          }}
           transition={{
             type: 'spring',
             stiffness: 400,
             damping: 10,
             mass: 3,
           }}>
-          {/* <div>
-            <p> some text </p>
-          </div> */}
           <Child />
-        </motion.div>
+        </motion.div> */}
         {/* <animated.div
           style={{
             width: 200,
@@ -433,24 +513,25 @@ function App() {
           <img src={logo} className="App-logo" alt="logo" />
         </animated.div>
         */}
-        {/* <div style={{ marginBottom: 100 }}></div>
+        <div style={{ marginBottom: 100 }}></div>
         <button onClick={() => push()}> toggle </button>
         <div style={{ marginBottom: 100 }}></div>
-        <AnimateExit>
+        {/* <AnimateExit>
           {list.map(
             i =>
               visible && (
                 <animated.li
                   key={i}
-                  initial={{ x: 0.1 }}
-                  animate={{ x: 400 }}
-                  exit={{ x: 0.1 }}
+                  initial={{ x: 0.1, opacity: 0 }}
+                  animate={{ x: 400, opacity: 1 }}
+                  exit={{ x: 0.1, opacity: 0 }}
                   transition={{
                     stiffness: 200,
                     damping: 4,
                     mass: 1,
+                    tweenedProps: [],
                   }}>
-                  Edit <code>src/App.js</code> and save to reload.
+                  {i}{' '}
                 </animated.li>
               )
           )}

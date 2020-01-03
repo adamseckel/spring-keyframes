@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Row } from 'emotion-box'
 import { Title, Text as MainText, Subtitle } from './Section'
-import { animated } from '@spring-keyframes/react-emotion'
+import { animated } from '@spring-keyframes/react'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/core'
 import { Text } from './Typography'

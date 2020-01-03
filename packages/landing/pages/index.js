@@ -5,7 +5,7 @@ import { css, Global } from '@emotion/core'
 import { Logo } from '../components/icons'
 import { Column, Row } from 'emotion-box'
 import { Section } from '../components/Section'
-import { animated } from '@spring-keyframes/react-emotion'
+import { animated } from '@spring-keyframes/react'
 import {
   Notifications,
   LayeredNotifications,

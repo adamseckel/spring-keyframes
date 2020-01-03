@@ -150,7 +150,7 @@ function LayeredNotification({ index, offset, onClick }) {
   )
 }
 
-const NotificationContainer = styled(animated.div)`
+const NotificationContainer = styled(animated.span)`
   width: 400px;
   height: 50px;
   border-radius: 6px;
