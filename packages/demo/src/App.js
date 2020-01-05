@@ -8,20 +8,8 @@ import {
   KeyframesProvider,
 } from '@spring-keyframes/react-emotion'
 import { motion, useInvertedScale } from 'framer-motion'
-import { keyframes, css, createGlobalStyle } from 'styled-components'
+// import { keyframes, css, createGlobalStyle } from 'styled-components'
 // import { keyframes } from 'emotion'
-
-const keyframesFn = (...args) => {
-  const frames = keyframes(...args)
-
-  createGlobalStyle`
-    ${frames};
-  `
-
-  console.log(frames)
-
-  return frames.getName()
-}
 
 const list = [1, 2, 3, 4]
 
