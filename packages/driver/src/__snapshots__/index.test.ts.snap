@@ -166,8 +166,8 @@ Array [
 exports[`returns keyframes for scale props, for each frame when withInvertedScale is true 2`] = `"750ms"`;
 
 exports[`returns tweened animations for all tweened property values 1`] = `
-"0% {opacity: 0; x: 0px;}
- 100% {opacity: 1; x: 100px;}"
+"0% {opacity: 0; transform: translate3d(0px, 0px, 0px);}
+ 100% {opacity: 1; transform: translate3d(100px, 0px, 0px);}"
 `;
 
 exports[`returns tweened animations for custom tweened property values 1`] = `
@@ -185,6 +185,6 @@ exports[`returns tweened animations for custom tweened property values 1`] = `
 `;
 
 exports[`returns tweened animations for custom tweened property values 2`] = `
-"0% {x: 0px;}
- 100% {x: 100px;}"
+"0% {transform: translate3d(0px, 0px, 0px);}
+ 100% {transform: translate3d(100px, 0px, 0px);}"
 `;

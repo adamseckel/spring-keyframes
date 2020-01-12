@@ -83,16 +83,17 @@ function toValue(
   }
 
   keys.forEach(key => {
+    let v =
+      typeof from[key] === 'number'
+        ? interpolate(1, 0, from[key] as number, to[key] as number)(value)
+        : value === 1
+        ? from[key]
+        : to[key]
+
     if (transforms.includes(key)) {
-      transform.push([
-        key,
-        interpolate(1, 0, from[key] as number, to[key] as number)(value),
-      ] as TransformFrame)
+      transform.push([key, v] as TransformFrame)
     } else {
-      style.push([
-        key,
-        interpolate(1, 0, from[key] as number, to[key] as number)(value),
-      ] as CSSFrame)
+      style.push([key, v] as CSSFrame)
     }
   })
 
