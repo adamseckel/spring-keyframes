@@ -91,14 +91,14 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div style={{ marginBottom: 100 }}></div>
-        {/* <button
+        <button
           style={{ position: 'absolute', top: 10, left: 200 }}
           onClick={push}>
           {' '}
           toggle{' '}
-        </button> */}
-        <LayeredNotifications />
-        {/* <div style={{ marginBottom: 100 }}></div>
+        </button>
+        {/* <LayeredNotifications /> */}
+        <div style={{ marginBottom: 100 }}></div>
         <div style={{ height: 400 }}>
           {list.map((l, i) => (
             <animated.div
@@ -133,9 +133,9 @@ function App() {
           }>
           {' '}
           random size{' '}
-        </button> */}
+        </button>
 
-        {/* <animated.div
+        <animated.div
           withSizeTransition
           withPositionTransition
           initial={{ opacity: 0, y: -70 }}
@@ -156,9 +156,8 @@ function App() {
               width: Math.max(randomContents[0] * 10, 10),
 
               height: Math.max(randomContents[1] * 10, 10),
-            }}>
-          </div>
-        </animated.div> */}
+            }}></div>
+        </animated.div>
 
         {/* <animated.div
           initial={{ scaleX: 1, scaleY: 1, x: 0, opacity: 0 }}
