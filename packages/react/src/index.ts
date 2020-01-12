@@ -1,6 +1,7 @@
 import { tags, Tags } from './utils/tags'
 import { Animated, AnimatedProps } from './components/Animated'
-export { default as driver } from '@spring-keyframes/driver'
+
+export { driver } from '@spring-keyframes/driver'
 export { useSpring } from './hooks/useSpring'
 export { AnimateExit } from './components/AnimateExit'
 export { KeyframesProvider } from './components/Keyframes'

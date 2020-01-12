@@ -1,6 +1,6 @@
-import { spring } from './spring'
-import { interpolate } from './interpolate'
-import { playtimeToVelocity } from './playtimeToVelocity'
+import { spring } from './utils/spring'
+import { interpolate } from './utils/interpolate'
+import { playtimeToVelocity } from './utils/playtimeToVelocity'
 import {
   TransformFrame,
   Property,
@@ -10,8 +10,8 @@ import {
   TransformProperty,
   Keyframe,
   Options,
-} from './types'
-import { msPerFrame } from './msPerFrame'
+} from './utils/types'
+import { msPerFrame } from './utils/msPerFrame'
 export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 
 export {
@@ -20,7 +20,7 @@ export {
   Property,
   TransformFrame,
   TransformProperty,
-} from './types'
+} from './utils/types'
 
 const valueOrDefault = (v: number | undefined, d: number) =>
   v !== undefined ? v : d
@@ -234,7 +234,7 @@ function breakupFrame(
   return [tweened, sprung]
 }
 
-export default function main(
+export function driver(
   from: Frame,
   to: Frame,
   options?: Options

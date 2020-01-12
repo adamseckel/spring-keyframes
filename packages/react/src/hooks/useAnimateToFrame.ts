@@ -1,6 +1,6 @@
 import { useRef, useEffect, useContext } from 'react'
 import {
-  default as spring,
+  driver,
   Frame,
   Options,
   Property,
@@ -95,7 +95,7 @@ function animatedClass({
 
   const fill = name === 'layout' ? 'none' : fillMode
 
-  const [frames, springDuration, ease, toApproxVelocity] = spring(from, to, {
+  const [frames, springDuration, ease, toApproxVelocity] = driver(from, to, {
     stiffness,
     damping,
     mass,

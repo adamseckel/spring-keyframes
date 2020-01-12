@@ -1,7 +1,7 @@
-import { default as spring, EASE } from './index'
+import { driver, EASE } from './index'
 
 it('returns an array of keyframe strings, duration, and ease', () => {
-  const [animation, duration, ease] = spring(
+  const [animation, duration, ease] = driver(
     { width: 100, x: 0, y: 100, scale: 0 },
     { width: 200, x: 20, y: 50, scale: 1 }
   )
@@ -12,7 +12,7 @@ it('returns an array of keyframe strings, duration, and ease', () => {
 })
 
 it('returns an array of keyframe strings, and duration for a long spring', () => {
-  const [animation, duration] = spring(
+  const [animation, duration] = driver(
     { width: 100 },
     { width: 200 },
     { stiffness: 400, damping: 3 }
@@ -23,7 +23,7 @@ it('returns an array of keyframe strings, and duration for a long spring', () =>
 })
 
 it('returns an array of keyframes for 0 value animations', () => {
-  const [animation, duration] = spring(
+  const [animation, duration] = driver(
     { scaleX: 0, x: 0, opacity: 0 },
     { scaleX: 1, x: 20, opacity: 1 },
     { stiffness: 400, damping: 3 }
@@ -35,7 +35,7 @@ it('returns an array of keyframes for 0 value animations', () => {
 })
 
 it('returns an array of keyframe strings, and duration for a short spring', () => {
-  const [animation, duration] = spring(
+  const [animation, duration] = driver(
     { width: 0 },
     { width: 200 },
     { stiffness: 2, damping: 3 }
@@ -46,7 +46,7 @@ it('returns an array of keyframe strings, and duration for a short spring', () =
 })
 
 it('returns an array of keyframe strings, and duration for a tweened animation', () => {
-  const [animation, duration] = spring(
+  const [animation, duration] = driver(
     { opacity: 0 },
     { opacity: 1 },
     { stiffness: 100, damping: 3 }
@@ -57,7 +57,7 @@ it('returns an array of keyframe strings, and duration for a tweened animation',
 })
 
 it('returns an array of keyframe strings, and duration for a tweened and sprung animation', () => {
-  const [animations, duration] = spring(
+  const [animations, duration] = driver(
     { opacity: 0, x: 0 },
     { opacity: 1, x: 100 },
     { stiffness: 100, damping: 3 }
@@ -69,7 +69,7 @@ it('returns an array of keyframe strings, and duration for a tweened and sprung 
 })
 
 it('returns an array of valid keyframes for camelCase properties', () => {
-  const [animations, duration] = spring(
+  const [animations, duration] = driver(
     { borderRadius: 0 },
     { borderRadius: 20 },
     { stiffness: 100, damping: 3 }
@@ -80,7 +80,7 @@ it('returns an array of valid keyframes for camelCase properties', () => {
 })
 
 it('returns tweened animations for all tweened property values', () => {
-  const [animations, duration] = spring(
+  const [animations, duration] = driver(
     { opacity: 0, x: 0 },
     { opacity: 1, x: 100 },
     { stiffness: 100, damping: 3, tweenedProps: ['opacity', 'x'] }
@@ -91,7 +91,7 @@ it('returns tweened animations for all tweened property values', () => {
 })
 
 it('returns tweened animations for custom tweened property values', () => {
-  const [animations, duration] = spring(
+  const [animations, duration] = driver(
     { opacity: 0, x: 0 },
     { opacity: 1, x: 100 },
     { stiffness: 100, damping: 3, tweenedProps: ['x'] }
@@ -103,7 +103,7 @@ it('returns tweened animations for custom tweened property values', () => {
 })
 
 it('returns an array of valid keyframes for backgroundColor', () => {
-  const [animations, duration] = spring(
+  const [animations, duration] = driver(
     { backgroundColor: 'red' },
     { backgroundColor: 'blue' },
     { stiffness: 100, damping: 3 }
@@ -114,7 +114,7 @@ it('returns an array of valid keyframes for backgroundColor', () => {
 })
 
 it('returns a velocity for a in-progress animation', () => {
-  const [animations, duration, ease, convert] = spring(
+  const [animations, duration, ease, convert] = driver(
     { x: 0 },
     { x: 400 },
     { stiffness: 100, damping: 2 }
@@ -127,7 +127,7 @@ it('returns a velocity for a in-progress animation', () => {
 })
 
 it('returns keyframes for scale props, for each frame when withInvertedScale is true', () => {
-  const [animations, duration] = spring(
+  const [animations, duration] = driver(
     { x: 0, scaleY: 0 },
     { x: 400, scaleY: 1 },
     { withInvertedScale: true }
