@@ -209,23 +209,21 @@ const defaults: Options = {
   withInvertedScale: false,
 }
 
-function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
-  return [[0, from], [100, to]]
-}
+// function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
+//   return [[0, from], [100, to]]
+// }
 
-function breakupFrame(
-  frame: Frame,
-  tweenedProps: Property[]
-): [CSSFrame[], Frame] {
-  let tweened: CSSFrame[] = []
+function breakupFrame(frame: Frame, tweenedProps: Property[]): [Frame, Frame] {
+  let tweened: Frame = {}
   let sprung: Frame = {}
 
   const keys = Object.keys(frame) as Property[]
 
   keys.forEach(key => {
+    if (frame[key] === undefined) return
     if (tweenedProps.includes(key)) {
       // @ts-ignore
-      tweened.push([key, frame[key]])
+      tweened[key] = frame[key]
     } else {
       sprung[key] = frame[key]
     }
@@ -266,8 +264,14 @@ export function driver(
     )
     animations.push(convertKeyframesToCSS(springKeyframes))
   }
-  if (tFrom.length || tTo.length) {
-    const tweenedKeyframes = createTweenedKeyframes(tFrom, tTo)
+  if (Object.keys(tFrom).length || Object.keys(tTo).length) {
+    const tweenedKeyframes = convertMaxesToKeyframes(
+      [[1, 0, 0], [0, lastFrame, 0]],
+      toFrame,
+      tFrom,
+      tTo,
+      optionsWithDefaults.withInvertedScale
+    )
     animations.push(convertKeyframesToCSS(tweenedKeyframes))
   }
 

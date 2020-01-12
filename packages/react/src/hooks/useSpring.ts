@@ -1,4 +1,8 @@
-import { useAnimateToFrame, Transition } from './useAnimateToFrame'
+import {
+  useAnimateToFrame,
+  Transition,
+  FrameWithTransition,
+} from './useAnimateToFrame'
 import { useWhileInteraction } from './useWhileInteraction'
 import { useLayoutTransition, Layout } from './useLayoutTransition'
 import { useRef, useContext, useEffect } from 'react'
@@ -17,20 +21,21 @@ const defaults = {
 
 export interface Props {
   /** A @Frame to animate to when the Animated component mounts. */
-  animate: Frame
+  animate: FrameWithTransition
   /** A @Frame to animate from when the Animated component mounts. */
   initial: Frame
+  /** A @Frame to animated to when @show is toggled to false. */
+  exit?: FrameWithTransition
+  /** A @Frame to animate from while the Animated component is tapped. */
+  whileTap?: FrameWithTransition
+  /** A @Frame to animate from while the Animated component is hovered. */
+  whileHover?: FrameWithTransition
+  /** Define whether or not the component should animate to a new position when it's relative position in the DOM changes. */
+  withPositionTransition?: boolean | Transition
+  /** Define whether or not the component should animate to a new size when it's relative size in the DOM changes. */
+  withSizeTransition?: boolean | Transition
   /** Define options for all of the Animated components transitions, including the spring, and delay. */
   transition?: Transition
-  /** A @Frame to animated to when @show is toggled to false. */
-  exit?: Frame
-  /** A @Frame to animate from while the Animated component is tapped. */
-  whileTap?: Frame
-  /** A @Frame to animate from while the Animated component is hovered. */
-  whileHover?: Frame
-
-  withPositionTransition?: boolean
-  withSizeTransition?: boolean
   /** A callback to invoke whenever an animation fully completes. Interrupted animations will not trigger this callback. */
   onEnd?: () => void
 }
@@ -96,9 +101,6 @@ export function useSpring({
   useEffect(() => {
     animateToFrame({ frame: to, withDelay: true, name: 'mount' })
     setTimeout(() => (mountRef.current = true), 1)
-    return () => {
-      console.log('spring gb')
-    }
   }, [])
 
   if (whileTap || whileHover) {

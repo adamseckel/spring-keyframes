@@ -50,7 +50,7 @@ function App() {
   const [sequence, setSequence] = React.useState(0)
   const currentSequenceRef = React.useRef(sequence)
   const incrementRef = React.useRef(true)
-  const [randomContents, setRandomContents] = React.useState([10, 10])
+  const [randomContents, setRandomContents] = React.useState([4, 4])
 
   const nextSequence = () => {
     const next = currentSequenceRef.current + (incrementRef.current ? 1 : -1)
@@ -100,35 +100,50 @@ function App() {
         {/* <LayeredNotifications /> */}
         <div style={{ marginBottom: 100 }}></div>
         <div style={{ height: 400 }}>
-          {list.map((l, i) => (
-            <animated.div
-              withPositionTransition
-              key={l}
-              initial={{ opacity: 0, y: -70 }}
-              animate={{ opacity: 1, y: 0 }}
-              onClick={() => remove(i)}
-              style={{
-                height: 100,
-                width: 100,
-                background: 'purple',
-                marginBottom: 50,
-              }}
-              transition={{
-                stiffness: 400,
-                damping: 10,
-                tweenedProps: [],
-              }}>
-              {l}
-            </animated.div>
-          ))}
+          <AnimateExit>
+            {list.map((l, i) => (
+              <animated.div
+                withPositionTransition
+                key={l}
+                initial={{
+                  opacity: 0,
+                  y: -70,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    type: 'ease',
+                    duration: 200,
+                  },
+                }}
+                onClick={() => remove(i)}
+                style={{
+                  height: 100,
+                  width: 100,
+                  background: 'purple',
+                  marginBottom: 50,
+                }}
+                transition={{
+                  stiffness: 400,
+                  damping: 10,
+                  tweenedProps: [],
+                }}>
+                {l}
+              </animated.div>
+            ))}
+          </AnimateExit>
         </div>
 
         <button
           style={{ position: 'absolute', top: 40, left: 200 }}
           onClick={() =>
             setRandomContents([
-              Math.round(Math.random() * 10),
-              Math.round(Math.random() * 10),
+              Math.round(Math.random() * 5),
+              Math.round(Math.random() * 5),
             ])
           }>
           {' '}
@@ -137,7 +152,11 @@ function App() {
 
         <animated.div
           withSizeTransition
-          withPositionTransition
+          withPositionTransition={{
+            type: 'ease',
+            duration: 500,
+            withInvertedScale: false,
+          }}
           initial={{ opacity: 0, y: -70 }}
           animate={{ opacity: 1, y: 0 }}
           style={{
@@ -145,17 +164,19 @@ function App() {
             marginBottom: 50,
             marginTop: Math.max(randomContents[0] * 10, 10),
             transformOrigin: 'center center',
+            overflow: 'hidden',
           }}
           transition={{
             stiffness: 400,
             damping: 10,
             tweenedProps: [],
+            withInvertedScale: true,
           }}>
           <div
             style={{
-              width: Math.max(randomContents[0] * 10, 10),
+              width: Math.max(randomContents[0] * 100, 100),
 
-              height: Math.max(randomContents[1] * 10, 10),
+              height: Math.max(randomContents[1] * 100, 100),
             }}></div>
         </animated.div>
 

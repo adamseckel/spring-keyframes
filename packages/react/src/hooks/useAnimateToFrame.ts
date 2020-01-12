@@ -62,7 +62,7 @@ function animatedClass({
   name,
 }: {
   from: Frame
-  to: Frame
+  to: FrameWithTransition
   withDelay?: boolean
   options?: Transition
   keyframes: (name: string, rule: string) => string
@@ -133,7 +133,7 @@ function animatedClass({
 
   const toAnimationString = (a: string, i: number) =>
     `${a} ${timing(i)} ${animationDuration} ${animationDelay} 1 ${fill} `
-
+  console.log(frames, animations)
   return {
     animation: animations.map(toAnimationString).join(', '),
     animationNames: animations,
@@ -143,7 +143,7 @@ function animatedClass({
 
 interface Props {
   from: Frame
-  to: Frame
+  to: FrameWithTransition
   options: Transition
   onEnd?: () => void
 }
@@ -151,11 +151,13 @@ interface Props {
 type toApproxFn = (v: number) => number
 
 interface AnimateToProps {
-  frame: Frame
+  frame: FrameWithTransition
   withDelay?: boolean
   name?: string
   absoluteFrom?: Frame
 }
+
+export type FrameWithTransition = Frame & { transition?: Transition }
 
 export type AnimateToFrame = (props: AnimateToProps) => void
 
@@ -195,10 +197,10 @@ export function useAnimateToFrame({
     return () => {
       if (!ref.current) return
       ref.current.removeEventListener('animationend', handleAnimationEnd)
-      setTimeout(() => {
-        console.log('should flush', Array.from(namesRef.current))
-        // flush(Array.from(namesRef.current))
-      }, 1)
+
+      // setTimeout(() => {
+      //   flush(Array.from(namesRef.current))
+      // }, 1)
     }
   }, [])
 
@@ -210,7 +212,7 @@ export function useAnimateToFrame({
     absoluteFrom,
   }: {
     diff: number
-    frame: Frame
+    frame: FrameWithTransition
     name: string
     withDelay?: boolean
     absoluteFrom?: Frame
@@ -236,10 +238,11 @@ export function useAnimateToFrame({
 
     const { animation, animationNames, toApproxVelocity } = animatedClass({
       from,
-      to: frame,
+      to: { ...frame, transition: undefined },
       withDelay,
       options: {
         ...options,
+        ...frame.transition,
         velocity,
         withInvertedScale: false,
         withEveryFrame: options.withInvertedScale,
@@ -257,9 +260,14 @@ export function useAnimateToFrame({
       ) {
         const { animation, animationNames } = animatedClass({
           from,
-          to: frame,
+          to: { ...frame, transition: undefined },
           withDelay,
-          options: { ...options, velocity, withInvertedScale: true },
+          options: {
+            ...options,
+            ...frame.transition,
+            velocity,
+            withInvertedScale: true,
+          },
           keyframes,
           name: `${name}-inverted`,
         })
@@ -277,11 +285,10 @@ export function useAnimateToFrame({
 
     currentAnimationToApproxVelocityRef.current = toApproxVelocity
     ref.current.style.animation = animation
-    // ref.current.style.animationPlayState = 'paused'
-    if (absoluteFrom && animationStartRef.current)
-      if (performance) {
-        animationStartRef.current = performance.now()
-      }
+
+    if (performance) {
+      animationStartRef.current = performance.now()
+    }
 
     currentAnimationNameRef.current = animationNames[0]
 

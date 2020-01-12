@@ -1,13 +1,13 @@
 import { useLayoutEffect } from 'react'
-import { AnimateToFrame } from './useAnimateToFrame'
+import { AnimateToFrame, Transition } from './useAnimateToFrame'
 import { computedFrom } from '../utils/computedFrom'
 
 interface Props {
   ref: React.MutableRefObject<HTMLElement | null>
   animateToFrame: AnimateToFrame
   layout: React.MutableRefObject<Layout | null>
-  withPositionTransition?: boolean
-  withSizeTransition?: boolean
+  withPositionTransition?: Transition | boolean
+  withSizeTransition?: Transition | boolean
 }
 
 export type Layout = {
@@ -77,10 +77,18 @@ export function useLayoutTransition({
         y: l.y - offsetOldLayout.y - (offsetOldLayout.height - l.height) / 2,
       }
 
+      const transition = {
+        ...(typeof withPositionTransition === 'object'
+          ? withPositionTransition
+          : {}),
+        ...(typeof withSizeTransition === 'object' ? withSizeTransition : {}),
+      }
+
       animateToFrame({
         frame: {
           ...(withPositionTransition ? defaultPosition : {}),
           ...(withSizeTransition ? defaultSize : {}),
+          transition,
         },
         absoluteFrom: {
           ...(withPositionTransition ? oldPosition : {}),

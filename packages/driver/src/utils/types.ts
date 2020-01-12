@@ -15,7 +15,7 @@ export type TransformProperty =
   | 'scaleY'
   | 'scaleZ'
 
-export type CSSProperty = keyof CSS.Properties
+export type CSSProperty = keyof Omit<CSS.Properties, 'transition'>
 export type CSSFrame = [CSSProperty, number | string]
 export type TransformFrame = [TransformProperty, number]
 export type Property = CSSProperty | TransformProperty
