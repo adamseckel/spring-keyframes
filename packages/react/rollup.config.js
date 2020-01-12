@@ -7,8 +7,8 @@ export default {
   input: './src/index.ts',
   output: [
     {
-      name: '@spring-keyframes/react-emotion',
-      file: './lib/react-emotion.umd.js',
+      name: '@spring-keyframes/react',
+      file: './lib/react.umd.js',
       format: 'umd',
       exports: 'named',
       sourcemap: true,

@@ -10,13 +10,13 @@
   "dependencies": {
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.23",
-    "@spring-keyframes/react-emotion": "^0.0.28",
     "@weco/next-plugin-transpile-modules": "^2.2.1",
     "emotion": "^10.0.23",
     "emotion-box": "^2.0.0",
     "next": "9.1.5",
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "react-hook-inview": "^4.1.2"
+    "react-hook-inview": "^4.1.2",
+    "@spring-keyframes/react": "*"
   }
 }

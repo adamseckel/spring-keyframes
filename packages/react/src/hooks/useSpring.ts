@@ -1,9 +1,10 @@
 import { useAnimateToFrame, Transition } from './useAnimateToFrame'
 import { useWhileInteraction } from './useWhileInteraction'
+import { useLayoutTransition, Layout } from './useLayoutTransition'
 import { useRef, useContext, useEffect } from 'react'
 import { useDeepCompareEffectNoCheck } from 'use-deep-compare-effect'
 import { Frame, tweenedProperties } from '@spring-keyframes/driver'
-import { SpringContext } from './AnimateExit'
+import { SpringContext } from '../components/AnimateExit'
 
 const defaults = {
   stiffness: 380,
@@ -27,6 +28,9 @@ export interface Props {
   whileTap?: Frame
   /** A @Frame to animate from while the Animated component is hovered. */
   whileHover?: Frame
+
+  withPositionTransition?: boolean
+  withSizeTransition?: boolean
   /** A callback to invoke whenever an animation fully completes. Interrupted animations will not trigger this callback. */
   onEnd?: () => void
 }
@@ -52,6 +56,8 @@ export function useSpring({
   exit,
   whileTap,
   whileHover,
+  withPositionTransition,
+  withSizeTransition,
   onEnd: onAnimationEnd,
 }: Props) {
   const mountRef = useRef(false)
@@ -60,6 +66,7 @@ export function useSpring({
   const { isExiting, onExitComplete } = context || {}
   const isVisible = !isExiting
   const visibilityRef = useRef(isVisible)
+  const layout = useRef<Layout | null>(null)
 
   ensureFrames(to, from)
 
@@ -87,8 +94,11 @@ export function useSpring({
   })
 
   useEffect(() => {
-    animateToFrame(to, true)
-    mountRef.current = true
+    animateToFrame({ frame: to, withDelay: true, name: 'mount' })
+    setTimeout(() => (mountRef.current = true), 1)
+    return () => {
+      console.log('spring gb')
+    }
   }, [])
 
   if (whileTap || whileHover) {
@@ -101,6 +111,16 @@ export function useSpring({
     })
   }
 
+  if (withPositionTransition || withSizeTransition) {
+    useLayoutTransition({
+      ref,
+      animateToFrame,
+      layout,
+      withPositionTransition,
+      withSizeTransition,
+    })
+  }
+
   // Deep compare the `animate|to` @Frame so that we can animate updates.
   useDeepCompareEffectNoCheck(() => {
     if (!mountRef.current) return
@@ -108,10 +128,11 @@ export function useSpring({
     ensureFrames(to, from)
 
     if (!isVisible && exit) {
-      animateToFrame(exit, true)
+      // exit opacity not working
+      animateToFrame({ frame: exit, withDelay: true, name: 'exit' })
     } else {
       if (isExiting) return
-      animateToFrame(to, true)
+      animateToFrame({ frame: to, withDelay: true, name: 'to' })
     }
 
     visibilityRef.current = isVisible

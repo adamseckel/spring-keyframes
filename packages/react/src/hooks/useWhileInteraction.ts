@@ -22,26 +22,29 @@ export function useWhileInteraction({
 
   function handleTap() {
     if (!whileTap) return
-    animateToFrame(whileTap)
+    animateToFrame({ frame: whileTap, name: 'tap-start' })
   }
 
   function handleTapEnd() {
     if (whileHover) {
-      animateToFrame(isHoveredRef.current ? whileHover : from)
+      animateToFrame({
+        frame: isHoveredRef.current ? whileHover : from,
+        name: 'tap-end',
+      })
       return
     }
-    animateToFrame(from)
+    animateToFrame({ frame: from, name: 'tap-end' })
   }
 
   function handleMouseEnter() {
     if (!whileHover) return
     isHoveredRef.current = true
-    animateToFrame(whileHover)
+    animateToFrame({ frame: whileHover, name: 'hover-start' })
   }
 
   function handleMouseEnterEnd() {
     isHoveredRef.current = false
-    animateToFrame(from)
+    animateToFrame({ frame: from, name: 'hover-end' })
   }
 
   useEffect(() => {

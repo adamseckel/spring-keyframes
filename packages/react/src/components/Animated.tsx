@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { Tags } from './tags'
-import { useSpring, Props } from './useSpring'
+import { useSpring, Props } from '../hooks/useSpring'
 
 export interface AnimatedProps extends Props, React.HTMLProps<HTMLElement> {
-  Tag?: Tags
+  Tag?: React.ElementType
 }
 
 export function Animated({
@@ -14,16 +13,17 @@ export function Animated({
 
   whileTap,
   whileHover,
+  withPositionTransition,
+  withSizeTransition,
 
   onEnd,
 
   children,
-  style,
 
   Tag = 'div',
 
   ...rest
-}: AnimatedProps): JSX.Element | false {
+}: AnimatedProps) {
   const { ref } = useSpring({
     animate,
     initial,
@@ -31,15 +31,13 @@ export function Animated({
     exit,
     whileTap,
     whileHover,
+    withPositionTransition,
+    withSizeTransition,
     onEnd,
   })
 
   return (
-    <Tag
-      //@ts-ignore
-      style={{ willChange: 'animation', ...style, ...initial }}
-      {...rest}
-      ref={ref}>
+    <Tag ref={ref} {...rest}>
       {children}
     </Tag>
   )

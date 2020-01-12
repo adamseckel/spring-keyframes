@@ -6,10 +6,9 @@ import {
   Property,
   tweenedProperties,
 } from '@spring-keyframes/driver'
-import Unmatrix from './unmatrix'
-import { KeyframesContext } from './Keyframes'
-
-const unmatrix = new Unmatrix()
+import { KeyframesContext } from '../components/Keyframes'
+import hash from '@emotion/hash'
+import { computedFrom } from '../utils/computedFrom'
 
 export interface Transition extends Options {
   /** Duration to delay initial animations in ms. Will not prevent child animations from playing. */
@@ -26,19 +25,6 @@ export interface Transition extends Options {
    * so only "none", "both", and "backwards" have an effect. */
   fillMode?: React.CSSProperties['animationFillMode']
 }
-
-type TransformProperty =
-  | 'translateX'
-  | 'translateY'
-  | 'translateZ'
-  | 'rotate'
-  | 'rotateX'
-  | 'rotateY'
-  | 'rotateZ'
-  | 'scale'
-  | 'scaleX'
-  | 'scaleY'
-  | 'scaleZ'
 
 const defaults: Transition = {
   stiffness: 380,
@@ -73,15 +59,17 @@ function animatedClass({
   withDelay,
   options = {},
   keyframes,
+  name,
 }: {
   from: Frame
   to: Frame
   withDelay?: boolean
   options?: Transition
-  keyframes: (...args: any) => any
+  keyframes: (name: string, rule: string) => string
+  name: string
 }): {
   animation: string
-  animationName: string
+  animationNames: string[]
   toApproxVelocity: (v: number) => number
 } {
   const {
@@ -102,6 +90,11 @@ function animatedClass({
     ...options,
   } as Required<Transition>
 
+  const tweened =
+    type === 'ease' ? (Object.keys(from) as Property[]) : tweenedProps
+
+  const fill = name === 'layout' ? 'none' : fillMode
+
   const [frames, springDuration, ease, toApproxVelocity] = spring(from, to, {
     stiffness,
     damping,
@@ -109,16 +102,28 @@ function animatedClass({
     precision,
     withInvertedScale,
     withEveryFrame,
-    tweenedProps:
-      type === 'ease' ? (Object.keys(from) as Property[]) : tweenedProps,
+    tweenedProps: tweened,
+  })
+
+  const preHash = JSON.stringify({
+    to,
+    from,
+    options: {
+      ...options,
+      tweenedProps: tweened,
+    },
+  })
+
+  const animations = frames.map((animation, i) => {
+    const n = name + '-' + hash(preHash) + '-' + i
+    keyframes(n, animation)
+    return n
   })
 
   // @TODO: Optionally use window.matchMedia to use tweened animations only if "prefers-reduced-motion" is "reduce".
-  const animations = frames.map(animation => keyframes`${animation}`)
-
   const animationDuration = duration ? duration + 'ms' : springDuration
   const animationDelay = delay && withDelay ? `${delay}ms` : '0ms'
-  const animationName = type === 'ease' ? animations[1] : animations[0]
+  // const animationNames = type === 'ease' ? animations[1] : animations[0]
   const timing = toTimingFunction(
     type === 'ease',
     withEveryFrame || withInvertedScale,
@@ -127,44 +132,13 @@ function animatedClass({
   )
 
   const toAnimationString = (a: string, i: number) =>
-    `${a} ${timing(i)} ${animationDuration} ${animationDelay} 1 ${fillMode}`
+    `${a} ${timing(i)} ${animationDuration} ${animationDelay} 1 ${fill} `
 
   return {
     animation: animations.map(toAnimationString).join(', '),
-    animationName,
+    animationNames: animations,
     toApproxVelocity,
   }
-}
-
-function computedFrom(to: Frame, ref: React.MutableRefObject<Element | null>) {
-  if (!ref.current) return {} as Frame
-
-  // @TODO: Optionally infer unset from from element style.
-  const frame: Frame = {}
-  const style = getComputedStyle(ref.current)
-  const frameTransforms: Partial<Record<TransformProperty, any>> =
-    unmatrix.getTransform(style) || {}
-
-  const keys = Object.keys(to) as Property[]
-
-  keys.forEach(key => {
-    // @ts-ignore
-    if (frameTransforms[key] !== undefined) {
-      // @ts-ignore
-      frame[key] = frameTransforms[key]
-    } else if (key === 'scale') {
-      frame[key] = frameTransforms.scaleX
-    } else if (key === 'y') {
-      frame[key] = frameTransforms.translateY
-    } else if (key === 'x') {
-      frame[key] = frameTransforms.translateX
-
-      // Must come last as computedStyle has x and y keys that clash with transform shorthand.
-    } else if (style[key as any]) {
-      frame[key] = parseFloat(style[key as any])
-    }
-  })
-  return frame
 }
 
 interface Props {
@@ -175,7 +149,15 @@ interface Props {
 }
 
 type toApproxFn = (v: number) => number
-export type AnimateToFrame = (frame: Frame, withDelay?: boolean) => void
+
+interface AnimateToProps {
+  frame: Frame
+  withDelay?: boolean
+  name?: string
+  absoluteFrom?: Frame
+}
+
+export type AnimateToFrame = (props: AnimateToProps) => void
 
 export function useAnimateToFrame({
   from,
@@ -184,18 +166,24 @@ export function useAnimateToFrame({
   onEnd,
 }: Props): {
   animateToFrame: AnimateToFrame
-  ref: React.MutableRefObject<Element | null>
+  ref: React.MutableRefObject<HTMLElement | null>
 } {
   const ref = useRef<HTMLElement>(null)
   const animationStartRef = useRef<number>(0)
   const currentAnimationToApproxVelocityRef = useRef<toApproxFn | null>(null)
   const currentAnimationNameRef = useRef<string | null>(null)
-  const keyframes = useContext(KeyframesContext)
+  const { keyframes } = useContext(KeyframesContext)
+  const namesRef = useRef<Set<string>>(new Set([]))
 
   const fromRef = useRef<Frame>(from)
 
   function handleAnimationEnd({ animationName }: { animationName: string }) {
     if (animationName !== currentAnimationNameRef.current) return
+    if (animationName.includes('layout')) {
+      if (!ref.current) return
+
+      ref.current.style.animation = ''
+    }
     animationStartRef.current = 0
     onEnd && onEnd()
   }
@@ -207,10 +195,26 @@ export function useAnimateToFrame({
     return () => {
       if (!ref.current) return
       ref.current.removeEventListener('animationend', handleAnimationEnd)
+      setTimeout(() => {
+        console.log('should flush', Array.from(namesRef.current))
+        // flush(Array.from(namesRef.current))
+      }, 1)
     }
   }, [])
 
-  function toFrame(diff: number, frame: Frame, withDelay?: boolean) {
+  function toFrame({
+    diff,
+    frame,
+    withDelay,
+    name,
+    absoluteFrom,
+  }: {
+    diff: number
+    frame: Frame
+    name: string
+    withDelay?: boolean
+    absoluteFrom?: Frame
+  }) {
     if (!ref.current) return
 
     let velocity = 0
@@ -221,12 +225,16 @@ export function useAnimateToFrame({
     ) {
       velocity = currentAnimationToApproxVelocityRef.current(diff)
     }
-
-    const from = animationStartRef.current
+    let from = animationStartRef.current
       ? computedFrom(to, ref)
       : fromRef.current
 
-    const { animation, animationName, toApproxVelocity } = animatedClass({
+    if (absoluteFrom) {
+      from = { ...from, ...absoluteFrom }
+      frame = { ...from, ...frame }
+    }
+
+    const { animation, animationNames, toApproxVelocity } = animatedClass({
       from,
       to: frame,
       withDelay,
@@ -237,21 +245,27 @@ export function useAnimateToFrame({
         withEveryFrame: options.withInvertedScale,
       },
       keyframes,
+      name,
     })
+
+    animationNames.forEach(n => namesRef.current.add(n))
 
     if (options.withInvertedScale) {
       if (
         ref.current.childNodes[0] &&
         ref.current.childNodes[0].nodeType !== 3
       ) {
-        const { animation } = animatedClass({
+        const { animation, animationNames } = animatedClass({
           from,
           to: frame,
           withDelay,
           options: { ...options, velocity, withInvertedScale: true },
           keyframes,
+          name: `${name}-inverted`,
         })
         ;(ref.current.childNodes[0] as HTMLElement).style.animation = animation
+
+        animationNames.forEach(name => namesRef.current.add(name))
       } else {
         if (process.env.NODE_ENV !== 'production') {
           console.warn(
@@ -262,23 +276,40 @@ export function useAnimateToFrame({
     }
 
     currentAnimationToApproxVelocityRef.current = toApproxVelocity
-
     ref.current.style.animation = animation
-    animationStartRef.current = performance && performance.now()
-    currentAnimationNameRef.current = animationName
+    // ref.current.style.animationPlayState = 'paused'
+    if (absoluteFrom && animationStartRef.current)
+      if (performance) {
+        animationStartRef.current = performance.now()
+      }
+
+    currentAnimationNameRef.current = animationNames[0]
 
     fromRef.current = frame
   }
 
-  function animateToFrame(frame: Frame, withDelay?: boolean) {
+  function animateToFrame({
+    frame,
+    withDelay,
+    name = 'animate',
+    absoluteFrom,
+  }: AnimateToProps) {
     if (typeof window === 'undefined') {
-      toFrame(0, frame, withDelay)
+      toFrame({ diff: 0, frame, withDelay, name })
       return
     }
 
-    requestAnimationFrame(now =>
-      toFrame(now - animationStartRef.current, frame, withDelay)
-    )
+    function toFrameWithOffset(offset: number) {
+      return toFrame({
+        diff: offset - animationStartRef.current,
+        frame,
+        withDelay,
+        name,
+        absoluteFrom,
+      })
+    }
+
+    requestAnimationFrame(toFrameWithOffset)
   }
 
   return { ref, animateToFrame }

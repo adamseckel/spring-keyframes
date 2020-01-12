@@ -14,12 +14,18 @@ import {
 import { msPerFrame } from './msPerFrame'
 export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 
-export { Options, Frame, Property } from './types'
+export {
+  Options,
+  Frame,
+  Property,
+  TransformFrame,
+  TransformProperty,
+} from './types'
 
 const valueOrDefault = (v: number | undefined, d: number) =>
   v !== undefined ? v : d
 
-const transforms = [
+export const transforms = [
   'x',
   'y',
   'z',
@@ -103,7 +109,7 @@ function toValue(
 const maxScale = 100000
 const invertScale = (scale: number) => (scale > 0.001 ? 1 / scale : maxScale)
 
-function createTransformBlock(
+export function createTransformBlock(
   transforms: TransformFrame[],
   withInvertedScale: boolean
 ): string {
