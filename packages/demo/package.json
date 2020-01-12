@@ -1,9 +1,9 @@
 {
   "name": "demo",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "private": true,
   "dependencies": {
-    "@spring-keyframes/react": "^0.0.31",
+    "@spring-keyframes/react": "^0.0.32",
     "emotion-box": "^2.0.0",
     "framer-motion": "^1.6.17",
     "react": "^16.12.0",

@@ -1,7 +1,7 @@
 {
   "name": "@spring-keyframes/driver",
   "description": "Use javascript to generate css keyframe animations based on spring physics",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
