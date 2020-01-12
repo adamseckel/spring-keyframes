@@ -91,7 +91,7 @@ function animatedClass({
   } as Required<Transition>
 
   const tweened =
-    type === 'ease' ? (Object.keys(from) as Property[]) : tweenedProps
+    type === 'ease' ? (Object.keys(to) as Property[]) : tweenedProps
 
   const fill = name === 'layout' ? 'none' : fillMode
 
@@ -123,7 +123,7 @@ function animatedClass({
   // @TODO: Optionally use window.matchMedia to use tweened animations only if "prefers-reduced-motion" is "reduce".
   const animationDuration = duration ? duration + 'ms' : springDuration
   const animationDelay = delay && withDelay ? `${delay}ms` : '0ms'
-  // const animationNames = type === 'ease' ? animations[1] : animations[0]
+
   const timing = toTimingFunction(
     type === 'ease',
     withEveryFrame || withInvertedScale,
@@ -133,7 +133,7 @@ function animatedClass({
 
   const toAnimationString = (a: string, i: number) =>
     `${a} ${timing(i)} ${animationDuration} ${animationDelay} 1 ${fill} `
-  console.log(frames, animations)
+
   return {
     animation: animations.map(toAnimationString).join(', '),
     animationNames: animations,
@@ -158,7 +158,6 @@ interface AnimateToProps {
 }
 
 export type FrameWithTransition = Frame & { transition?: Transition }
-
 export type AnimateToFrame = (props: AnimateToProps) => void
 
 export function useAnimateToFrame({
@@ -176,7 +175,6 @@ export function useAnimateToFrame({
   const currentAnimationNameRef = useRef<string | null>(null)
   const { keyframes } = useContext(KeyframesContext)
   const namesRef = useRef<Set<string>>(new Set([]))
-
   const fromRef = useRef<Frame>(from)
 
   function handleAnimationEnd({ animationName }: { animationName: string }) {
@@ -204,13 +202,7 @@ export function useAnimateToFrame({
     }
   }, [])
 
-  function toFrame({
-    diff,
-    frame,
-    withDelay,
-    name,
-    absoluteFrom,
-  }: {
+  function toFrame(props: {
     diff: number
     frame: FrameWithTransition
     name: string
@@ -218,7 +210,10 @@ export function useAnimateToFrame({
     absoluteFrom?: Frame
   }) {
     if (!ref.current) return
-
+    const { diff, withDelay, name, absoluteFrom } = props
+    let { frame } = props
+    const frameTransition = { ...frame.transition }
+    delete frame.transition
     let velocity = 0
 
     if (
@@ -230,19 +225,19 @@ export function useAnimateToFrame({
     let from = animationStartRef.current
       ? computedFrom(to, ref)
       : fromRef.current
-
+    console.log(from, absoluteFrom, fromRef.current, frame)
     if (absoluteFrom) {
       from = { ...from, ...absoluteFrom }
-      frame = { ...from, ...frame }
+      frame = { ...fromRef.current, ...frame }
     }
 
     const { animation, animationNames, toApproxVelocity } = animatedClass({
       from,
-      to: { ...frame, transition: undefined },
+      to: frame,
       withDelay,
       options: {
         ...options,
-        ...frame.transition,
+        ...frameTransition,
         velocity,
         withInvertedScale: false,
         withEveryFrame: options.withInvertedScale,
@@ -260,11 +255,11 @@ export function useAnimateToFrame({
       ) {
         const { animation, animationNames } = animatedClass({
           from,
-          to: { ...frame, transition: undefined },
+          to: frame,
           withDelay,
           options: {
             ...options,
-            ...frame.transition,
+            ...frameTransition,
             velocity,
             withInvertedScale: true,
           },

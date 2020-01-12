@@ -265,6 +265,7 @@ export function driver(
     )
     animations.push(convertKeyframesToCSS(springKeyframes))
   }
+
   if (Object.keys(tFrom).length || Object.keys(tTo).length) {
     const tweenedKeyframes = convertMaxesToKeyframes(
       [[1, 0, 0], [0, lastFrame, 0]],
