@@ -5,14 +5,7 @@
   "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
   "files": [
-    "lib/index.d.ts",
-    "lib/index.d.ts.map",
-    "lib/index.es.js",
-    "lib/index.es.js.map",
-    "lib/index.js",
-    "lib/index.js.map",
-    "lib/react-emotion.umd.js",
-    "lib/react-emotion.umd.js.map"
+    "lib"
   ],
   "license": "MIT",
   "dependencies": {

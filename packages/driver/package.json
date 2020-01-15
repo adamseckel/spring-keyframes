@@ -7,14 +7,7 @@
   "types": "lib/index.d.ts",
   "private": false,
   "files": [
-    "lib/driver.umd.js",
-    "lib/driver.umd.js.map",
-    "lib/index.d.ts",
-    "lib/index.d.ts.map",
-    "lib/index.es.js",
-    "lib/index.es.js.map",
-    "lib/index.js",
-    "lib/index.js.map"
+    "lib"
   ],
   "author": "hemlok",
   "keywords": [
