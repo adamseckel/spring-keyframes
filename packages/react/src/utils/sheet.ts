@@ -86,7 +86,7 @@ export class StyleSheet {
   flushKeys(keys: string[]) {
     let count = 0
 
-    this.tags.forEach(tag => {
+    this.tags.forEach((tag) => {
       if (this.isSpeedy) {
         const sheet = sheetForTag(tag)
 
@@ -104,7 +104,7 @@ export class StyleSheet {
         const tagName = tag.getAttribute('data-keyframes')
         // console.log(tagName, keys)
         if (tagName && keys.includes(tagName) && tag.parentNode) {
-          // tag.parentNode.removeChild(tag)
+          tag.parentNode.removeChild(tag)
           // this.tags = [...this.tags.splice(i, 1)]
         }
       }

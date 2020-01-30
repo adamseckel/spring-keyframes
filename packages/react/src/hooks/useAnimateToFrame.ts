@@ -173,7 +173,7 @@ export function useAnimateToFrame({
   const animationStartRef = useRef<number>(0)
   const currentAnimationToApproxVelocityRef = useRef<toApproxFn | null>(null)
   const currentAnimationNameRef = useRef<string | null>(null)
-  const { keyframes } = useContext(KeyframesContext)
+  const { keyframes, flush } = useContext(KeyframesContext)
   const namesRef = useRef<Set<string>>(new Set([]))
   const fromRef = useRef<Frame>(from)
 
@@ -196,9 +196,7 @@ export function useAnimateToFrame({
       if (!ref.current) return
       ref.current.removeEventListener('animationend', handleAnimationEnd)
 
-      // setTimeout(() => {
-      //   flush(Array.from(namesRef.current))
-      // }, 1)
+      flush(Array.from(namesRef.current))
     }
   }, [])
 
@@ -225,7 +223,7 @@ export function useAnimateToFrame({
     let from = animationStartRef.current
       ? computedFrom(to, ref)
       : fromRef.current
-    console.log(from, absoluteFrom, fromRef.current, frame)
+
     if (absoluteFrom) {
       from = { ...from, ...absoluteFrom }
       frame = { ...fromRef.current, ...frame }

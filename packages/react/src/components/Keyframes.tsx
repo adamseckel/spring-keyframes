@@ -3,7 +3,7 @@ import { StyleSheet } from '../utils/sheet'
 import hash from '@emotion/hash'
 
 const key = hash(new Date().toDateString())
-const sheet = new StyleSheet({ key })
+const sheet = new StyleSheet({ key, speedy: true })
 const animations: Record<string, number> = {}
 
 function keyframes(name: string, frames: string) {
@@ -20,7 +20,7 @@ function keyframes(name: string, frames: string) {
 }
 
 function flush(keys: string[]) {
-  const flushableKeys = []
+  const flushableKeys: string[] = []
 
   if (!Object.keys(animations).length) return sheet.flushAll()
 
@@ -29,11 +29,18 @@ function flush(keys: string[]) {
 
     if (animations[name]) {
       if (animations[name] === 1) flushableKeys.push(name)
-      animations[name] = Math.min(0, animations[name] - 1)
     }
   }
 
-  if (flushableKeys.length) sheet.flushKeys(flushableKeys)
+  if (flushableKeys.length) {
+    setTimeout(() => {
+      flushableKeys.forEach(key => {
+        if (animations[key] > 0) return
+        sheet.flushKeys([key])      
+        animations[name] = Math.max(0, animations[name] - 1)
+      })
+    }, 500);
+  }
 }
 
 export const KeyframesContext = React.createContext<{

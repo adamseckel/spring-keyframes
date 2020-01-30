@@ -11,6 +11,10 @@ import { motion, useInvertedScale } from 'framer-motion'
 // import { keyframes, css, createGlobalStyle } from 'styled-components'
 // import { keyframes } from 'emotion'
 import { LayeredNotifications, Notifications } from './Notifications'
+import SizeTransition from './SizeTransition'
+import LayoutTransition from './LayoutTransition'
+import WhileInteraction from './WhileInteraction'
+import Sequence from './Sequence'
 
 // const list = [1, 2, 3, 4]
 
@@ -38,19 +42,12 @@ function App() {
   function push() {
     const next = Math.random()
     // list.splice(0, 1)
-    console.log('call', next)
     setList([next, ...list])
-  }
-
-  function remove(i) {
-    list.splice(i, 1)
-    setList([...list])
   }
 
   const [sequence, setSequence] = React.useState(0)
   const currentSequenceRef = React.useRef(sequence)
   const incrementRef = React.useRef(true)
-  const [randomContents, setRandomContents] = React.useState([4, 4])
 
   const nextSequence = () => {
     const next = currentSequenceRef.current + (incrementRef.current ? 1 : -1)
@@ -58,12 +55,6 @@ function App() {
     setSequence(next)
   }
 
-  const sequenceMap = [
-    { x: 200, y: 0 },
-    { x: 200, y: 200 },
-    { x: 0, y: 200 },
-    { x: 0, y: 0 },
-  ]
   const [sequenceList, setSequenceList] = React.useState([0.123456])
   const addToList = () => {
     setSequenceList(list => [...list, Math.random()])
@@ -91,124 +82,19 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div style={{ marginBottom: 100 }}></div>
-        <button
-          style={{ position: 'absolute', top: 10, left: 200 }}
-          onClick={push}>
-          {' '}
-          toggle{' '}
-        </button>
-        {/* <LayeredNotifications /> */}
+
+        <LayoutTransition />
+
         <div style={{ marginBottom: 100 }}></div>
-        <div style={{ height: 400 }}>
-          <AnimateExit>
-            {list.map((l, i) => (
-              <animated.div
-                withPositionTransition
-                key={l}
-                initial={{
-                  opacity: 0,
-                  y: -70,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                exit={{
-                  opacity: 0,
-                  transition: {
-                    type: 'ease',
-                    duration: 200,
-                  },
-                }}
-                onClick={() => remove(i)}
-                style={{
-                  height: 100,
-                  width: 100,
-                  background: 'purple',
-                  marginBottom: 50,
-                }}
-                transition={{
-                  stiffness: 400,
-                  damping: 10,
-                  tweenedProps: [],
-                }}>
-                {l}
-              </animated.div>
-            ))}
-          </AnimateExit>
-        </div>
 
-        <button
-          style={{ position: 'absolute', top: 40, left: 200 }}
-          onClick={() =>
-            setRandomContents([
-              Math.round(Math.random() * 5),
-              Math.round(Math.random() * 5),
-            ])
-          }>
-          {' '}
-          random size{' '}
-        </button>
+        <SizeTransition></SizeTransition>
 
-        <animated.div
-          withSizeTransition
-          withPositionTransition={{
-            type: 'ease',
-            duration: 500,
-            withInvertedScale: false,
-          }}
-          initial={{ opacity: 0, y: -70 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{
-            background: 'purple',
-            marginBottom: 50,
-            marginTop: Math.max(randomContents[0] * 10, 10),
-            transformOrigin: 'center center',
-            overflow: 'hidden',
-          }}
-          transition={{
-            stiffness: 400,
-            damping: 10,
-            tweenedProps: [],
-            withInvertedScale: true,
-          }}>
-          <div
-            style={{
-              width: Math.max(randomContents[0] * 100, 100),
+        <div style={{ marginBottom: 100 }}></div>
 
-              height: Math.max(randomContents[1] * 100, 100),
-            }}></div>
-        </animated.div>
+        <WhileInteraction />
 
-        {/* <animated.div
-          initial={{ scaleX: 1, scaleY: 1, x: 0, opacity: 0 }}
-          animate={{ scaleX: 2, scaleY: 2, x: 50, opacity: 1 }}
-          whileTap={{ scaleX: 3, scaleY: 3, x: 50, opacity: 1 }}
-          style={{ background: 'red', webkitUserSelect: 'none' }}
-          transition={{
-            stiffness: 400,
-            damping: 10,
-            mass: 3,
-            withInvertedScale: true,
-            tweenedProps: [],
-            delay: 0,
-          }}>
-          <p>some text</p>
-        </animated.div>
-        <animated.div
-          initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
-          animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
-          whileTap={{ scaleX: 3, scaleY: 3, opacity: 1 }}
-          style={{ background: 'red', marginTop: 50, webkitUserSelect: 'none' }}
-          transition={{
-            stiffness: 400,
-            damping: 10,
-            mass: 3,
-            tweenedProps: [],
-            delay: 0,
-          }}>
-          <p>some text</p>
-        </animated.div>
+        <div style={{ marginBottom: 100 }}></div>
+
         <motion.div
           initial={{ scaleX: 1, scaleY: 1, opacity: 0 }}
           animate={{ scaleX: 2, scaleY: 2, opacity: 1 }}
@@ -225,28 +111,10 @@ function App() {
             mass: 3,
           }}>
           <Child />
-        </motion.div> */}
-        {/* <animated.div
-          style={{
-            width: 200,
-            height: 200,
-            background: 'red',
-            borderRadius: 20,
-          }}
-          initial={{ ...sequenceMap[3], rotateZ: 0, rotateY: 0, rotateX: 0 }}
-          animate={{
-            ...sequenceMap[sequence % 4],
-            rotateZ: (sequence + 1) * 90,
-            rotateY: (sequence + 1) * 40,
-            rotateX: (sequence + 1) * 30,
-          }}
-          onEnd={nextSequence}
-          transition={{
-            stiffness: 400,
-            damping: 12,
-            mass: 1,
-          }}
-        /> */}
+        </motion.div>
+        <div style={{ marginBottom: 100 }}></div>
+
+        <Sequence />
         {/* <div
           style={{
             width: 200,
@@ -285,7 +153,7 @@ function App() {
           </AnimateExit>
         </div> */}
         {/* <div ref={ref}> wowowowowow</div> */}
-        {/* <animated.div
+        <animated.div
           initial={{
             scale: 0,
           }}
@@ -306,8 +174,8 @@ function App() {
           }}
           whileTap={{
             scale: 2,
-          }}></animated.div> */}
-        {/* <animated.div
+          }}></animated.div>
+        <animated.div
           initial={{ scale: 0.1, opacity: 0.1, rotate: 0.1 }}
           whileHover={{ scale: 1.5, opacity: 1, rotate: 90 }}
           whileTap={{ scale: 2, opacity: 1, rotate: 45 }}
@@ -320,7 +188,7 @@ function App() {
           whileTap={{ scale: 2, opacity: 1, rotate: 45 }}
           whileHover={{ scale: 1.5, opacity: 1, rotate: 90 }}>
           <img src={logo} className="App-logo" alt="logo" />
-        </motion.div> */}
+        </motion.div>
         {/* <animated.div
           initial={{
             scale: 0,

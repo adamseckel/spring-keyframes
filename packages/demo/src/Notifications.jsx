@@ -74,6 +74,8 @@ function StackedNotification({ index, offset, onClick }) {
 export function LayeredNotifications() {
   const [notifications, setNotifications] = useState([])
   const [counter, setCounter] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const pausedRef = useRef(false)
 
   const removeNotification = notification => {
     const newNotes = notifications.filter(n => n !== notification)
@@ -84,8 +86,15 @@ export function LayeredNotifications() {
     setNotifications([notification, ...notifications.slice(0, 3)])
   }
 
+  const pause = () => {
+    console.log('PAUSE')
+    setPaused(true)
+    pausedRef.current = true
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
+      if (pausedRef.current) return
       addNotification(counter)
       setCounter(counter + 1)
     }, 2000)
@@ -105,7 +114,8 @@ export function LayeredNotifications() {
           <LayeredNotification
             key={notification}
             index={i}
-            onClick={() => removeNotification(notification)}
+            n={notification}
+            onClick={() => pause()}
             offset={notifications.length}
           />
         ))}
@@ -116,7 +126,7 @@ export function LayeredNotifications() {
 
 const indexScaleMap = [1, 0.95, 0.9, 0.85, 0.8, 0.8, 0.8]
 
-function LayeredNotification({ index, offset, onClick }) {
+function LayeredNotification({ n, index, offset, onClick }) {
   return (
     <NotificationContainer
       withShadow
@@ -125,12 +135,11 @@ function LayeredNotification({ index, offset, onClick }) {
       initial={{
         y: 100,
         opacity: 0,
-        scale: 1,
       }}
       animate={{
-        y: index * -15,
         opacity: 1,
-        scale: indexScaleMap[index],
+        y: -10 * index,
+
       }}
       transition={{
         stiffness: 250,
@@ -142,11 +151,11 @@ function LayeredNotification({ index, offset, onClick }) {
         zIndex: offset - index,
       }}
       exit={{
-        y: (index + 1) * -15,
         opacity: 0,
-        scale: indexScaleMap[index + 1],
+        y: -100,
       }}
-    />
+      onClick={onClick}
+    > {n} {index}</NotificationContainer>
   )
 }
 

@@ -69,15 +69,9 @@ export function useSpring({
   const context = useContext(SpringContext)
   const exitRef = useRef(context)
   const { isExiting, onExitComplete } = context || {}
-  const isVisible = !isExiting
-  const visibilityRef = useRef(isVisible)
   const layout = useRef<Layout | null>(null)
 
   ensureFrames(to, from)
-
-  useEffect(() => {
-    exitRef.current = { isExiting, onExitComplete }
-  }, [isExiting, onExitComplete])
 
   const onEnd = () => {
     if (exitRef.current && exitRef.current.isExiting && exit) {
@@ -97,6 +91,20 @@ export function useSpring({
       ...options,
     },
   })
+
+  useEffect(() => {
+    exitRef.current = { isExiting, onExitComplete }
+    if (isExiting && !exit && process.env.NODE_ENV !== 'production')  {
+      console.warn(
+        '@spring-keyframes: Children of AnimateExit must declare an "exit" Frame.'
+      )
+    }
+    
+    if (exit && isExiting) {
+      animateToFrame({ frame: exit, withDelay: true, name: 'exit' })
+    }
+
+  }, [isExiting, onExitComplete])
 
   useEffect(() => {
     animateToFrame({ frame: to, withDelay: true, name: 'mount' })
@@ -129,16 +137,11 @@ export function useSpring({
 
     ensureFrames(to, from)
 
-    if (!isVisible && exit) {
-      // exit opacity not working
-      animateToFrame({ frame: exit, withDelay: true, name: 'exit' })
-    } else {
-      if (isExiting) return
-      animateToFrame({ frame: to, withDelay: true, name: 'to' })
-    }
+    if (isExiting) return
 
-    visibilityRef.current = isVisible
-  }, [isVisible, to])
+    animateToFrame({ frame: to, withDelay: true, name: 'to' })
+
+  }, [to])
 
   return {
     ref,
