@@ -2,26 +2,26 @@
 
 exports[`returns an array of keyframe strings, and duration for a long spring 1`] = `
 "0% {width: 100px;}
- 4.62% {width: 279.74px;}
- 9.23% {width: 137.01px;}
- 13.85% {width: 249.28px;}
- 18.97% {width: 161.15px;}
- 23.59% {width: 230.83px;}
- 28.21% {width: 175.77px;}
- 33.33% {width: 218.89px;}
- 37.95% {width: 184.94px;}
- 42.56% {width: 211.89px;}
- 47.18% {width: 190.7px;}
- 52.31% {width: 207.34px;}
- 56.92% {width: 194.18px;}
- 61.54% {width: 204.57px;}
- 66.67% {width: 196.43px;}
- 71.28% {width: 202.84px;}
- 75.9% {width: 197.76px;}
- 80.51% {width: 201.75px;}
- 85.64% {width: 198.61px;}
- 90.26% {width: 201.1px;}
- 94.87% {width: 199.14px;}
+ 5.13% {width: 273.39px;}
+ 9.74% {width: 140.04px;}
+ 14.36% {width: 248.5px;}
+ 19.49% {width: 164.83px;}
+ 24.1% {width: 228.88px;}
+ 28.72% {width: 176.53px;}
+ 33.85% {width: 216.81px;}
+ 38.46% {width: 186.13px;}
+ 43.08% {width: 211.33px;}
+ 47.69% {width: 190.84px;}
+ 52.82% {width: 206.65px;}
+ 57.44% {width: 194.54px;}
+ 62.05% {width: 204.43px;}
+ 67.18% {width: 196.82px;}
+ 71.79% {width: 202.62px;}
+ 76.41% {width: 197.86px;}
+ 81.03% {width: 201.73px;}
+ 86.15% {width: 198.74px;}
+ 90.77% {width: 201.03px;}
+ 95.38% {width: 199.16px;}
  100% {width: 200px;}"
 `;
 
@@ -32,15 +32,15 @@ exports[`returns an array of keyframe strings, and duration for a short spring 1
 
 exports[`returns an array of keyframe strings, and duration for a tweened and sprung animation 1`] = `
 "0% {transform: translate3d(0px, 0px, 0px);}
- 9.57% {transform: translate3d(161.87px, 0px, 0px);}
- 19.68% {transform: translate3d(61.76px, 0px, 0px);}
- 29.79% {transform: translate3d(123.61px, 0px, 0px);}
- 39.89% {transform: translate3d(85.44px, 0px, 0px);}
- 50% {transform: translate3d(108.97px, 0px, 0px);}
- 59.57% {transform: translate3d(94.45px, 0px, 0px);}
- 69.68% {transform: translate3d(103.43px, 0px, 0px);}
- 79.79% {transform: translate3d(97.88px, 0px, 0px);}
- 89.89% {transform: translate3d(101.31px, 0px, 0px);}
+ 10.11% {transform: translate3d(161.53px, 0px, 0px);}
+ 20.21% {transform: translate3d(62.18px, 0px, 0px);}
+ 30.32% {transform: translate3d(123.23px, 0px, 0px);}
+ 40.43% {transform: translate3d(85.75px, 0px, 0px);}
+ 50.53% {transform: translate3d(108.73px, 0px, 0px);}
+ 60.11% {transform: translate3d(94.48px, 0px, 0px);}
+ 70.21% {transform: translate3d(103.39px, 0px, 0px);}
+ 80.32% {transform: translate3d(97.92px, 0px, 0px);}
+ 90.43% {transform: translate3d(101.28px, 0px, 0px);}
  100% {transform: translate3d(100px, 0px, 0px);}"
 `;
 
@@ -56,33 +56,33 @@ exports[`returns an array of keyframe strings, and duration for a tweened animat
 
 exports[`returns an array of keyframe strings, duration, and ease 1`] = `
 "0% {width: 100px; transform: translate3d(0px, 100px, 0px) scale3d(0, 0, 1);}
- 33.33% {width: 218.68px; transform: translate3d(23.74px, 40.66px, 0px) scale3d(1.19, 1.19, 1);}
- 66.67% {width: 196.51px; transform: translate3d(19.3px, 51.75px, 0px) scale3d(0.97, 0.97, 1);}
+ 35.56% {width: 217.79px; transform: translate3d(23.56px, 41.11px, 0px) scale3d(1.18, 1.18, 1);}
+ 68.89% {width: 196.67px; transform: translate3d(19.33px, 51.67px, 0px) scale3d(0.97, 0.97, 1);}
  100% {width: 200px; transform: translate3d(20px, 50px, 0px) scale3d(1, 1, 1);}"
 `;
 
 exports[`returns an array of keyframes for 0 value animations 1`] = `
 "0% {transform: translate3d(0px, 0px, 0px) scale3d(0, 1, 1);}
- 4.62% {transform: translate3d(35.95px, 0px, 0px) scale3d(1.8, 1, 1);}
- 9.23% {transform: translate3d(7.4px, 0px, 0px) scale3d(0.37, 1, 1);}
- 13.85% {transform: translate3d(29.86px, 0px, 0px) scale3d(1.49, 1, 1);}
- 18.97% {transform: translate3d(12.23px, 0px, 0px) scale3d(0.61, 1, 1);}
- 23.59% {transform: translate3d(26.17px, 0px, 0px) scale3d(1.31, 1, 1);}
- 28.21% {transform: translate3d(15.15px, 0px, 0px) scale3d(0.76, 1, 1);}
- 33.33% {transform: translate3d(23.78px, 0px, 0px) scale3d(1.19, 1, 1);}
- 37.95% {transform: translate3d(16.99px, 0px, 0px) scale3d(0.85, 1, 1);}
- 42.56% {transform: translate3d(22.38px, 0px, 0px) scale3d(1.12, 1, 1);}
- 47.18% {transform: translate3d(18.14px, 0px, 0px) scale3d(0.91, 1, 1);}
- 52.31% {transform: translate3d(21.47px, 0px, 0px) scale3d(1.07, 1, 1);}
- 56.92% {transform: translate3d(18.84px, 0px, 0px) scale3d(0.94, 1, 1);}
- 61.54% {transform: translate3d(20.91px, 0px, 0px) scale3d(1.05, 1, 1);}
- 66.67% {transform: translate3d(19.29px, 0px, 0px) scale3d(0.96, 1, 1);}
- 71.28% {transform: translate3d(20.57px, 0px, 0px) scale3d(1.03, 1, 1);}
- 75.9% {transform: translate3d(19.55px, 0px, 0px) scale3d(0.98, 1, 1);}
- 80.51% {transform: translate3d(20.35px, 0px, 0px) scale3d(1.02, 1, 1);}
- 85.64% {transform: translate3d(19.72px, 0px, 0px) scale3d(0.99, 1, 1);}
- 90.26% {transform: translate3d(20.22px, 0px, 0px) scale3d(1.01, 1, 1);}
- 94.87% {transform: translate3d(19.83px, 0px, 0px) scale3d(0.99, 1, 1);}
+ 5.13% {transform: translate3d(34.68px, 0px, 0px) scale3d(1.73, 1, 1);}
+ 9.74% {transform: translate3d(8.01px, 0px, 0px) scale3d(0.4, 1, 1);}
+ 14.36% {transform: translate3d(29.7px, 0px, 0px) scale3d(1.48, 1, 1);}
+ 19.49% {transform: translate3d(12.97px, 0px, 0px) scale3d(0.65, 1, 1);}
+ 24.1% {transform: translate3d(25.78px, 0px, 0px) scale3d(1.29, 1, 1);}
+ 28.72% {transform: translate3d(15.31px, 0px, 0px) scale3d(0.77, 1, 1);}
+ 33.85% {transform: translate3d(23.36px, 0px, 0px) scale3d(1.17, 1, 1);}
+ 38.46% {transform: translate3d(17.23px, 0px, 0px) scale3d(0.86, 1, 1);}
+ 43.08% {transform: translate3d(22.27px, 0px, 0px) scale3d(1.11, 1, 1);}
+ 47.69% {transform: translate3d(18.17px, 0px, 0px) scale3d(0.91, 1, 1);}
+ 52.82% {transform: translate3d(21.33px, 0px, 0px) scale3d(1.07, 1, 1);}
+ 57.44% {transform: translate3d(18.91px, 0px, 0px) scale3d(0.95, 1, 1);}
+ 62.05% {transform: translate3d(20.89px, 0px, 0px) scale3d(1.04, 1, 1);}
+ 67.18% {transform: translate3d(19.36px, 0px, 0px) scale3d(0.97, 1, 1);}
+ 71.79% {transform: translate3d(20.52px, 0px, 0px) scale3d(1.03, 1, 1);}
+ 76.41% {transform: translate3d(19.57px, 0px, 0px) scale3d(0.98, 1, 1);}
+ 81.03% {transform: translate3d(20.35px, 0px, 0px) scale3d(1.02, 1, 1);}
+ 86.15% {transform: translate3d(19.75px, 0px, 0px) scale3d(0.99, 1, 1);}
+ 90.77% {transform: translate3d(20.21px, 0px, 0px) scale3d(1.01, 1, 1);}
+ 95.38% {transform: translate3d(19.83px, 0px, 0px) scale3d(0.99, 1, 1);}
  100% {transform: translate3d(20px, 0px, 0px) scale3d(1, 1, 1);}"
 `;
 
@@ -100,15 +100,15 @@ exports[`returns an array of valid keyframes for backgroundColor 2`] = `"3133.33
 
 exports[`returns an array of valid keyframes for camelCase properties 1`] = `
 "0% {border-radius: 0px;}
- 9.57% {border-radius: 32.37px;}
- 19.68% {border-radius: 12.35px;}
- 29.79% {border-radius: 24.72px;}
- 39.89% {border-radius: 17.09px;}
- 50% {border-radius: 21.79px;}
- 59.57% {border-radius: 18.89px;}
- 69.68% {border-radius: 20.69px;}
- 79.79% {border-radius: 19.58px;}
- 89.89% {border-radius: 20.26px;}
+ 10.11% {border-radius: 32.31px;}
+ 20.21% {border-radius: 12.44px;}
+ 30.32% {border-radius: 24.65px;}
+ 40.43% {border-radius: 17.15px;}
+ 50.53% {border-radius: 21.75px;}
+ 60.11% {border-radius: 18.9px;}
+ 70.21% {border-radius: 20.68px;}
+ 80.32% {border-radius: 19.58px;}
+ 90.43% {border-radius: 20.26px;}
  100% {border-radius: 20px;}"
 `;
 
@@ -172,15 +172,15 @@ exports[`returns tweened animations for all tweened property values 1`] = `
 
 exports[`returns tweened animations for custom tweened property values 1`] = `
 "0% {opacity: 0;}
- 9.57% {opacity: 1.62;}
- 19.68% {opacity: 0.62;}
- 29.79% {opacity: 1.24;}
- 39.89% {opacity: 0.85;}
- 50% {opacity: 1.09;}
- 59.57% {opacity: 0.94;}
- 69.68% {opacity: 1.03;}
- 79.79% {opacity: 0.98;}
- 89.89% {opacity: 1.01;}
+ 10.11% {opacity: 1.62;}
+ 20.21% {opacity: 0.62;}
+ 30.32% {opacity: 1.23;}
+ 40.43% {opacity: 0.86;}
+ 50.53% {opacity: 1.09;}
+ 60.11% {opacity: 0.94;}
+ 70.21% {opacity: 1.03;}
+ 80.32% {opacity: 0.98;}
+ 90.43% {opacity: 1.01;}
  100% {opacity: 1;}"
 `;
 

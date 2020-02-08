@@ -26,10 +26,6 @@ export function spring({
 }: Props): [Maxes, number] {
   let lastValue = 1,
     lastVelocity = velocity,
-    uncommitted = false,
-    lastUncommittedValue = 1,
-    lastUncommittedFrame = 0,
-    lastUncommittedVelocity = velocity,
     frame = 0,
     lastFrame: number = 0,
     maxes: Maxes = [[1, 0, velocity]]
@@ -53,23 +49,13 @@ export function spring({
       lastFrame = frame
       break
     }
-    if ((withInvertedScale || withEveryFrame) && frame > 0) {
-      maxes.push([value, frame, velocity])
-    } else if (Math.abs(value) > Math.abs(lastValue)) {
-      uncommitted = true
-      lastUncommittedValue = value
-      lastUncommittedFrame = frame
-      lastUncommittedVelocity = velocity
-    } else {
-      if (uncommitted) {
-        maxes.push([
-          lastUncommittedValue,
-          lastUncommittedFrame,
-          lastUncommittedVelocity,
-        ])
-      }
-      uncommitted = false
-    }
+
+    const isMax =
+      (lastVelocity < 0 && velocity > 0) || (lastVelocity > 0 && velocity < 0)
+
+    const isEveryFrame = (withInvertedScale || withEveryFrame) && frame > 0
+
+    if (isEveryFrame || isMax) maxes.push([value, frame, velocity])
 
     lastValue = value
     lastVelocity = velocity
