@@ -1,6 +1,9 @@
 import * as CSS from 'csstype'
 
-export type Max = [number, number, number]
+export type FrameNumber = number
+type FrameValue = number
+type FrameVelocity = number
+export type Max = [FrameValue, FrameNumber, FrameVelocity]
 export type Maxes = Max[]
 export type TransformProperty =
   | 'x'
@@ -20,8 +23,6 @@ export type CSSFrame = [CSSProperty, number | string]
 export type TransformFrame = [TransformProperty, number]
 export type Property = CSSProperty | TransformProperty
 export type Frame = { [K in Property]?: number | string }
-
-export type FrameNumber = number
 
 export type Keyframe = [
   /** Frame */

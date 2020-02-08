@@ -62,7 +62,7 @@ function convertMaxesToKeyframes(
   withInvertedScale: boolean
 ): Keyframe[] {
   return maxes.map(([value, index]) => [
-    toFrame(index),
+    Math.round(toFrame(index) * 100) / 100,
     toValue(value, from, to, withInvertedScale),
   ])
 }
@@ -85,7 +85,10 @@ function toValue(
   keys.forEach(key => {
     let v =
       typeof from[key] === 'number'
-        ? interpolate(1, 0, from[key] as number, to[key] as number)(value)
+        ? Math.round(
+            interpolate(1, 0, from[key] as number, to[key] as number)(value) *
+              100
+          ) / 100
         : value === 1
         ? from[key]
         : to[key]
