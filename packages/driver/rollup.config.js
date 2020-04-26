@@ -4,7 +4,7 @@ import { terser } from 'rollup-plugin-terser'
 import pkg from './package.json'
 
 export default {
-  input: './src/index.ts',
+  input: './src/driver.ts',
   output: [
     {
       name: '@spring-keyframes/driver',
@@ -29,7 +29,15 @@ export default {
     ...Object.keys(pkg.peerDependencies || {}),
   ],
   plugins: [
-    typescript({ exclude: '**/*.test.ts' }),
+    typescript({
+      exclude: '**/*.test.ts',
+      tsconfigOverride: {
+        compilerOptions: {
+          declaration: true,
+          sourceRoot: `${process.cwd()}/src`,
+        },
+      },
+    }),
     sourceMaps(),
     terser({
       sourcemap: true,

@@ -1,4 +1,4 @@
-import { driver, EASE } from './index'
+import { driver, EASE } from './driver'
 
 it('returns an array of keyframe strings, duration, and ease', () => {
   const [animation, duration, ease] = driver(
