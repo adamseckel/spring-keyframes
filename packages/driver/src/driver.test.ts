@@ -1,5 +1,4 @@
 import { driver, EASE } from './driver'
-import { identity, Matrix } from '@spring-keyframes/matrix'
 
 it('returns an array of keyframe strings, duration, and ease', () => {
   const [animation, duration, ease] = driver(
@@ -132,37 +131,6 @@ it('returns keyframes for scale props, for each frame when withInvertedScale is 
     { x: 0, scaleY: 0 },
     { x: 400, scaleY: 1 },
     { withInvertedScale: true }
-  )
-
-  expect(animations).toMatchSnapshot()
-  expect(duration).toMatchSnapshot()
-})
-
-it('returns keyframes for matrix props', () => {
-  const toMatrix = new Matrix(identity)
-    .translateX(20)
-    .translateY(40)
-    .get()
-
-  const [animations, duration] = driver(
-    { matrix: identity },
-    { matrix: toMatrix }
-  )
-
-  expect(animations).toMatchSnapshot()
-  expect(duration).toMatchSnapshot()
-})
-
-it('returns keyframes for matrix props with every frame', () => {
-  const toMatrix = new Matrix(identity)
-    .translateX(20)
-    .translateY(40)
-    .get()
-
-  const [animations, duration] = driver(
-    { matrix: identity },
-    { matrix: toMatrix },
-    { withEveryFrame: true }
   )
 
   expect(animations).toMatchSnapshot()
