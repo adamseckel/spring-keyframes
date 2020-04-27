@@ -5,6 +5,10 @@
   "main": "dist/matrix.js",
   "module": "dist/matrix.es.js",
   "types": "dist/matrix.d.ts",
+  "private": false,
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "NODE_ENV=test jest",
     "build": "rollup -c",
@@ -27,5 +31,8 @@
     "ts-jest": "24.0.2",
     "typescript": "^3.7.2"
   },
-  "gitHead": "9b3175191d37efd64245c290c6142cdd7baa3b87"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "69a97e1653b8d5615a1df12a6254220a87a67346"
 }
