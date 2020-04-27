@@ -1,9 +1,11 @@
+import { identity } from './identity'
+
 export class Matrix {
   constructor(matrix: number[]) {
     if (matrix) this.value = matrix
   }
 
-  private value: number[] = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+  private value: number[] = identity
 
   // rotate
   rotate3d = (x: number = 0, y: number = 0, z: number = 0, deg: number = 0) => {

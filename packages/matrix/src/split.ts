@@ -1,6 +1,7 @@
+import { identity } from './identity'
+
 export function split(matrix: string) {
-  if (matrix === 'none')
-    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] as number[]
+  if (matrix === 'none') return identity
 
   return matrix
     .split('(')[1]

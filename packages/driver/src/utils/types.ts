@@ -18,11 +18,13 @@ export type TransformProperty =
   | 'scaleY'
   | 'scaleZ'
 
+export type Matrix = 'matrix'
+
 export type CSSProperty = keyof Omit<CSS.Properties, 'transition'>
 export type CSSFrame = [CSSProperty, number | string]
 export type TransformFrame = [TransformProperty, number]
-export type Property = CSSProperty | TransformProperty
-export type Frame = { [K in Property]?: number | string }
+export type Property = CSSProperty | TransformProperty | Matrix
+export type Frame = { [K in Property]?: number | string | number[] }
 
 export type Keyframe = [
   /** Frame */

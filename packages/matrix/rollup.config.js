@@ -4,11 +4,11 @@ import { terser } from 'rollup-plugin-terser'
 import pkg from './package.json'
 
 export default {
-  input: './src/index.ts',
+  input: './src/matrix.ts',
   output: [
     {
       name: '@spring-keyframes/matrix',
-      file: './lib/matrix.umd.js',
+      file: './dist/matrix.umd.js',
       format: 'umd',
       exports: 'named',
       sourcemap: true,
@@ -29,7 +29,15 @@ export default {
     ...Object.keys(pkg.peerDependencies || {}),
   ],
   plugins: [
-    typescript({ exclude: '**/*.test.ts' }),
+    typescript({
+      exclude: '**/*.test.ts',
+      tsconfigOverride: {
+        compilerOptions: {
+          declaration: true,
+          sourceRoot: `${process.cwd()}/src`,
+        },
+      },
+    }),
     sourceMaps(),
     terser({
       sourcemap: true,

@@ -2,9 +2,9 @@
   "name": "@spring-keyframes/matrix",
   "version": "1.0.0",
   "license": "MIT",
-  "main": "lib/index.js",
-  "module": "lib/index.es.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/matrix.js",
+  "module": "dist/matrix.es.js",
+  "types": "dist/matrix.d.ts",
   "scripts": {
     "test": "NODE_ENV=test jest",
     "build": "rollup -c",

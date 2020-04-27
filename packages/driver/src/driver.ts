@@ -67,6 +67,24 @@ function convertMaxesToKeyframes(
   ])
 }
 
+function operateMatrix(
+  value: number,
+  fromMatrix: number[],
+  toMatrix: number[]
+) {
+  const matrix = []
+
+  for (let index = 0; index < fromMatrix.length; index++) {
+    matrix.push(
+      Math.round(
+        interpolate(1, 0, fromMatrix[index], toMatrix[index])(value) * 100
+      ) / 100
+    )
+  }
+
+  return `matrix3d(${matrix.join(',')})`
+}
+
 function toValue(
   value: number,
   from: Frame,
@@ -77,12 +95,25 @@ function toValue(
   let transform: TransformFrame[] = []
   let keys = Object.keys(from) as Property[]
   const scales = ['scale', 'scaleX', 'scaleY']
+  const matrixIndex = keys.indexOf('matrix')
+  const hasMatrix = matrixIndex > -1
+
+  if (hasMatrix) {
+    keys = keys.splice(matrixIndex, 0)
+
+    style.push([
+      'transform',
+      operateMatrix(value, from.matrix as number[], to.matrix as number[]),
+    ])
+  }
 
   if (withInvertedScale) {
     keys = keys.filter(key => scales.includes(key))
   }
 
   keys.forEach(key => {
+    if (hasMatrix && transforms.includes(key)) return
+
     let v =
       typeof from[key] === 'number'
         ? Math.round(
@@ -100,7 +131,7 @@ function toValue(
     }
   })
 
-  if (transform.length > 0) {
+  if (!hasMatrix && transform.length > 0) {
     style.push([
       'transform',
       createTransformBlock(transform, withInvertedScale),
