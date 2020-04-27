@@ -1,6 +1,6 @@
 {
   "name": "@spring-keyframes/matrix",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "license": "MIT",
   "main": "dist/matrix.js",
   "module": "dist/matrix.es.js",
