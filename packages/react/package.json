@@ -1,21 +1,22 @@
 {
   "name": "@spring-keyframes/react",
   "version": "0.0.34",
-  "main": "lib/index.js",
-  "module": "lib/index.es.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
   "license": "MIT",
   "dependencies": {
     "@emotion/hash": "^0.7.4",
-    "@spring-keyframes/driver": "^0.0.34",
-    "sylvester-es6": "^0.0.2",
+    "@spring-keyframes/driver": "*",
+    "@spring-keyframes/matrix": "*",
     "use-deep-compare-effect": "^1.3.0"
   },
   "devDependencies": {
-    "@types/sylvester-es6": "^0.0.1",
+    "@rollup/plugin-commonjs": "^11.1.0",
+    "@rollup/plugin-node-resolve": "^7.1.3",
     "emotion": "^10.0.23",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

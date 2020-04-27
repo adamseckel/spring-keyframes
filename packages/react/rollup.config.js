@@ -1,6 +1,9 @@
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
 import { terser } from 'rollup-plugin-terser'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+
 import pkg from './package.json'
 
 export default {
@@ -8,7 +11,7 @@ export default {
   output: [
     {
       name: '@spring-keyframes/react',
-      file: './lib/react.umd.js',
+      file: './dist/react.umd.js',
       format: 'umd',
       exports: 'named',
       sourcemap: true,
@@ -24,12 +27,13 @@ export default {
       sourcemap: true,
     },
   ],
-  external: [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-  ],
+  external: [...Object.keys(pkg.peerDependencies || {})],
   plugins: [
     typescript({ exclude: '**/*.test.ts' }),
+    resolve(),
+    commonjs({
+      include: /node_modules/,
+    }),
     sourceMaps(),
     terser({
       sourcemap: true,
