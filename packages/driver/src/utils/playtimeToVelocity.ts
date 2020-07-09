@@ -6,13 +6,12 @@ import { Maxes } from './types'
 
 const closestFrameIndexForFrame = (counts: Maxes, goal: number) =>
   counts.reduce((prev, curr) =>
-    Math.abs(curr[1] - goal) < Math.abs(prev[1] - goal) ? curr : prev
+    Math.abs(curr[1] - goal) > Math.abs(prev[1] - goal) ? prev : curr
   )
 
 const highLowFrame = (maxes: Maxes, frame: number, i: number) => {
-  if (frame > maxes[i][1]) {
-    return [maxes[i], maxes[i + 1]]
-  }
+  if (frame > maxes[i][1]) return [maxes[i], maxes[i + 1]]
+
   return [maxes[i - 1], maxes[i]]
 }
 

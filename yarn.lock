@@ -2319,6 +2319,18 @@
     style-value-types "^3.1.7"
     tslib "^1.10.0"
 
+"@react-hook/debounce@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@react-hook/debounce/-/debounce-3.0.0.tgz#9eea8b5d81d4cb67cd72dd8657b3ff724afc7cad"
+  integrity sha512-ir/kPrSfAzY12Gre0sOHkZ2rkEmM4fS5M5zFxCi4BnCeXh2nvx9Ujd+U4IGpKCuPA+EQD0pg1eK2NGLvfWejag==
+  dependencies:
+    "@react-hook/latest" "^1.0.2"
+
+"@react-hook/latest@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@react-hook/latest/-/latest-1.0.2.tgz#767eb6974f91eef353981b8b60a87147dadecb18"
+  integrity sha512-zLtOIToct1EBTbwldkMJsXC2eCsmWOOP7z6UG0M/sCgnPExtIjvVMCpPESvPnMbQzDZytXVy0nvMbUuK2gZs2A==
+
 "@rollup/plugin-commonjs@^11.1.0":
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-11.1.0.tgz#60636c7a722f54b41e419e1709df05c7234557ef"

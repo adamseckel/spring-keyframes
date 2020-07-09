@@ -119,8 +119,7 @@ it('returns a velocity for a in-progress animation', () => {
     { x: 400 },
     { stiffness: 100, damping: 2 }
   )
-
-  expect(convert(400)).toBe(0.015578297879179404)
+  expect(convert(400)).toBe(-0.015578297879179286)
   expect(ease).toBeDefined()
   expect(animations).toBeDefined()
   expect(duration).toBeDefined()

@@ -22,6 +22,8 @@ export {
   TransformProperty,
 } from './utils/types'
 
+export { spring as springEveryFrame }
+
 const valueOrDefault = (v: number | undefined, d: number) =>
   v !== undefined ? v : d
 
@@ -85,10 +87,10 @@ function toValue(
     let v =
       typeof from[key] === 'number'
         ? Math.round(
-            interpolate(1, 0, from[key] as number, to[key] as number)(value) *
+            interpolate(0, 1, from[key] as number, to[key] as number)(value) *
               100
           ) / 100
-        : value === 1
+        : value === 0
         ? from[key]
         : to[key]
 
@@ -270,7 +272,7 @@ export function driver(
 
   if (Object.keys(tFrom).length || Object.keys(tTo).length) {
     const tweenedKeyframes = convertMaxesToKeyframes(
-      [[1, 0, 0], [0, lastFrame, 0]],
+      [[0, 0, 0], [1, lastFrame, 0]],
       toFrame,
       tFrom,
       tTo,

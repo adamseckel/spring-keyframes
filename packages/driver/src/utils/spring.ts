@@ -24,18 +24,18 @@ export function spring({
   withInvertedScale,
   withEveryFrame,
 }: Props): [Maxes, number] {
-  let lastValue = 1,
+  let lastValue = 0,
     lastVelocity = velocity,
     frame = 0,
     lastFrame: number = 0,
-    maxes: Maxes = [[1, 0, velocity]]
+    maxes: Maxes = [[0, 0, velocity, true]]
 
   while (lastFrame === 0) {
     let [value, velocity] = stepper(
       msPerFrame / 1000,
       lastValue,
       lastVelocity,
-      0,
+      1,
       stiffness,
       damping === 0 ? 0.01 : damping,
       mass,
@@ -45,7 +45,7 @@ export function spring({
     frame += 1
 
     if (velocity === 0) {
-      maxes.push([0, frame, 0])
+      maxes.push([1, frame, 0, true])
       lastFrame = frame
       break
     }
@@ -55,7 +55,7 @@ export function spring({
 
     const isEveryFrame = (withInvertedScale || withEveryFrame) && frame > 0
 
-    if (isEveryFrame || isMax) maxes.push([value, frame, velocity])
+    if (isEveryFrame || isMax) maxes.push([value, frame, velocity, isMax])
 
     lastValue = value
     lastVelocity = velocity

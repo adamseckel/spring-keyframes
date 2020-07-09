@@ -3,7 +3,8 @@ import * as CSS from 'csstype'
 export type FrameNumber = number
 type FrameValue = number
 type FrameVelocity = number
-export type Max = [FrameValue, FrameNumber, FrameVelocity]
+type IsMax = boolean
+export type Max = [FrameValue, FrameNumber, FrameVelocity, IsMax]
 export type Maxes = Max[]
 export type TransformProperty =
   | 'x'

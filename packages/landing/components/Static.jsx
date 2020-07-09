@@ -9,15 +9,15 @@ import { useEffect } from 'react'
 const animate = visible =>
   visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
 
-export const Features = ({}) => {
+export const Static = ({}) => {
   return (
     <Section>
       {({ isVisible, wasVisible }) => (
         <>
-          <Subtitle>What can it do.</Subtitle>
+          <Subtitle>Use it anywhere.</Subtitle>
           <Title visible={isVisible}>
-            Easily implement interruptible interactions, animated exits, or
-            updated layout.
+            Generate physics based keyframe animations for use with static
+            css-in-js tools like Linaria or Treat.
           </Title>
 
           <Text
@@ -29,10 +29,13 @@ export const Features = ({}) => {
               mass: 1,
               delay: 300,
             }}>
-            By using native css animations, you don't have to compromise between
-            top performance and your vision.
+            <b style={{ color: 'white' }}>@spring-keyframes/react</b> exports
+            the underlying CSS driver. By passing values for a from and to
+            frame, as well as the same spring options used by the react
+            component or hook, the driver will return a keyframe string,
+            duration, and the appropriate cubic-bezier timing function.
           </Text>
-          <Examples
+          <Text
             initial={{ opacity: 0, y: 50 }}
             animate={animate(wasVisible)}
             transition={{
@@ -41,12 +44,13 @@ export const Features = ({}) => {
               mass: 1,
               delay: 300,
             }}>
-            <Column></Column>
-            <Column></Column>
-          </Examples>
+            <b style={{ color: 'white' }}>@spring-keyframes/driver</b> is also
+            available as a framework independent package, and exports all the
+            primitives needed to generate static keyframes, and the tools to
+            spring-keyframes/react uses to generate interruptable animations.
+          </Text>
         </>
       )}
-
       {/* 
         <animated.div
           initial={{ opacity: 0, y: 50 }}
@@ -71,17 +75,3 @@ export const Features = ({}) => {
     </Section>
   )
 }
-
-const Examples = styled(animated.div)`
-  grid-column: 3 / span 8;
-  margin-top: 36px;
-  margin-left: -24px;
-  margin-right: -24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-
-  &:first-child {
-    margin-right: 24px;
-  }
-`
