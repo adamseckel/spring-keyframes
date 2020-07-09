@@ -23,7 +23,7 @@ const GridItem = styled.div`
   border-left: 1px dashed #222222;
   border-right: 1px dashed #222222;
   height: 100%;
-  width: 100%;
+  height: -webkit-fill-available;
 `
 
 const items = Array(12).fill('')
