@@ -272,7 +272,7 @@ export function driver(
 
   if (Object.keys(tFrom).length || Object.keys(tTo).length) {
     const tweenedKeyframes = convertMaxesToKeyframes(
-      [[0, 0, 0], [1, lastFrame, 0]],
+      [[0, 0, 0, true], [1, lastFrame, 0, true]],
       toFrame,
       tFrom,
       tTo,
