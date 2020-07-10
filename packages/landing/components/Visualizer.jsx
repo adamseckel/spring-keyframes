@@ -93,7 +93,7 @@ export const Visualizer = ({ options, style }) => {
 const VizContainer = styled.div`
   width: 100%;
   height: 120px;
-  background: #080808;
+  background: var(--dark-background);
   border-radius: 8px;
   display: flex;
   flex-direction: row;
@@ -125,13 +125,13 @@ const VizLine = styled(animated.div)`
   top: 0;
   bottom: 0;
   left: 0;
-  border-left: 1px dashed #222;
+  border-left: 1px dashed var(--ruler);
 `
 
 const Keyframe = styled(animated.div)`
   width: 5px;
   height: 5px;
-  background-color: #ffffff;
+  background-color: var(--text);
   position: absolute;
   top: -2.5px;
   left: -2px;
@@ -159,7 +159,7 @@ function SpringVisualiser({ maxes }) {
         d={curveLine}
         fill="transparent"
         strokeWidth="2"
-        stroke="rgb(117, 117, 117)"
+        stroke="var(--dark-text)"
         strokeLinecap="round"></path>
     </svg>
   )

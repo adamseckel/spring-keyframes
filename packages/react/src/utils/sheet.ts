@@ -32,10 +32,7 @@ export class StyleSheet {
   nonce: string | void
   before: Element | null
   constructor(options: Options) {
-    this.isSpeedy =
-      options.speedy === undefined
-        ? process.env.NODE_ENV === 'production'
-        : options.speedy
+    this.isSpeedy = false
     this.tags = []
     this.ctr = 0
     this.nonce = options.nonce
@@ -86,7 +83,7 @@ export class StyleSheet {
   flushKeys(keys: string[]) {
     let count = 0
 
-    this.tags.forEach((tag) => {
+    this.tags.forEach(tag => {
       if (this.isSpeedy) {
         const sheet = sheetForTag(tag)
 

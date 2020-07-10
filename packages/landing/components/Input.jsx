@@ -7,9 +7,9 @@ export const Input = props => {
 
 const StyledInput = styled.input`
   border-radius: 8px;
-  background: #000;
+  background: var(--background);
   padding: 8px;
-  color: #757575;
+  color: var(--dark-text);
   font-size: 12px;
   font-weight: 600;
   border: 0;

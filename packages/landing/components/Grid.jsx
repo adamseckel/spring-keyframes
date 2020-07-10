@@ -20,8 +20,8 @@ export const GridContainer = styled(ColumnGrid)`
 
 const GridItem = styled.div`
   border: 0;
-  border-left: 1px dashed #222222;
-  border-right: 1px dashed #222222;
+  border-left: 1px dashed var(--ruler);
+  border-right: 1px dashed var(--ruler);
   height: 100%;
   height: -webkit-fill-available;
 `

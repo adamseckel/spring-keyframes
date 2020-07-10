@@ -76,6 +76,8 @@ const ExampleStateContainer = () => {
     damping: 12,
     mass: 1,
     precision: 0.01,
+    fillMode: 'both',
+    withInvertedScale: true,
   })
 
   const [debounced, setDebounced] = useDebounce(options)
@@ -90,13 +92,13 @@ const ExampleStateContainer = () => {
           animate={{ scale: 1, rotate: 0 }}
           whileTap={{ scale: 1.4, rotate: 0 }}
           whileHover={{ rotate: 45, scale: 1 }}
-          options={options}
+          transition={options}
           withInvertedScale>
           <div
             style={{
               width: 40,
               height: 40,
-              background: '#141414',
+              background: 'var(--light-background)',
               borderRadius: '100%',
             }}></div>
         </InteractiveElement>
@@ -176,7 +178,7 @@ const TripleRow = styled(Row)`
 `
 const Example = styled(animated.div)`
   border-radius: 8px;
-  background: #141414;
+  background: var(--light-background);
   grid-column: 3 / span 8;
   margin-top: 36px;
   margin-left: -24px;
@@ -199,7 +201,7 @@ const InteractiveCanvas = styled.div`
 const InteractiveElement = styled(animated.div)`
   width: 180px;
   height: 180px;
-  background: #000;
+  background: var(--background);
   border-radius: 22%;
   display: flex;
   justify-content: center;
@@ -210,7 +212,7 @@ const InteractiveControls = styled.div`
   width: 100%;
   height: 100%;
   padding: 24px;
-  border-left: 1px solid #222;
+  border-left: 1px solid var(--ruler);
   margin-left: -24px;
   grid-column: 7 / span 5;
   display: flex;

@@ -29,9 +29,9 @@ export const Static = ({}) => {
               mass: 1,
               delay: 300,
             }}>
-            <b style={{ color: 'white' }}>@spring-keyframes/react</b> exports
-            the underlying CSS driver. By passing values for a from and to
-            frame, as well as the same spring options used by the react
+            <b style={{ color: 'var(--text)' }}>@spring-keyframes/react</b>{' '}
+            exports the underlying CSS driver. By passing values for a from and
+            to frame, as well as the same spring options used by the react
             component or hook, the driver will return a keyframe string,
             duration, and the appropriate cubic-bezier timing function.
           </Text>
@@ -44,9 +44,9 @@ export const Static = ({}) => {
               mass: 1,
               delay: 300,
             }}>
-            <b style={{ color: 'white' }}>@spring-keyframes/driver</b> is also
-            available as a framework independent package, and exports all the
-            primitives needed to generate static keyframes, and the tools to
+            <b style={{ color: 'var(--text)' }}>@spring-keyframes/driver</b> is
+            also available as a framework independent package, and exports all
+            the primitives needed to generate static keyframes, and the tools to
             spring-keyframes/react uses to generate interruptable animations.
           </Text>
         </>

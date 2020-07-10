@@ -25,9 +25,29 @@ const Home = () => {
       <Global
         styles={css`
           body {
+            --background: #000;
+            --light-background: #141414;
+            --dark-background: #080808;
+            --text: #fff;
+            --dark-text: #757575;
+            --button-background: #d9d9d9;
+            --button-text: #000;
+            --ruler: #222222;
+
+            @media (prefers-color-scheme: light) {
+              --background: #fff;
+              --light-background: #dfdfdf;
+              --dark-background: #f7f7f7;
+              --text: #000;
+              --dark-text: #555;
+              --button-background: #2d2d2d;
+              --button-text: #fff;
+              --ruler: #cecece;
+            }
+
             margin: 0;
-            background: #000;
-            color: #fff;
+            background: var(--background);
+            color: var(--text);
             h1,
             h2,
             h3,

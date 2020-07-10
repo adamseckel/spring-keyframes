@@ -45,13 +45,13 @@ export const Subtitle = styled('h3')`
   letter-spacing: 0px;
   line-height: 1.2;
   font-weight: 699;
-  color: #757575;
+  color: var(--dark-text);
   margin-bottom: 16px;
   grid-column: 3 / span 8;
 `
 
 const H2 = styled('h2')`
-  color: #ffffff;
+  color: var(--text);
   font-size: 48px;
   letter-spacing: 0px;
   line-height: 1.4;
@@ -94,7 +94,7 @@ export const Runner = ({ children }) => {
 
 const RunnerDiv = styled(animated.div)`
   width: 3px;
-  background: white;
+  background: var(--text);
   position: absolute;
   left: 0;
   top: 0;
@@ -118,7 +118,7 @@ export const Title = ({ visible, ...props }) => {
 }
 
 export const Text = styled('p')`
-  color: #757575;
+  color: var(--dark-text);
   font-size: 24px;
   letter-spacing: 0px;
   line-height: 1.4;

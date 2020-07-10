@@ -152,14 +152,17 @@ export function createTransformBlock(
   }
 
   // Stack rotates.
-  if (rotate !== undefined || rotateZ !== undefined) {
-    block.push(`rotate3d(0, 0, 1, ${rotate || rotateZ}deg)`)
+  if (rotate !== undefined) {
+    block.push(`rotate3d(0, 0, 1, ${rotate}deg)`)
+  }
+  if (rotateZ !== undefined && rotate === undefined) {
+    block.push(`rotate3d(0, 0, 1, ${rotateZ}deg)`)
   }
   if (rotateY !== undefined) {
     block.push(`rotate3d(0, 1, 0, ${rotateY}deg)`)
   }
   if (rotateX !== undefined) {
-    block.push(`rotate3d(1, 0, 0, ${rotateY}deg)`)
+    block.push(`rotate3d(1, 0, 0, ${rotateX}deg)`)
   }
 
   if (scale !== undefined) {
@@ -250,6 +253,7 @@ export function driver(
   const animations: string[] = []
 
   const [maxes, lastFrame] = spring(optionsWithDefaults)
+  console.log({ maxes })
 
   // Interpolate between keyframe values of 0 - 100 and frame indexes of 0 - x where x is the lastFrame.
   const toFrame = interpolate(0, lastFrame, 0, 100)

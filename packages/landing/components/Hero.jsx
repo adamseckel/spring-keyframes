@@ -32,7 +32,7 @@ export const Hero = () => {
         Lightning fast, fire-and-forget, interruptible, physics based,
         <br />
         <a
-          style={{ color: 'white', textDecoration: 'none' }}
+          style={{ color: 'var(--text)', textDecoration: 'none' }}
           target="_blank"
           href="https://developer.mozilla.org/en-US/docs/Web/CSS/animation">
           css animations.
@@ -131,7 +131,7 @@ const Title = styled(animated.h1)`
 `
 
 const Subtitle = styled(animated.p)`
-  color: #757575;
+  color: var(--dark-text);
   font-size: 28px;
   letter-spacing: 0px;
   line-height: 1.4;
@@ -145,9 +145,9 @@ const Button = styled('a')`
   padding: 12px 0;
   display: block;
   width: 100%;
-  background: #d9d9d9;
+  background: var(--button-background);
   border-radius: 8px;
-  color: #000000;
+  color: var(--button-text);
   font-size: 14px;
   letter-spacing: 0px;
   line-height: 1.2;

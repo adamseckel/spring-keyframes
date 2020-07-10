@@ -105,6 +105,7 @@ function animatedClass({
     tweenedProps: tweened,
   })
 
+  console.log(frames)
   const preHash = JSON.stringify({
     to,
     from,
