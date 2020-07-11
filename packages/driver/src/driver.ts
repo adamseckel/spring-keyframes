@@ -253,7 +253,6 @@ export function driver(
   const animations: string[] = []
 
   const [maxes, lastFrame] = spring(optionsWithDefaults)
-  console.log({ maxes })
 
   // Interpolate between keyframe values of 0 - 100 and frame indexes of 0 - x where x is the lastFrame.
   const toFrame = interpolate(0, lastFrame, 0, 100)

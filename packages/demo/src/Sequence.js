@@ -6,7 +6,6 @@ export default function WhileInteraction() {
   const currentSequenceRef = React.useRef(sequence)
 
   const nextSequence = () => {
-    console.log('call')
     const next = currentSequenceRef.current + 1
     currentSequenceRef.current = next
     setSequence(next)

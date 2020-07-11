@@ -10,7 +10,7 @@ import {
 import { motion, useInvertedScale } from 'framer-motion'
 // import { keyframes, css, createGlobalStyle } from 'styled-components'
 // import { keyframes } from 'emotion'
-import { LayeredNotifications, Notifications } from './Notifications'
+// import { LayeredNotifications, Notifications } from './Notifications'
 import SizeTransition from './SizeTransition'
 import LayoutTransition from './LayoutTransition'
 import WhileInteraction from './WhileInteraction'
@@ -57,16 +57,16 @@ function App() {
 
   const [sequenceList, setSequenceList] = React.useState([0.123456])
   const addToList = () => {
-    setSequenceList(list => [...list, Math.random()])
+    setSequenceList((list) => [...list, Math.random()])
   }
   const removeFromList = () => {
-    setSequenceList(list => {
+    setSequenceList((list) => {
       list.pop()
       return list
     })
   }
   const increment = React.useRef(true)
-  const next = list => {
+  const next = (list) => {
     if (list.length === 16) {
       increment.current = false
     }
