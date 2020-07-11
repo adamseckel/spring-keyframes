@@ -3,7 +3,7 @@ import typescript from 'rollup-plugin-typescript2'
 import { terser } from 'rollup-plugin-terser'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-
+import analyze from 'rollup-plugin-analyzer'
 import pkg from './package.json'
 
 export default {
@@ -44,5 +44,6 @@ export default {
       // @see https://github.com/terser-js/terser
       toplevel: true,
     }),
+    // analyze(),
   ],
 }
