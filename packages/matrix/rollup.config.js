@@ -52,7 +52,7 @@ export default {
       // @see https://github.com/terser-js/terser
       toplevel: true,
       compress: true,
-      mangle: true,
+      // mangle: true,
     }),
   ],
 }

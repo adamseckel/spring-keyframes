@@ -11,7 +11,7 @@ import { Text as Label } from './Typography'
 import { useDebounce } from '@react-hook/debounce'
 import { useEffect } from 'react'
 
-const animate = visible =>
+const animate = (visible) =>
   visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
 
 export const Explainer = ({}) => {
@@ -112,7 +112,7 @@ const ExampleStateContainer = () => {
             value={options.stiffness}
             min={1}
             max={500}
-            onChange={e =>
+            onChange={(e) =>
               setOptions({ ...options, stiffness: e.target.value })
             }
           />
@@ -120,7 +120,7 @@ const ExampleStateContainer = () => {
             value={options.stiffness}
             min={1}
             max={500}
-            onChange={e =>
+            onChange={(e) =>
               setOptions({ ...options, stiffness: e.target.value })
             }
           />
@@ -132,13 +132,17 @@ const ExampleStateContainer = () => {
             value={options.damping}
             min={1}
             max={50}
-            onChange={e => setOptions({ ...options, damping: e.target.value })}
+            onChange={(e) =>
+              setOptions({ ...options, damping: e.target.value })
+            }
           />
           <Slider
             value={options.damping}
             min={1}
             max={50}
-            onChange={e => setOptions({ ...options, damping: e.target.value })}
+            onChange={(e) =>
+              setOptions({ ...options, damping: e.target.value })
+            }
           />
         </TripleRow>
         <TripleRow justify="space-between">
@@ -148,13 +152,13 @@ const ExampleStateContainer = () => {
             value={options.mass}
             min={1}
             max={20}
-            onChange={e => setOptions({ ...options, mass: e.target.value })}
+            onChange={(e) => setOptions({ ...options, mass: e.target.value })}
           />
           <Slider
             value={options.mass}
             min={1}
             max={20}
-            onChange={e => setOptions({ ...options, mass: e.target.value })}
+            onChange={(e) => setOptions({ ...options, mass: e.target.value })}
           />
         </TripleRow>
       </InteractiveControls>

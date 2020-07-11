@@ -63,7 +63,7 @@ function canMultiplyFromLeft(a: Matrix, b: Matrix | Row) {
   return a[0].length === b.length
 }
 
-export function multiply(a: Matrix, b: Matrix | Row | number): Matrix | null {
+export function multiply(a: Matrix, b: Matrix): Matrix | null {
   if (typeof b === 'number') {
     return map(a, function(x: number) {
       return x * b

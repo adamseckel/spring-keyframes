@@ -1,35 +1,17 @@
-import { Vector } from './math'
-import { determinant, inverse, transpose, multiply, Matrix } from './ts/matrix'
+import { determinant, Matrix } from './math/matrix'
+import { modulus, toUnitVector, dot, cross } from './math/vector'
+// import { isolatePerspective } from './utils/isolatePerspective'
 
 // Convert radians to degrees
 function rad2deg(rad: number) {
   return rad * (180 / Math.PI)
 }
 
-// Get the length of a vector
-function length(point: any) {
-  return new Vector(point).modulus()
-}
-
-// Normalize the length of a point to 1
-function normalize(point: any) {
-  return new Vector(point).toUnitVector().elements
-}
-
-// Dot product of two points
-function dot(point1: any, point2: any) {
-  return new Vector(point1).dot(point2)
-}
-
-// Cross product of two points
-function cross(point1: any, point2: any) {
-  return new Vector(point1).cross(point2).elements
-}
-
 function combine(a: any, b: any, ascl: any, bscl: any) {
   const result = []
   result[0] = ascl * a[0] + bscl * b[0]
   result[1] = ascl * a[1] + bscl * b[1]
+
   // Both vectors are 3d. Return a 3d vector
   if (a.length === 3 && b.length === 3) {
     result[2] = ascl * a[2] + bscl * b[2]
@@ -86,26 +68,13 @@ function decompose(matrix: Matrix): FromMatrix | null {
   // First, isolate perspective
   let perspective
   if (matrix[0][3] !== 0 || matrix[1][3] !== 0 || matrix[2][3] !== 0) {
-    // rightHandSide is the right hand side of the equation
-    const rightHandSide = []
-    rightHandSide[0] = matrix[0][3]
-    rightHandSide[1] = matrix[1][3]
-    rightHandSide[2] = matrix[2][3]
-    rightHandSide[3] = matrix[3][3]
-
-    // Solve the equation by inverting perspectiveMatrix and multiplying
-    // rightHandSide by the inverse
-    const perspectiveMatrixInverse = inverse(perspectiveMatrix)
-    const perspectiveMatrixInverseTranspose = perspectiveMatrixInverse
-      ? transpose(perspectiveMatrixInverse)
-      : null
-    perspective = perspectiveMatrixInverseTranspose
-      ? multiply(perspectiveMatrixInverseTranspose, rightHandSide)
-      : null
+    // Apparently unnecessary
+    throw new Error('Needs to isolate perspective...')
+    // perspective = isolatePerspective(matrix, perspectiveMatrix)
 
     // Clear the perspective partition
-    matrix[0][3] = matrix[1][3] = matrix[2][3] = 0
-    matrix[3][3] = 1
+    // matrix[0][3] = matrix[1][3] = matrix[2][3] = 0
+    // matrix[3][3] = 1
   } else {
     // No perspective
     perspective = []
@@ -129,16 +98,16 @@ function decompose(matrix: Matrix): FromMatrix | null {
   }
 
   // Compute X scale factor and normalize first row
-  let scaleX = length(row[0])
-  row[0] = normalize(row[0])
+  let scaleX = modulus(row[0])
+  row[0] = toUnitVector(row[0])
 
   // Compute XY shear factor and make 2nd row orthogonal to 1st
   let skew = dot(row[0], row[1])
   row[1] = combine(row[1], row[0], 1.0, -skew)
 
   // Now, compute Y scale and normalize 2nd row
-  const scaleY = length(row[1])
-  row[1] = normalize(row[1])
+  const scaleY = modulus(row[1])
+  row[1] = toUnitVector(row[1])
   skew /= scaleY
 
   // Compute XZ and YZ shears, orthogonalize 3rd row
@@ -148,14 +117,15 @@ function decompose(matrix: Matrix): FromMatrix | null {
   row[2] = combine(row[2], row[1], 1.0, -skewY)
 
   // Next, get Z scale and normalize 3rd row
-  const scaleZ = length(row[2])
-  row[2] = normalize(row[2])
+  const scaleZ = modulus(row[2])
+  row[2] = toUnitVector(row[2])
   skewX /= scaleZ
   skewY /= scaleZ
 
   // At this point, the matrix (in rows) is orthonormal. Check for a
   // coordinate system flip. If the determinant is -1, then negate the
   // matrix and the scaling factors
+
   const pdum3 = cross(row[1], row[2])
   if (dot(row[0], pdum3) < 0) {
     for (let i = 0; i < 3; i++) {
@@ -178,17 +148,17 @@ function decompose(matrix: Matrix): FromMatrix | null {
   }
 
   return {
-    perspective: perspective,
-    translateX: translateX,
-    translateY: translateY,
-    translateZ: translateZ,
+    perspective,
+    translateX,
+    translateY,
+    translateZ,
     rotate: rad2deg(rotateZ),
     rotateX: rad2deg(rotateX),
     rotateY: rad2deg(rotateY),
     rotateZ: rad2deg(rotateZ),
-    scaleX: scaleX,
-    scaleY: scaleY,
-    scaleZ: scaleZ,
+    scaleX,
+    scaleY,
+    scaleZ,
     skew: rad2deg(skew),
     skewX: rad2deg(skewX),
     skewY: rad2deg(skewY),

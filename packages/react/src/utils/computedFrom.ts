@@ -1,18 +1,5 @@
 import { Frame, Property } from '@spring-keyframes/driver'
-import { fromMatrix } from '@spring-keyframes/matrix'
-
-type TransformProperty =
-  | 'translateX'
-  | 'translateY'
-  | 'translateZ'
-  | 'rotate'
-  | 'rotateX'
-  | 'rotateY'
-  | 'rotateZ'
-  | 'scale'
-  | 'scaleX'
-  | 'scaleY'
-  | 'scaleZ'
+import { fromMatrix, FromMatrix } from '@spring-keyframes/matrix'
 
 export function computedFrom(
   to: Frame,
@@ -23,14 +10,17 @@ export function computedFrom(
   // @TODO: Optionally infer unset from from element style.
   const frame: Frame = {}
   const style = getComputedStyle(ref.current)
-  const frameTransforms: Partial<Record<TransformProperty, any>> =
+  const frameTransforms =
     style.transform && style.transform !== 'none'
       ? fromMatrix(style.transform)
-      : {}
+      : ({} as FromMatrix)
+
+  // Couldn't do it.
+  if (frameTransforms === null) return frame
 
   const keys = Object.keys(to) as Property[]
 
-  keys.forEach(key => {
+  keys.forEach((key) => {
     // @ts-ignore
     if (frameTransforms[key] !== undefined) {
       // @ts-ignore

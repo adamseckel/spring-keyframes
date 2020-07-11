@@ -8,16 +8,16 @@ import { Explainer } from '../components/Explainer'
 import { Column, Row } from 'emotion-box'
 import { Section } from '../components/Section'
 import { animated } from '@spring-keyframes/react'
-import {
-  Notifications,
-  LayeredNotifications,
-} from '../components/Notifications'
+// import {
+//   Notifications,
+//   LayeredNotifications,
+// } from '../components/Notifications'
 import { Features } from '../components/Features'
 import { Static } from '../components/Static'
 import { Runner } from '../components/Section'
 
 const Home = () => {
-  const animate = visible =>
+  const animate = (visible) =>
     visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
 
   return (
