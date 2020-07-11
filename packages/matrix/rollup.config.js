@@ -47,10 +47,12 @@ export default {
       sourcemap: true,
       output: { comments: false },
       warnings: true,
-      ecma: 5,
+      ecma: 2015,
       // Compress and/or mangle variables in top level scope.
       // @see https://github.com/terser-js/terser
       toplevel: true,
+      compress: true,
+      mangle: true,
     }),
   ],
 }

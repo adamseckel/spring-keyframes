@@ -1,5 +1,5 @@
 import { Frame, Property } from '@spring-keyframes/driver'
-import { Matrix } from '@spring-keyframes/matrix'
+import { fromMatrix } from '@spring-keyframes/matrix'
 
 type TransformProperty =
   | 'translateX'
@@ -24,7 +24,9 @@ export function computedFrom(
   const frame: Frame = {}
   const style = getComputedStyle(ref.current)
   const frameTransforms: Partial<Record<TransformProperty, any>> =
-    new Matrix().getTransform(style) || {}
+    style.transform && style.transform !== 'none'
+      ? fromMatrix(style.transform)
+      : {}
 
   const keys = Object.keys(to) as Property[]
 
