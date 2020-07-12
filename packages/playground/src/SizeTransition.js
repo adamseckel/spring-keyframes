@@ -24,13 +24,12 @@ export default function SizeTransition() {
       style={{
         background: 'purple',
         marginBottom: 50,
-        marginTop: Math.max(randomContents[0] * 10, 10),
         transformOrigin: 'center center',
         overflow: 'hidden',
       }}
       transition={{
-        stiffness: 400,
-        damping: 10,
+        stiffness: 200,
+        damping: 40,
         tweenedProps: [],
         withInvertedScale: true,
       }}>
@@ -39,7 +38,21 @@ export default function SizeTransition() {
           width: Math.max(randomContents[0] * 100, 100),
           background: 'purple',
           height: Math.max(randomContents[1] * 100, 100),
-        }}></div>
+        }}>
+        <animated.p 
+          initial={{ opacity: 0, scale: 1 }}
+          animate={{ opacity: 1, scale: 1 }}  
+          whileHover={{opacity: 0.5, scale: 2}}  
+          transition={{
+            stiffness: 400,
+            damping: 10,
+            tweenedProps: [],
+            
+          }}  
+          withPositionTransition>
+            what
+        </animated.p>
+      </div>
     </animated.div>
   )
 }

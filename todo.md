@@ -1,0 +1,2 @@
+- [ ] Apply initial style as react style
+- [ ] Improve layout transition

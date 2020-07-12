@@ -1,6 +1,6 @@
+// @ts-ignore-file
 import React from 'react'
 import logo from './logo.svg'
-import './App.css'
 import {
   animated,
   useSpring,
@@ -15,8 +15,7 @@ import SizeTransition from './SizeTransition'
 import LayoutTransition from './LayoutTransition'
 import WhileInteraction from './WhileInteraction'
 import Sequence from './Sequence'
-
-// const list = [1, 2, 3, 4]
+import './App.css'
 
 function Child() {
   const { scaleY, scaleX } = useInvertedScale()
@@ -56,42 +55,23 @@ function App() {
   }
 
   const [sequenceList, setSequenceList] = React.useState([0.123456])
-  const addToList = () => {
-    setSequenceList((list) => [...list, Math.random()])
-  }
-  const removeFromList = () => {
-    setSequenceList((list) => {
-      list.pop()
-      return list
-    })
-  }
+
   const increment = React.useRef(true)
-  const next = (list) => {
-    if (list.length === 16) {
-      increment.current = false
-    }
-
-    if (list.length === 1) {
-      increment.current = true
-    }
-
-    increment.current ? addToList() : removeFromList()
-  }
 
   return (
     <div className="App">
       <header className="App-header">
         <div style={{ marginBottom: 100 }}></div>
 
-        <LayoutTransition />
+        {/* <LayoutTransition />
 
-        <div style={{ marginBottom: 100 }}></div>
+        <div style={{ marginBottom: 100 }}></div> */}
 
         <SizeTransition></SizeTransition>
 
         <div style={{ marginBottom: 100 }}></div>
 
-        <WhileInteraction />
+        {/* <WhileInteraction />
 
         <div style={{ marginBottom: 100 }}></div>
 
@@ -102,7 +82,7 @@ function App() {
           style={{
             background: 'red',
             marginTop: 50,
-            webkitUserSelect: 'none',
+            userSelect: 'none',
           }}
           transition={{
             type: 'spring',
@@ -114,7 +94,7 @@ function App() {
         </motion.div>
         <div style={{ marginBottom: 100 }}></div>
 
-        <Sequence />
+        <Sequence /> */}
         {/* <div
           style={{
             width: 200,
@@ -153,7 +133,7 @@ function App() {
           </AnimateExit>
         </div> */}
         {/* <div ref={ref}> wowowowowow</div> */}
-        <animated.div
+        {/* <animated.div
           initial={{
             scale: 0,
           }}
@@ -188,7 +168,7 @@ function App() {
           whileTap={{ scale: 2, opacity: 1, rotate: 45 }}
           whileHover={{ scale: 1.5, opacity: 1, rotate: 90 }}>
           <img src={logo} className="App-logo" alt="logo" />
-        </motion.div>
+        </motion.div> */}
         {/* <animated.div
           initial={{
             scale: 0,
@@ -401,9 +381,9 @@ function App() {
           <img src={logo} className="App-logo" alt="logo" />
         </animated.div>
         */}
-        <div style={{ marginBottom: 100 }}></div>
+        {/* <div style={{ marginBottom: 100 }}></div>
         <button onClick={() => push()}> toggle </button>
-        <div style={{ marginBottom: 100 }}></div>
+        <div style={{ marginBottom: 100 }}></div> */}
         {/* <AnimateExit>
           {list.map(
             i =>
