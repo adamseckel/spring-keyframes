@@ -16,6 +16,7 @@ export const GridContainer = styled(ColumnGrid)`
   right: 0;
   height: 100%;
   z-index: 0;
+  overflow: hidden;
 `
 
 const GridItem = styled.div`
@@ -23,7 +24,7 @@ const GridItem = styled.div`
   border-left: 1px dashed var(--ruler);
   border-right: 1px dashed var(--ruler);
   height: 100%;
-  height: -webkit-fill-available;
+  min-height: 1000vh;
 `
 
 const items = Array(12).fill('')

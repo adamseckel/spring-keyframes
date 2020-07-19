@@ -7,52 +7,59 @@ import {
 } from '@spring-keyframes/react'
 
 export default function SizeTransition() {
-  const [randomContents, setRandomContents] = React.useState([4, 4])
+  const [state, setState] = React.useState(false)
+  const [width, height] = state ? [300, 300] : [400, 400]
+  const margin = state ? 10 : 50
 
   return (
-    <animated.div
-      withSizeTransition
-      withPositionTransition
-      onClick={() =>
-        setRandomContents([
-          Math.round(Math.random() * 5),
-          Math.round(Math.random() * 5),
-        ])
-      }
-      initial={{ opacity: 0, y: -70 }}
-      animate={{ opacity: 1, y: 0 }}
+    <div
       style={{
-        background: 'purple',
-        marginBottom: 50,
-        transformOrigin: 'center center',
-        overflow: 'hidden',
-      }}
-      transition={{
-        stiffness: 200,
-        damping: 40,
-        tweenedProps: [],
-        withInvertedScale: true,
+        height: 1000,
+        width: 400,
+        background: 'black',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}>
-      <div
+      <animated.div
+        layout
+        onClick={() => setState(!state)}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         style={{
-          width: Math.max(randomContents[0] * 100, 100),
-          background: 'purple',
-          height: Math.max(randomContents[1] * 100, 100),
+          background: 'red',
+          overflow: 'hidden',
+          borderRadius: '10%',
+          width,
+          height,
+        }}
+        transition={{
+          stiffness: 200,
+          damping: 20,
+          mass: 5,
+          tweenedProps: [],
+          withInvertedScale: true,
         }}>
-        <animated.p 
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{ opacity: 1, scale: 1 }}  
-          whileHover={{opacity: 0.5, scale: 2}}  
-          transition={{
-            stiffness: 400,
-            damping: 10,
-            tweenedProps: [],
-            
-          }}  
-          withPositionTransition>
-            what
-        </animated.p>
-      </div>
-    </animated.div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+          }}>
+          <animated.div
+            initial={{ scale: 1 }}
+            animate={{ scale: 1 }}
+            whileHover={{ scale: 2 }}
+            whileTap={{ scale: 0.5 }}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: '50%',
+              background: 'white',
+            }}></animated.div>
+        </div>
+      </animated.div>
+    </div>
   )
 }

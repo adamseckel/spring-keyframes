@@ -80,9 +80,12 @@ export const Runner = ({ children }) => {
     <>
       {runner && (
         <RunnerDiv
-          initial={{ opacity: 0, x: runner.x, y: runner.y }}
-          animate={{ opacity: 1, x: runner.x, y: runner.y }}
+          layout
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           style={{
+            left: runner.x,
+            top: runner.y,
             height: runner.height,
           }}
         />

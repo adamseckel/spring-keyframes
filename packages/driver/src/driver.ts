@@ -7,11 +7,14 @@ import {
   Maxes,
   Frame,
   CSSFrame,
-  TransformProperty,
   Keyframe,
   Options,
 } from './utils/types'
 import { msPerFrame } from './utils/msPerFrame'
+import {
+  Transforms,
+  createTransformString,
+} from './utils/createTransformString'
 export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 
 export {
@@ -22,10 +25,7 @@ export {
   TransformProperty,
 } from './utils/types'
 
-export { spring as springEveryFrame }
-
-const valueOrDefault = (v: number | undefined, d: number) =>
-  v !== undefined ? v : d
+export { spring as springEveryFrame, Transforms, createTransformString }
 
 export const transforms = [
   'x',
@@ -68,6 +68,8 @@ function convertMaxesToKeyframes(
     toValue(value, from, to, withInvertedScale),
   ])
 }
+
+const scales = ['scale', 'scaleX', 'scaleY']
 function toValue(
   value: number,
   from: Frame,
@@ -77,7 +79,6 @@ function toValue(
   let style: CSSFrame[] = []
   let transform: TransformFrame[] = []
   let keys = Object.keys(from) as Property[]
-  const scales = ['scale', 'scaleX', 'scaleY']
 
   if (withInvertedScale) {
     keys = keys.filter(key => scales.includes(key))
@@ -102,10 +103,21 @@ function toValue(
   })
 
   if (transform.length > 0) {
-    style.push([
-      'transform',
-      createTransformBlock(transform, withInvertedScale),
-    ])
+    const props: Transforms = {}
+
+    if (withInvertedScale) {
+      transform.forEach(([key, value]) => {
+        const v = to[key]
+        const offset = (v !== undefined ? v - 1 : 0) + 1
+        props[key] = invertScale(value) * offset
+      })
+    } else {
+      transform.forEach(([key, value]) => {
+        props[key] = value
+      })
+    }
+
+    style.push(['transform', createTransformString(props)])
   }
 
   return style
@@ -113,77 +125,6 @@ function toValue(
 
 const maxScale = 100000
 const invertScale = (scale: number) => (scale > 0.001 ? 1 / scale : maxScale)
-
-export function createTransformBlock(
-  transforms: TransformFrame[],
-  withInvertedScale: boolean
-): string {
-  const props: Partial<Record<TransformProperty, number>> = {}
-
-  if (withInvertedScale) {
-    transforms.forEach(([key, value]) => {
-      props[key] = invertScale(value)
-    })
-  } else {
-    transforms.forEach(([key, value]) => {
-      props[key] = value
-    })
-  }
-
-  const {
-    x,
-    y,
-    z,
-    scale,
-    rotate,
-    rotateX,
-    rotateY,
-    rotateZ,
-    scaleX,
-    scaleY,
-    scaleZ,
-  } = props
-
-  const block = []
-
-  // @TODO: Probably better to use a matrix3d here.
-  if (x !== undefined || y !== undefined || z !== undefined) {
-    block.push(`translate3d(${x || 0}px, ${y || 0}px, ${z || 0}px)`)
-  }
-
-  // Stack rotates.
-  if (rotate !== undefined) {
-    block.push(`rotate3d(0, 0, 1, ${rotate}deg)`)
-  }
-  if (rotateZ !== undefined && rotate === undefined) {
-    block.push(`rotate3d(0, 0, 1, ${rotateZ}deg)`)
-  }
-  if (rotateY !== undefined) {
-    block.push(`rotate3d(0, 1, 0, ${rotateY}deg)`)
-  }
-  if (rotateX !== undefined) {
-    block.push(`rotate3d(1, 0, 0, ${rotateX}deg)`)
-  }
-
-  if (scale !== undefined) {
-    block.push(
-      `scale3d(${valueOrDefault(scale, 1)}, ${valueOrDefault(scale, 1)}, 1)`
-    )
-  } else if (
-    scaleX !== undefined ||
-    scaleY !== undefined ||
-    scaleZ !== undefined
-  ) {
-    block.push(
-      `scale3d(${valueOrDefault(scaleX, 1)}, ${valueOrDefault(
-        scaleY,
-        1
-      )}, ${valueOrDefault(scaleZ, 1)})`
-    )
-  }
-
-  return block.join(' ')
-}
 
 function createBlock(value: CSSFrame[]) {
   return value
@@ -221,36 +162,69 @@ const defaults: Options = {
 //   return [[0, from], [100, to]]
 // }
 
-function breakupFrame(frame: Frame, tweenedProps: Property[]): [Frame, Frame] {
-  let tweened: Frame = {}
-  let sprung: Frame = {}
+interface SplitFrame {
+  from: Frame
+  to: Frame
+}
 
-  const keys = Object.keys(frame) as Property[]
+function breakupFrame(from: Frame, to: Frame, tweenedProps: string[]) {
+  const tweened: SplitFrame = { from: {}, to: {} }
+  const sprung: SplitFrame = { from: {}, to: {} }
 
-  keys.forEach(key => {
-    if (frame[key] === undefined) return
+  for (const key in from) {
+    if (from[key as keyof Frame] === undefined) continue
     if (tweenedProps.includes(key)) {
-      // @ts-ignore
-      tweened[key] = frame[key]
+      //@ts-ignore
+      tweened.from[key] = from[key]
+      //@ts-ignore
+      tweened.to[key] = to[key]
     } else {
-      sprung[key] = frame[key]
+      //@ts-ignore
+      sprung.from[key] = from[key]
+      //@ts-ignore
+      sprung.to[key] = to[key]
     }
-  })
+  }
 
-  return [tweened, sprung]
+  return [tweened, sprung] as const
+}
+
+function createKeyframes(
+  from: Frame,
+  to: Frame,
+  maxes: Maxes,
+  interpolate: (value: number) => number,
+  invert: boolean = false
+) {
+  if (!Object.keys(from).length && !Object.keys(to).length) return
+
+  return convertKeyframesToCSS(
+    convertMaxesToKeyframes(maxes, interpolate, from, to, invert)
+  )
+}
+const tween = (last: number): [number, number, number, boolean][] => [
+  [0, 0, 0, true],
+  [1, last, 0, true],
+]
+
+interface DriverOutput {
+  sprung?: string
+  tweened?: string
+  inverted?: string
+  duration: string
+  ease: string
+  playTimeToVelocity: (time: number) => number
 }
 
 export function driver(
   from: Frame,
   to: Frame,
   options?: Options
-): [string[], string, string, (frame: number) => number] {
+): DriverOutput {
   const optionsWithDefaults = {
     ...defaults,
     ...options,
   } as Required<Options>
-
-  const animations: string[] = []
 
   const [maxes, lastFrame] = spring(optionsWithDefaults)
 
@@ -258,36 +232,26 @@ export function driver(
   const toFrame = interpolate(0, lastFrame, 0, 100)
 
   // Separate Tweened and Sprung properties.
-  const [tFrom, sFrom] = breakupFrame(from, optionsWithDefaults.tweenedProps)
-  const [tTo, sTo] = breakupFrame(to, optionsWithDefaults.tweenedProps)
+  const [t, s] = breakupFrame(from, to, optionsWithDefaults.tweenedProps)
 
-  // Generate keyframe, styled value tuples.
-  if (Object.keys(sFrom).length || Object.keys(sTo).length) {
-    const springKeyframes = convertMaxesToKeyframes(
-      maxes,
-      toFrame,
-      sFrom,
-      sTo,
-      optionsWithDefaults.withInvertedScale
-    )
-    animations.push(convertKeyframesToCSS(springKeyframes))
-  }
-
-  if (Object.keys(tFrom).length || Object.keys(tTo).length) {
-    const tweenedKeyframes = convertMaxesToKeyframes(
-      [[0, 0, 0, true], [1, lastFrame, 0, true]],
-      toFrame,
-      tFrom,
-      tTo,
-      optionsWithDefaults.withInvertedScale
-    )
-    animations.push(convertKeyframesToCSS(tweenedKeyframes))
-  }
+  const sprung = createKeyframes(s.from, s.to, maxes, toFrame)
+  const tweened = createKeyframes(t.from, t.to, tween(lastFrame), toFrame)
+  const inverted = optionsWithDefaults.withInvertedScale
+    ? createKeyframes(s.from, s.to, maxes, toFrame, true)
+    : undefined
 
   // Calculate duration based on the number of frames.
   const duration = Math.round(msPerFrame * lastFrame * 100) / 100 + 'ms'
 
   // Create a function to return a frame for a play time.
   // Enables interrupting animations by creating new ones that start from the current velocity and frame.
-  return [animations, duration, EASE, playtimeToVelocity(maxes)]
+
+  return {
+    sprung,
+    tweened,
+    inverted,
+    duration,
+    ease: EASE,
+    playTimeToVelocity: playtimeToVelocity(maxes),
+  }
 }

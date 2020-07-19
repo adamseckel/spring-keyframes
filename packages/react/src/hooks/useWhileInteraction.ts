@@ -1,63 +1,89 @@
 import { useRef, useEffect } from 'react'
-import { AnimateToFrame } from './useAnimateToFrame'
+import { Play } from './useAnimate'
 import { Frame } from '@spring-keyframes/driver'
+import { Interaction } from '../utils/types'
 
 interface Props {
   ref: React.MutableRefObject<Element | null>
-  animateToFrame: AnimateToFrame
+  play: Play
   from: Frame
+
   whileTap?: Frame
   whileHover?: Frame
+
+  updateDistortion: (distortion: Frame) => void
+  updatePreserve: (preserve: boolean) => void
 }
 
 export function useWhileInteraction({
   ref,
-  animateToFrame,
+  play,
   from,
   whileTap,
   whileHover,
-}: Props): void {
-  const isHoveredRef = useRef(false)
-  const isTouchDeviceRef = useRef(false)
+  updateDistortion,
+  updatePreserve,
+}: Props): { isBeingInteracted: boolean } {
+  const cache = useRef({
+    isHovered: false,
+    isTapped: false,
+    isTouchDevice: false,
+  })
 
   function handleTap() {
     if (!whileTap) return
-    animateToFrame({ frame: whileTap, name: 'tap-start' })
+
+    cache.current.isTapped = true
+
+    updatePreserve(true)
+    updateDistortion(whileTap)
+    play({ to: whileTap, interaction: Interaction.Tap })
   }
 
   function handleTapEnd() {
+    if (!whileTap) return
+
+    updatePreserve(false)
+
     if (whileHover) {
-      animateToFrame({
-        frame: isHoveredRef.current ? whileHover : from,
-        name: 'tap-end',
-      })
-      return
+      const to = cache.current.isHovered ? whileHover : from
+      updateDistortion(to)
+      play({ to, interaction: Interaction.Tap })
+    } else {
+      updateDistortion(from)
+      play({ to: from, interaction: Interaction.Tap })
     }
-    animateToFrame({ frame: from, name: 'tap-end' })
   }
 
   function handleMouseEnter() {
     if (!whileHover) return
-    isHoveredRef.current = true
-    animateToFrame({ frame: whileHover, name: 'hover-start' })
+
+    cache.current.isHovered = true
+    updatePreserve(true)
+    updateDistortion(whileHover)
+    play({ to: whileHover, interaction: Interaction.Hover })
   }
 
   function handleMouseEnterEnd() {
-    isHoveredRef.current = false
-    animateToFrame({ frame: from, name: 'hover-end' })
+    if (!whileHover) return
+
+    cache.current.isHovered = false
+    updatePreserve(false)
+    updateDistortion(from)
+    play({ to: from, interaction: Interaction.Hover })
   }
 
   useEffect(() => {
-    isTouchDeviceRef.current =
+    if (!ref.current) return
+    cache.current.isTouchDevice =
       typeof window !== 'undefined' && 'ontouchstart' in window
 
-    if (!ref.current) return
-    if (whileHover && !isTouchDeviceRef.current) {
+    if (whileHover && !cache.current.isTouchDevice) {
       ref.current.addEventListener('mouseenter', handleMouseEnter)
       ref.current.addEventListener('mouseleave', handleMouseEnterEnd)
     }
     if (whileTap) {
-      if (!isTouchDeviceRef.current) {
+      if (!cache.current.isTouchDevice) {
         ref.current.addEventListener('mousedown', handleTap)
         ref.current.addEventListener('mouseup', handleTapEnd)
       }
@@ -67,7 +93,7 @@ export function useWhileInteraction({
 
     return () => {
       if (!ref.current) return
-      if (whileHover && !isTouchDeviceRef.current) {
+      if (whileHover && !cache.current.isTouchDevice) {
         ref.current.addEventListener('mouseenter', handleMouseEnter)
         ref.current.addEventListener('mouseleave', handleMouseEnterEnd)
       }
@@ -79,4 +105,8 @@ export function useWhileInteraction({
       }
     }
   }, [])
+
+  return {
+    isBeingInteracted: cache.current.isTapped || cache.current.isHovered,
+  }
 }

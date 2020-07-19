@@ -1,13 +1,12 @@
-import { Frame, Property } from '@spring-keyframes/driver'
+import { Frame } from '@spring-keyframes/driver'
 import { fromMatrix, FromMatrix } from '@spring-keyframes/matrix'
 
-export function computedFrom(
-  to: Frame,
+export function computedStyle(
+  keys: string[],
   ref: React.MutableRefObject<Element | null>
 ): Frame {
   if (!ref.current) return {} as Frame
 
-  // @TODO: Optionally infer unset from from element style.
   const frame: Frame = {}
   const style = getComputedStyle(ref.current)
   const frameTransforms =
@@ -18,9 +17,7 @@ export function computedFrom(
   // Couldn't do it.
   if (frameTransforms === null) return frame
 
-  const keys = Object.keys(to) as Property[]
-
-  keys.forEach((key) => {
+  new Set(keys).forEach((key) => {
     // @ts-ignore
     if (frameTransforms[key] !== undefined) {
       // @ts-ignore
@@ -34,8 +31,10 @@ export function computedFrom(
 
       // Must come last as computedStyle has x and y keys that clash with transform shorthand.
     } else if (style[key as any]) {
+      //@ts-ignore
       frame[key] = parseFloat(style[key as any])
     }
   })
+
   return frame
 }

@@ -1,2 +1,8 @@
-- [ ] Apply initial style as react style
-- [ ] Improve layout transition
+- [ ] Figure out what to do about inverted scale when paired with whileHover or whileTap
+- [ ] Figure out issues with interpolating between a layout transition and a hover/tap transition
+- [ ] Add AnimateSharedLayout provider
+- [ ] Add layout="position"
+- [ ] Figure out style application with two elements
+- [ ] invert border radius
+- [ ] invert box-shadow
+- [x] respect changing options

@@ -113,7 +113,7 @@ const ExampleStateContainer = () => {
             min={1}
             max={500}
             onChange={(e) =>
-              setOptions({ ...options, stiffness: e.target.value })
+              setOptions({ ...options, stiffness: Number(e.target.value) })
             }
           />
           <Slider
@@ -121,7 +121,7 @@ const ExampleStateContainer = () => {
             min={1}
             max={500}
             onChange={(e) =>
-              setOptions({ ...options, stiffness: e.target.value })
+              setOptions({ ...options, stiffness: Number(e.target.value) })
             }
           />
         </TripleRow>

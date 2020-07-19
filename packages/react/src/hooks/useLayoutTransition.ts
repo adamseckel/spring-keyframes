@@ -1,102 +1,125 @@
-import { useLayoutEffect } from 'react'
-import { AnimateToFrame, Transition } from './useAnimateToFrame'
-import { computedFrom } from '../utils/computedFrom'
-
-interface Props {
-  ref: React.MutableRefObject<HTMLElement | null>
-  animateToFrame: AnimateToFrame
-  layout: React.MutableRefObject<Layout | null>
-  withPositionTransition?: Transition | boolean
-  withSizeTransition?: Transition | boolean
-}
+import { useLayoutEffect, useRef, useCallback } from 'react'
+import { Play } from './useAnimate'
+import { computedStyle } from '../utils/computedFrom'
+import { Interaction } from '../utils/types'
+import { AnimationState } from './useAnimationState'
 
 export type Layout = {
-  x: number
-  y: number
+  left: number
+  top: number
+  bottom: number
+  right: number
   height: number
   width: number
 }
 
-type Transform = {
-  x: number
-  y: number
-  scaleX: number
-  scaleY: number
-}
-
-const defaultSize = {
+const identity = {
   scaleX: 1,
   scaleY: 1,
-}
-
-const defaultPosition = {
   x: 0,
   y: 0,
 }
 
-export function useLayoutTransition({
-  ref,
-  animateToFrame,
-  layout,
-  withPositionTransition,
-  withSizeTransition,
-}: Props): void {
-  useLayoutEffect(() => {
+const keys = Object.keys(identity)
+
+function getRect(ref: React.RefObject<HTMLElement>) {
+  const { x = 0, y = 0, scaleX = 1, scaleY = 1 } = computedStyle(keys, ref)
+  const { top, left, right, bottom } = ref.current!.getBoundingClientRect()
+
+  return {
+    top,
+    left,
+    right,
+    bottom,
+    x,
+    y,
+    scaleX,
+    scaleY,
+  }
+}
+
+export const useLayoutTransition = (
+  ref: React.MutableRefObject<HTMLElement | null>,
+  animate: Play,
+  layout: boolean,
+  state: AnimationState
+) => {
+  const lastRect = useRef<Layout | null>(null)
+
+  const updateLayout = useCallback(() => {
     if (!ref.current) return
 
-    const l = layout.current
-    const { x = 0, y = 0, scaleX = 1, scaleY = 1 } = computedFrom(
-      { ...defaultSize, ...defaultPosition },
-      ref
-    ) as Transform
+    const { top, left, right, bottom, x, y, scaleX, scaleY } = getRect(ref)
 
-    const offsetOldLayout = {
-      y: ref.current.offsetTop + y,
-      x: ref.current.offsetLeft + x,
-      height: ref.current.offsetHeight * scaleY,
-      width: ref.current.offsetWidth * scaleX,
+    lastRect.current = {
+      top: top - y,
+      left: left - x,
+      bottom: bottom - y,
+      right: right - x,
+      height: (bottom - top) / scaleY,
+      width: (right - left) / scaleX,
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    if (!layout) return
+    if (!ref.current) return
+    const { top, left, right, bottom, x, y, scaleX, scaleY } = getRect(ref)
+
+    const scale = state.current.distortion.scale
+    const {
+      x: offsetX = 0,
+      y: offsetY = 0,
+      scaleX: offsetScaleX = scale || 1,
+      scaleY: offsetScaleY = scale || 1,
+    } = state.current.distortion
+
+    const newRect: Layout = {
+      top: top - y,
+      left: left - x,
+      bottom: bottom - y,
+      right: right - x,
+      height: (bottom - top) / scaleY,
+      width: (right - left) / scaleX,
     }
 
-    layout.current = offsetOldLayout
-
-    if (!l) return
-
-    if (
-      ref.current.offsetTop !== l.y ||
-      ref.current.offsetLeft !== l.x ||
-      ref.current.offsetHeight !== l.height ||
-      ref.current.offsetWidth !== l.width
-    ) {
-      const oldSize = {
-        scaleX: l.width / offsetOldLayout.width,
-        scaleY: l.height / offsetOldLayout.height,
-      }
-
-      const oldPosition = {
-        x: l.x - offsetOldLayout.x - (offsetOldLayout.width - l.width) / 2,
-        y: l.y - offsetOldLayout.y - (offsetOldLayout.height - l.height) / 2,
-      }
-
-      const transition = {
-        ...(typeof withPositionTransition === 'object'
-          ? withPositionTransition
-          : {}),
-        ...(typeof withSizeTransition === 'object' ? withSizeTransition : {}),
-      }
-
-      animateToFrame({
-        frame: {
-          ...(withPositionTransition ? defaultPosition : {}),
-          ...(withSizeTransition ? defaultSize : {}),
-          transition,
-        },
-        absoluteFrom: {
-          ...(withPositionTransition ? oldPosition : {}),
-          ...(withSizeTransition ? oldSize : {}),
-        },
-        withDelay: false,
-        name: 'layout',
-      })
+    if (lastRect.current === null) {
+      lastRect.current = { ...newRect }
+      return
     }
-  }, [animateToFrame])
+
+    const oldRect = lastRect.current
+
+    const hasRectChanged =
+      newRect.top !== oldRect.top ||
+      newRect.left !== oldRect.left ||
+      newRect.height !== oldRect.height ||
+      newRect.width !== oldRect.width
+
+    if (!hasRectChanged) return
+
+    lastRect.current = { ...newRect }
+
+    animate({
+      to: {
+        x: identity.x + offsetX,
+        y: identity.y + offsetY,
+        scaleX: identity.scaleX * offsetScaleX,
+        scaleY: identity.scaleY * offsetScaleY,
+      },
+      from: {
+        x:
+          (oldRect.right - newRect.right + oldRect.left - newRect.left) / 2 + x,
+        y:
+          (oldRect.bottom - newRect.bottom + oldRect.top - newRect.top) / 2 + y,
+        scaleX: (oldRect.width * scaleX) / newRect.width,
+        scaleY: (oldRect.height * scaleY) / newRect.height,
+      },
+      // Pass a scale offset to driver that is not included in the inversion.
+      withDelay: false,
+      interaction: Interaction.Layout,
+    })
+  }, [animate])
+
+  return { updateLayout }
 }

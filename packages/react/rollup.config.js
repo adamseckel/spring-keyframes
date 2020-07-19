@@ -44,6 +44,6 @@ export default {
       // @see https://github.com/terser-js/terser
       toplevel: true,
     }),
-    analyze(),
+    // analyze(),
   ],
 }

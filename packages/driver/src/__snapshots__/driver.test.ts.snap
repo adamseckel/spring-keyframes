@@ -112,9 +112,59 @@ exports[`returns an array of valid keyframes for camelCase properties 1`] = `
  100% {border-radius: 20px;}"
 `;
 
-exports[`returns keyframes for scale props, for each frame when withInvertedScale is true 1`] = `
-Array [
-  "0% {transform: scale3d(1, 100000, 1);}
+exports[`returns keyframes for scale props, for each frame when withInvertedScale is true 1`] = `"750ms"`;
+
+exports[`returns keyframes for scale props, for each frame when withInvertedScale is true 2`] = `
+"0% {transform: translate3d(0px, 0px, 0px) scale3d(1, 0, 1);}
+ 2.22% {transform: translate3d(20px, 0px, 0px) scale3d(1, 0.05, 1);}
+ 4.44% {transform: translate3d(55px, 0px, 0px) scale3d(1, 0.14, 1);}
+ 6.67% {transform: translate3d(100.25px, 0px, 0px) scale3d(1, 0.25, 1);}
+ 8.89% {transform: translate3d(151.44px, 0px, 0px) scale3d(1, 0.38, 1);}
+ 11.11% {transform: translate3d(204.82px, 0px, 0px) scale3d(1, 0.51, 1);}
+ 13.33% {transform: translate3d(257.28px, 0px, 0px) scale3d(1, 0.64, 1);}
+ 15.56% {transform: translate3d(306.38px, 0px, 0px) scale3d(1, 0.77, 1);}
+ 17.78% {transform: translate3d(350.35px, 0px, 0px) scale3d(1, 0.88, 1);}
+ 20% {transform: translate3d(388px, 0px, 0px) scale3d(1, 0.97, 1);}
+ 22.22% {transform: translate3d(418.73px, 0px, 0px) scale3d(1, 1.05, 1);}
+ 24.44% {transform: translate3d(442.37px, 0px, 0px) scale3d(1, 1.11, 1);}
+ 26.67% {transform: translate3d(459.16px, 0px, 0px) scale3d(1, 1.15, 1);}
+ 28.89% {transform: translate3d(469.64px, 0px, 0px) scale3d(1, 1.17, 1);}
+ 31.11% {transform: translate3d(474.54px, 0px, 0px) scale3d(1, 1.19, 1);}
+ 33.33% {transform: translate3d(474.74px, 0px, 0px) scale3d(1, 1.19, 1);}
+ 35.56% {transform: translate3d(471.15px, 0px, 0px) scale3d(1, 1.18, 1);}
+ 37.78% {transform: translate3d(464.73px, 0px, 0px) scale3d(1, 1.16, 1);}
+ 40% {transform: translate3d(456.36px, 0px, 0px) scale3d(1, 1.14, 1);}
+ 42.22% {transform: translate3d(446.84px, 0px, 0px) scale3d(1, 1.12, 1);}
+ 44.44% {transform: translate3d(436.88px, 0px, 0px) scale3d(1, 1.09, 1);}
+ 46.67% {transform: translate3d(427.07px, 0px, 0px) scale3d(1, 1.07, 1);}
+ 48.89% {transform: translate3d(417.87px, 0px, 0px) scale3d(1, 1.04, 1);}
+ 51.11% {transform: translate3d(409.62px, 0px, 0px) scale3d(1, 1.02, 1);}
+ 53.33% {transform: translate3d(402.53px, 0px, 0px) scale3d(1, 1.01, 1);}
+ 55.56% {transform: translate3d(396.74px, 0px, 0px) scale3d(1, 0.99, 1);}
+ 57.78% {transform: translate3d(392.27px, 0px, 0px) scale3d(1, 0.98, 1);}
+ 60% {transform: translate3d(389.08px, 0px, 0px) scale3d(1, 0.97, 1);}
+ 62.22% {transform: translate3d(387.07px, 0px, 0px) scale3d(1, 0.97, 1);}
+ 64.44% {transform: translate3d(386.11px, 0px, 0px) scale3d(1, 0.97, 1);}
+ 66.67% {transform: translate3d(386.04px, 0px, 0px) scale3d(1, 0.97, 1);}
+ 68.89% {transform: translate3d(386.68px, 0px, 0px) scale3d(1, 0.97, 1);}
+ 71.11% {transform: translate3d(387.86px, 0px, 0px) scale3d(1, 0.97, 1);}
+ 73.33% {transform: translate3d(389.41px, 0px, 0px) scale3d(1, 0.97, 1);}
+ 75.56% {transform: translate3d(391.18px, 0px, 0px) scale3d(1, 0.98, 1);}
+ 77.78% {transform: translate3d(393.03px, 0px, 0px) scale3d(1, 0.98, 1);}
+ 80% {transform: translate3d(394.87px, 0px, 0px) scale3d(1, 0.99, 1);}
+ 82.22% {transform: translate3d(396.59px, 0px, 0px) scale3d(1, 0.99, 1);}
+ 84.44% {transform: translate3d(398.14px, 0px, 0px) scale3d(1, 1, 1);}
+ 86.67% {transform: translate3d(399.47px, 0px, 0px) scale3d(1, 1, 1);}
+ 88.89% {transform: translate3d(400.56px, 0px, 0px) scale3d(1, 1, 1);}
+ 91.11% {transform: translate3d(401.41px, 0px, 0px) scale3d(1, 1, 1);}
+ 93.33% {transform: translate3d(402.02px, 0px, 0px) scale3d(1, 1.01, 1);}
+ 95.56% {transform: translate3d(402.4px, 0px, 0px) scale3d(1, 1.01, 1);}
+ 97.78% {transform: translate3d(402.59px, 0px, 0px) scale3d(1, 1.01, 1);}
+ 100% {transform: translate3d(400px, 0px, 0px) scale3d(1, 1, 1);}"
+`;
+
+exports[`returns keyframes for scale props, for each frame when withInvertedScale is true 3`] = `
+"0% {transform: scale3d(1, 100000, 1);}
  2.22% {transform: scale3d(1, 20, 1);}
  4.44% {transform: scale3d(1, 7.142857142857142, 1);}
  6.67% {transform: scale3d(1, 4, 1);}
@@ -159,11 +209,8 @@ Array [
  93.33% {transform: scale3d(1, 0.9900990099009901, 1);}
  95.56% {transform: scale3d(1, 0.9900990099009901, 1);}
  97.78% {transform: scale3d(1, 0.9900990099009901, 1);}
- 100% {transform: scale3d(1, 1, 1);}",
-]
+ 100% {transform: scale3d(1, 1, 1);}"
 `;
-
-exports[`returns keyframes for scale props, for each frame when withInvertedScale is true 2`] = `"750ms"`;
 
 exports[`returns tweened animations for all tweened property values 1`] = `
 "0% {opacity: 0; transform: translate3d(0px, 0px, 0px);}

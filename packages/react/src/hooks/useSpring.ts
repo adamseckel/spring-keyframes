@@ -1,147 +1,125 @@
-import {
-  useAnimateToFrame,
-  Transition,
-  FrameWithTransition,
-} from './useAnimateToFrame'
-import { useWhileInteraction } from './useWhileInteraction'
-import { useLayoutTransition, Layout } from './useLayoutTransition'
-import { useRef, useContext, useEffect } from 'react'
+import { useRef, useContext, useEffect, useCallback } from 'react'
 import { useDeepCompareEffectNoCheck } from 'use-deep-compare-effect'
-import { Frame, tweenedProperties } from '@spring-keyframes/driver'
+import { Frame, createTransformString } from '@spring-keyframes/driver'
+import { useAnimate, Transition } from './useAnimate'
+import { useWhileInteraction } from './useWhileInteraction'
+import { useLayoutTransition } from './useLayoutTransition'
+import { useAnimationState } from './useAnimationState'
 import { SpringContext } from '../components/AnimateExit'
-
-const defaults = {
-  stiffness: 380,
-  damping: 20,
-  mass: 1,
-  precision: 0.01,
-  velocity: 0,
-  tweenedProps: tweenedProperties,
-}
+import { Interaction } from '../utils/types'
 
 export interface Props {
   /** A @Frame to animate to when the Animated component mounts. */
-  animate: FrameWithTransition
+  animate: Frame
   /** A @Frame to animate from when the Animated component mounts. */
   initial: Frame
   /** A @Frame to animated to when @show is toggled to false. */
-  exit?: FrameWithTransition
+  exit?: Frame
   /** A @Frame to animate from while the Animated component is tapped. */
-  whileTap?: FrameWithTransition
+  whileTap?: Frame
   /** A @Frame to animate from while the Animated component is hovered. */
-  whileHover?: FrameWithTransition
+  whileHover?: Frame
   /** Define whether or not the component should animate to a new position when it's relative position in the DOM changes. */
-  withPositionTransition?: boolean | Transition
-  /** Define whether or not the component should animate to a new size when it's relative size in the DOM changes. */
-  withSizeTransition?: boolean | Transition
+  layout?: boolean | Transition
   /** Define options for all of the Animated components transitions, including the spring, and delay. */
   transition?: Transition
   /** A callback to invoke whenever an animation fully completes. Interrupted animations will not trigger this callback. */
   onEnd?: () => void
+
+  mountRef: React.MutableRefObject<boolean>
 }
 
-function ensureFrames(to: Frame, from: Frame) {
-  if (process.env.NODE_ENV !== 'production') {
-    const toKeys = Object.keys(to)
-    const fromKeys = Object.keys(from)
+function updateStyle(ref: React.RefObject<HTMLElement>, frame: Frame) {
+  if (!ref.current) return
 
-    if (fromKeys.length === toKeys.length) return
-    if (fromKeys.every(key => toKeys.includes(key))) return
-
-    console.warn(
-      '@spring-keyframes: Frames "initial" and "animate" must have identical property keys, and can\'t be null or undefined.'
-    )
+  const style = {
+    ...frame,
+    x: undefined,
+    y: undefined,
+    transform: createTransformString(frame),
+  }
+  for (const key in style) {
+    //@ts-ignore
+    ref.current.style[key] = style[key]
   }
 }
 
 export function useSpring({
   animate: to,
   initial: from,
-  transition: options,
+  transition,
   exit,
   whileTap,
   whileHover,
-  withPositionTransition,
-  withSizeTransition,
+  layout,
   onEnd: onAnimationEnd,
+  mountRef,
 }: Props) {
-  const mountRef = useRef(false)
   const context = useContext(SpringContext)
   const exitRef = useRef(context)
+  const {
+    state,
+    updateOptions,
+    updateDistortion,
+    updatePreserve,
+  } = useAnimationState(to, transition)
+
   const { isExiting, onExitComplete } = context || {}
-  const layout = useRef<Layout | null>(null)
-
-  ensureFrames(to, from)
-
-  const onEnd = () => {
+  const callback = useCallback(() => {
     if (exitRef.current && exitRef.current.isExiting && exit) {
       if (!exitRef.current.onExitComplete) return
       exitRef.current.onExitComplete()
     }
 
     onAnimationEnd && onAnimationEnd()
-  }
+  }, [exit, onAnimationEnd])
 
-  const { ref, animateToFrame } = useAnimateToFrame({
-    from,
-    to,
-    onEnd,
-    options: {
-      ...defaults,
-      ...options,
-    },
-  })
+  const { ref, play } = useAnimate({ callback, state })
 
   useEffect(() => {
     exitRef.current = { isExiting, onExitComplete }
-    if (isExiting && !exit && process.env.NODE_ENV !== 'production')  {
-      console.warn(
-        '@spring-keyframes: Children of AnimateExit must declare an "exit" Frame.'
-      )
-    }
-    
-    if (exit && isExiting) {
-      animateToFrame({ frame: exit, withDelay: true, name: 'exit' })
-    }
 
+    if (isExiting && !exit && onExitComplete) onExitComplete()
+
+    if (exit && isExiting)
+      play({
+        to: exit,
+        withDelay: true,
+        interaction: Interaction.Exit,
+      })
   }, [isExiting, onExitComplete])
 
+  const { updateLayout } = useLayoutTransition(ref, play, !!layout, state)
+
   useEffect(() => {
-    animateToFrame({ frame: to, withDelay: true, name: 'mount' })
+    play({ to, from, withDelay: true, interaction: Interaction.Mount })
+    updateStyle(ref, to)
+    updateLayout()
+
     setTimeout(() => (mountRef.current = true), 1)
   }, [])
 
-  if (whileTap || whileHover) {
-    useWhileInteraction({
-      ref,
-      animateToFrame,
-      from: to,
-      whileHover,
-      whileTap,
-    })
-  }
+  useWhileInteraction({
+    ref,
+    play,
+    from: to,
+    whileHover,
+    whileTap,
+    updateDistortion,
+    updatePreserve,
+  })
 
-  if (withPositionTransition || withSizeTransition) {
-    useLayoutTransition({
-      ref,
-      animateToFrame,
-      layout,
-      withPositionTransition,
-      withSizeTransition,
-    })
-  }
-
-  // Deep compare the `animate|to` @Frame so that we can animate updates.
   useDeepCompareEffectNoCheck(() => {
-    if (!mountRef.current) return
+    if (!mountRef.current || isExiting) return
 
-    ensureFrames(to, from)
-
-    if (isExiting) return
-
-    animateToFrame({ frame: to, withDelay: true, name: 'to' })
-
+    updateDistortion(to)
+    updateStyle(ref, to)
+    play({ to, withDelay: true, interaction: Interaction.Animate })
   }, [to])
+
+  useDeepCompareEffectNoCheck(() => {
+    if (transition) updateOptions(transition)
+  }, [transition])
 
   return {
     ref,
