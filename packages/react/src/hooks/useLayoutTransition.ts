@@ -74,10 +74,10 @@ export const useLayoutTransition = (
     } = state.current.distortion
 
     const newRect: Layout = {
-      top: top - y,
-      left: left - x,
-      bottom: bottom - y,
-      right: right - x,
+      top: top - y + window.scrollY,
+      bottom: bottom - y + window.scrollY,
+      left: left - x + window.scrollX,
+      right: right - x + window.scrollX,
       height: (bottom - top) / scaleY,
       width: (right - left) / scaleX,
     }
