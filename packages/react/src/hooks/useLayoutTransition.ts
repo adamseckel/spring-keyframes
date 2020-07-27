@@ -65,7 +65,6 @@ export const useLayoutTransition = (
     if (!layout) return
     if (!ref.current) return
     const { top, left, right, bottom, x, y, scaleX, scaleY } = getRect(ref)
-    console.log({ top, left }, window.scrollX, window.scrollY)
     const scale = state.current.distortion.scale
     const {
       x: offsetX = 0,
