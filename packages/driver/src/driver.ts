@@ -9,12 +9,15 @@ import {
   CSSFrame,
   Keyframe,
   Options,
+  ScaleFrame,
+  InvertedAnimation,
 } from './utils/types'
 import { msPerFrame } from './utils/msPerFrame'
 import {
   Transforms,
   createTransformString,
 } from './utils/createTransformString'
+import { ScaleProperty } from 'csstype'
 export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
 
 export {
@@ -23,6 +26,8 @@ export {
   Property,
   TransformFrame,
   TransformProperty,
+  Delta,
+  InvertedAnimation,
 } from './utils/types'
 
 export { spring as springEveryFrame, Transforms, createTransformString }
@@ -61,20 +66,27 @@ function convertMaxesToKeyframes(
   toFrame: (value: number) => number,
   from: Frame,
   to: Frame,
-  withInvertedScale: boolean
+  withInvertedScale: boolean,
+  invertedAnimation?: InvertedAnimation
 ): Keyframe[] {
   return maxes.map(([value, index]) => [
     Math.round(toFrame(index) * 100) / 100,
-    toValue(value, from, to, withInvertedScale),
+    toValue(value, from, to, withInvertedScale, invertedAnimation),
   ])
 }
 
 const scales = ['scale', 'scaleX', 'scaleY']
+const identity: Record<ScaleProperty, number> = {
+  scale: 1,
+  scaleX: 1,
+  scaleY: 1,
+}
 function toValue(
   value: number,
   from: Frame,
   to: Frame,
-  withInvertedScale: boolean
+  withInvertedScale: boolean,
+  invertedAnimation?: InvertedAnimation
 ): CSSFrame[] {
   let style: CSSFrame[] = []
   let transform: TransformFrame[] = []
@@ -106,10 +118,15 @@ function toValue(
     const props: Transforms = {}
 
     if (withInvertedScale) {
-      transform.forEach(([key, value]) => {
-        const v = to[key]
-        const offset = (v !== undefined ? v - 1 : 0) + 1
-        props[key] = invertScale(value) * offset
+      ;(transform as ScaleFrame[]).forEach(([k, v]) => {
+        const { from, to } = invertedAnimation || {
+          from: identity,
+          to: identity,
+        }
+        const invertedValue =
+          Math.round(interpolate(0, 1, from[k], to[k])(value) * 100) / 100
+
+        props[k] = invertScale(v, invertedValue)
       })
     } else {
       transform.forEach(([key, value]) => {
@@ -124,7 +141,8 @@ function toValue(
 }
 
 const maxScale = 100000
-const invertScale = (scale: number) => (scale > 0.001 ? 1 / scale : maxScale)
+export const invertScale = (scale: number, parentScale: number = 1) =>
+  scale > 0.001 ? parentScale / scale : maxScale
 
 function createBlock(value: CSSFrame[]) {
   return value
@@ -156,6 +174,7 @@ const defaults: Options = {
   velocity: 0,
   tweenedProps: tweenedProperties,
   withInvertedScale: false,
+  invertedAnimation: undefined,
 }
 
 // function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
@@ -194,14 +213,23 @@ function createKeyframes(
   to: Frame,
   maxes: Maxes,
   interpolate: (value: number) => number,
-  invert: boolean = false
+  invert: boolean = false,
+  invertedAnimation?: InvertedAnimation
 ) {
   if (!Object.keys(from).length && !Object.keys(to).length) return
 
   return convertKeyframesToCSS(
-    convertMaxesToKeyframes(maxes, interpolate, from, to, invert)
+    convertMaxesToKeyframes(
+      maxes,
+      interpolate,
+      from,
+      to,
+      invert,
+      invertedAnimation
+    )
   )
 }
+
 const tween = (last: number): [number, number, number, boolean][] => [
   [0, 0, 0, true],
   [1, last, 0, true],
@@ -233,12 +261,20 @@ export function driver(
 
   // Separate Tweened and Sprung properties.
   const [t, s] = breakupFrame(from, to, optionsWithDefaults.tweenedProps)
-
   const sprung = createKeyframes(s.from, s.to, maxes, toFrame)
   const tweened = createKeyframes(t.from, t.to, tween(lastFrame), toFrame)
-  const inverted = optionsWithDefaults.withInvertedScale
-    ? createKeyframes(s.from, s.to, maxes, toFrame, true)
-    : undefined
+  const inverted =
+    optionsWithDefaults.withInvertedScale ||
+    optionsWithDefaults.invertedAnimation
+      ? createKeyframes(
+          s.from,
+          s.to,
+          maxes,
+          toFrame,
+          true,
+          optionsWithDefaults.invertedAnimation
+        )
+      : undefined
 
   // Calculate duration based on the number of frames.
   const duration = Math.round(msPerFrame * lastFrame * 100) / 100 + 'ms'

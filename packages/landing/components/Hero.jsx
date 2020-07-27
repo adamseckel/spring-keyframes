@@ -121,13 +121,13 @@ const HeroContainer = styled(ColumnGrid)`
 `
 
 const Title = styled(animated.h1)`
-  font-size: 100px;
+  font-size: 120px;
   letter-spacing: 0px;
   line-height: 1.2;
-  font-weight: 600;
+  font-weight: 800;
   user-select: none;
   grid-column: 2 / span 11;
-  margin-left: -5px;
+  margin-left: -2px;
 `
 
 const Subtitle = styled(animated.p)`

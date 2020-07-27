@@ -19,10 +19,11 @@ export type TransformProperty =
   | 'scaleX'
   | 'scaleY'
   | 'scaleZ'
-
+type ScaleProperty = 'scale' | 'scaleX' | 'scaleY'
 export type CSSProperty = keyof Omit<CSS.Properties, 'transition'>
 export type CSSFrame = [CSSProperty, number | string]
 export type TransformFrame = [TransformProperty, number]
+export type ScaleFrame = [ScaleProperty, number]
 export type Property = CSSProperty | TransformProperty
 export type Frame = Omit<
   React.CSSProperties,
@@ -37,6 +38,20 @@ export type Keyframe = [
   CSSFrame[]
 ]
 
+export type Delta =
+  | {
+      scaleX: number
+      scaleY: number
+    }
+  | number
+
+export type InvertedFrame = Partial<Record<ScaleProperty, number>>
+
+export interface InvertedAnimation {
+  from: InvertedFrame
+  to: InvertedFrame
+}
+
 export interface Options {
   stiffness?: number
   damping?: number
@@ -45,5 +60,5 @@ export interface Options {
   velocity?: number
   tweenedProps?: Property[]
   withInvertedScale?: boolean
-  withEveryFrame?: boolean
+  invertedAnimation?: InvertedAnimation
 }

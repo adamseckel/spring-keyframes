@@ -8,7 +8,6 @@ it('generates 2 frames for a dampened spring', () => {
     precision: 0.01,
     velocity: 0,
     withInvertedScale: false,
-    withEveryFrame: false,
   })
 
   expect(maxes).toBeInstanceOf(Array)
@@ -24,7 +23,6 @@ it('generates 12 frames for a stiff spring', () => {
     precision: 0.01,
     velocity: 0,
     withInvertedScale: false,
-    withEveryFrame: false,
   })
 
   expect(maxes).toBeInstanceOf(Array)
@@ -40,7 +38,6 @@ it("doesn't OOM for a spring with 0 damping", () => {
     precision: 0.01,
     velocity: 0,
     withInvertedScale: false,
-    withEveryFrame: false,
   })
 
   expect(maxes).toBeInstanceOf(Array)
@@ -55,7 +52,6 @@ it('generates a keyframe per frame when set', () => {
     precision: 0.01,
     velocity: 0,
     withInvertedScale: false,
-    withEveryFrame: true,
   })
 
   expect(maxes).toBeInstanceOf(Array)
@@ -71,7 +67,6 @@ it('generates a keyframe per frame when invertedScale is set', () => {
     precision: 0.01,
     velocity: 0,
     withInvertedScale: true,
-    withEveryFrame: false,
   })
 
   expect(maxes).toBeInstanceOf(Array)

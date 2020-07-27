@@ -7,7 +7,7 @@ import {
   AnimateExit,
   KeyframesProvider,
 } from '@spring-keyframes/react'
-import { motion, useInvertedScale } from 'framer-motion'
+// import { motion, useInvertedScale } from 'framer-motion'
 // import { keyframes, css, createGlobalStyle } from 'styled-components'
 // import { keyframes } from 'emotion'
 // import { LayeredNotifications, Notifications } from './Notifications'
@@ -17,15 +17,15 @@ import WhileInteraction from './WhileInteraction'
 import Sequence from './Sequence'
 import './App.css'
 
-function Child() {
-  const { scaleY, scaleX } = useInvertedScale()
+// function Child() {
+//   const { scaleY, scaleX } = useInvertedScale()
 
-  return (
-    <motion.div style={{ scaleY: scaleY, scaleX: scaleX }}>
-      <p> some text </p>
-    </motion.div>
-  )
-}
+//   return (
+//     <motion.div style={{ scaleY: scaleY, scaleX: scaleX }}>
+//       <p> some text </p>
+//     </motion.div>
+//   )
+// }
 
 function App() {
   const [visible, setVisible] = React.useState(false)

@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useCallback } from 'react'
 import { Play } from './useAnimate'
-import { computedStyle } from '../utils/computedFrom'
+import { computedStyle, computedStyleForElement } from '../utils/computedFrom'
 import { Interaction } from '../utils/types'
 import { AnimationState } from './useAnimationState'
 
@@ -65,7 +65,7 @@ export const useLayoutTransition = (
     if (!layout) return
     if (!ref.current) return
     const { top, left, right, bottom, x, y, scaleX, scaleY } = getRect(ref)
-
+    console.log({ top, left }, window.scrollX, window.scrollY)
     const scale = state.current.distortion.scale
     const {
       x: offsetX = 0,
@@ -100,6 +100,28 @@ export const useLayoutTransition = (
 
     lastRect.current = { ...newRect }
 
+    const requiresInvertedAnimation =
+      state.current.distortion && !state.current.options?.withInvertedScale
+    let from
+    if (state.current.isInverted) {
+      const inverted = computedStyleForElement(
+        ['scaleX', 'scaleY'],
+        ref.current.childNodes[0] as HTMLElement
+      )
+
+      from = {
+        scaleX: scaleX * (inverted?.scaleX || 1),
+        scaleY: scaleY * (inverted?.scaleY || 1),
+      }
+    } else {
+      from = { scaleX, scaleY }
+    }
+
+    const invertedAnimation = {
+      from,
+      to: { scaleX: offsetScaleX, scaleY: offsetScaleY },
+    }
+
     animate({
       to: {
         x: identity.x + offsetX,
@@ -115,9 +137,14 @@ export const useLayoutTransition = (
         scaleX: (oldRect.width * scaleX) / newRect.width,
         scaleY: (oldRect.height * scaleY) / newRect.height,
       },
-      // Pass a scale offset to driver that is not included in the inversion.
       withDelay: false,
       interaction: Interaction.Layout,
+
+      // If there is distortion created by an interaction, and that interaction is inverting that distortion onto it's children,
+      // Ensure that we factor that inverted distortion into the inversion we create for our layout transition. 🤯
+      invertedAnimation: requiresInvertedAnimation
+        ? invertedAnimation
+        : undefined,
     })
   }, [animate])
 

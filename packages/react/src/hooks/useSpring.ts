@@ -61,6 +61,7 @@ export function useSpring({
     state,
     updateOptions,
     updateDistortion,
+    updateIsInverted,
     updatePreserve,
   } = useAnimationState(to, transition)
 
@@ -74,7 +75,7 @@ export function useSpring({
     onAnimationEnd && onAnimationEnd()
   }, [exit, onAnimationEnd])
 
-  const { ref, play } = useAnimate({ callback, state })
+  const { ref, play } = useAnimate({ callback, updateIsInverted, state })
 
   useEffect(() => {
     exitRef.current = { isExiting, onExitComplete }
@@ -107,6 +108,7 @@ export function useSpring({
     whileTap,
     updateDistortion,
     updatePreserve,
+    updateStyle,
   })
 
   useDeepCompareEffectNoCheck(() => {

@@ -4,6 +4,7 @@ import {
   Frame,
   Property,
   tweenedProperties,
+  Delta,
 } from '@spring-keyframes/driver'
 import { Transition } from './types'
 import { Interaction } from '../../utils/types'
@@ -17,7 +18,6 @@ const defaults: Transition = {
   tweenedProps: tweenedProperties,
   type: 'spring',
   timingFunction: 'cubic-bezier(0.15, 0, 0, 1)',
-  withEveryFrame: false,
   withInvertedScale: false,
 }
 
@@ -52,6 +52,8 @@ interface AnimatedClass {
   keyframes: (name: string, rule: string) => string
   interaction: Interaction
   preserve: boolean
+  offsetDelta?: Delta
+  exitInversion?: boolean
 }
 
 function processFrameToAnimations(
@@ -86,12 +88,15 @@ const interactionFillMap: Record<
   Interaction,
   React.CSSProperties['animationFillMode']
 > = {
-  [Interaction.Layout]: 'none',
-  [Interaction.Mount]: 'both',
-  [Interaction.Tap]: 'forwards',
-  [Interaction.Hover]: 'forwards',
-  [Interaction.Exit]: 'both',
+  [Interaction.Mount]: 'backwards',
   [Interaction.Animate]: 'none',
+  [Interaction.Layout]: 'none',
+  [Interaction.Hover]: 'forwards',
+  [Interaction.HoverEnd]: 'none',
+  [Interaction.Tap]: 'forwards',
+  [Interaction.TapEnd]: 'none',
+  [Interaction.TapEndHover]: 'forwards',
+  [Interaction.Exit]: 'forwards',
 }
 
 export function createAnimations({
@@ -114,7 +119,7 @@ export function createAnimations({
     type,
     timingFunction,
     withInvertedScale,
-    withEveryFrame,
+    invertedAnimation,
   } = {
     ...defaults,
     ...options,
@@ -134,8 +139,8 @@ export function createAnimations({
     mass,
     precision,
     withInvertedScale,
-    withEveryFrame,
     tweenedProps,
+    invertedAnimation,
   })
 
   // @TODO: Optionally use window.matchMedia to use tweened animations only if "prefers-reduced-motion" is "reduce".
@@ -145,7 +150,7 @@ export function createAnimations({
 
   const timing = toTimingFunction(
     type === 'ease',
-    withEveryFrame || withInvertedScale,
+    withInvertedScale,
     ease,
     timingFunction
   )

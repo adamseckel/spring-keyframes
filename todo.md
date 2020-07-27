@@ -1,5 +1,6 @@
-- [ ] Figure out what to do about inverted scale when paired with whileHover or whileTap
-- [ ] Figure out issues with interpolating between a layout transition and a hover/tap transition
+- [x] Figure out what to do about inverted scale when paired with whileHover or whileTap
+- [x] Figure out issues with interpolating between a layout transition and a hover/tap transition
+- [x] Allow the driver to accept an inverted from delta
 - [ ] Add AnimateSharedLayout provider
 - [ ] Add layout="position"
 - [ ] Figure out style application with two elements

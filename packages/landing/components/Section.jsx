@@ -52,7 +52,7 @@ export const Subtitle = styled('h3')`
 
 const H2 = styled('h2')`
   color: var(--text);
-  font-size: 48px;
+  font-size: 58px;
   letter-spacing: 0px;
   line-height: 1.4;
   font-weight: 799;
@@ -88,6 +88,11 @@ export const Runner = ({ children }) => {
             top: runner.y,
             height: runner.height,
           }}
+          transition={{
+            stiffness: 300,
+            damping: 20,
+            mass: 2,
+          }}
         />
       )}
       <RunnerContext.Provider value={setRunner} children={children} />
@@ -96,7 +101,7 @@ export const Runner = ({ children }) => {
 }
 
 const RunnerDiv = styled(animated.div)`
-  width: 3px;
+  width: 5px;
   background: var(--text);
   position: absolute;
   left: 0;

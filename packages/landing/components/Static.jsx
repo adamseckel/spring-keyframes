@@ -6,7 +6,7 @@ import { animated } from '@spring-keyframes/react'
 import { useRef } from 'react'
 import { useEffect } from 'react'
 
-const animate = visible =>
+const animate = (visible) =>
   visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
 
 export const Static = ({}) => {
@@ -17,7 +17,7 @@ export const Static = ({}) => {
           <Subtitle>Use it anywhere.</Subtitle>
           <Title visible={isVisible}>
             Generate physics based keyframe animations for use with static
-            css-in-js tools like Linaria or Treat.
+            css-in-js tools.
           </Title>
 
           <Text

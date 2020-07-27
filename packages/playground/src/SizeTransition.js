@@ -8,7 +8,7 @@ import {
 
 export default function SizeTransition() {
   const [state, setState] = React.useState(false)
-  const [width, height] = state ? [300, 300] : [400, 400]
+  const [width, height] = state ? [300, 200] : [200, 600]
   const margin = state ? 10 : 50
 
   return (
@@ -24,12 +24,12 @@ export default function SizeTransition() {
       <animated.div
         layout
         onClick={() => setState(!state)}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={{ opacity: 0, scale: 1 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.4 }}
         style={{
           background: 'red',
-          overflow: 'hidden',
-          borderRadius: '10%',
+          overflow: 'visible',
           width,
           height,
         }}
@@ -38,7 +38,6 @@ export default function SizeTransition() {
           damping: 20,
           mass: 5,
           tweenedProps: [],
-          withInvertedScale: true,
         }}>
         <div
           style={{
@@ -50,8 +49,6 @@ export default function SizeTransition() {
           <animated.div
             initial={{ scale: 1 }}
             animate={{ scale: 1 }}
-            whileHover={{ scale: 2 }}
-            whileTap={{ scale: 0.5 }}
             style={{
               width: 100,
               height: 100,

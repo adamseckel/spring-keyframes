@@ -7,8 +7,13 @@ export function computedStyle(
 ): Frame {
   if (!ref.current) return {} as Frame
 
+  return computedStyleForElement(keys, ref.current) || {}
+}
+
+export function computedStyleForElement(keys: string[], element?: Element) {
+  if (!element) return
   const frame: Frame = {}
-  const style = getComputedStyle(ref.current)
+  const style = getComputedStyle(element)
   const frameTransforms =
     style.transform && style.transform !== 'none'
       ? fromMatrix(style.transform)
@@ -17,7 +22,7 @@ export function computedStyle(
   // Couldn't do it.
   if (frameTransforms === null) return frame
 
-  new Set(keys).forEach((key) => {
+  new Set(keys).forEach(key => {
     // @ts-ignore
     if (frameTransforms[key] !== undefined) {
       // @ts-ignore

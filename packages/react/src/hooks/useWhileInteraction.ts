@@ -4,7 +4,7 @@ import { Frame } from '@spring-keyframes/driver'
 import { Interaction } from '../utils/types'
 
 interface Props {
-  ref: React.MutableRefObject<Element | null>
+  ref: React.RefObject<HTMLElement>
   play: Play
   from: Frame
 
@@ -13,6 +13,7 @@ interface Props {
 
   updateDistortion: (distortion: Frame) => void
   updatePreserve: (preserve: boolean) => void
+  updateStyle: (ref: React.RefObject<HTMLElement>, frame: Frame) => void
 }
 
 export function useWhileInteraction({
@@ -23,6 +24,7 @@ export function useWhileInteraction({
   whileHover,
   updateDistortion,
   updatePreserve,
+  updateStyle,
 }: Props): { isBeingInteracted: boolean } {
   const cache = useRef({
     isHovered: false,
@@ -38,6 +40,7 @@ export function useWhileInteraction({
     updatePreserve(true)
     updateDistortion(whileTap)
     play({ to: whileTap, interaction: Interaction.Tap })
+    updateStyle(ref, whileTap)
   }
 
   function handleTapEnd() {
@@ -48,10 +51,12 @@ export function useWhileInteraction({
     if (whileHover) {
       const to = cache.current.isHovered ? whileHover : from
       updateDistortion(to)
-      play({ to, interaction: Interaction.Tap })
+      play({ to, interaction: Interaction.TapEndHover })
+      updateStyle(ref, to)
     } else {
       updateDistortion(from)
-      play({ to: from, interaction: Interaction.Tap })
+      play({ to: from, interaction: Interaction.TapEnd })
+      updateStyle(ref, from)
     }
   }
 
@@ -62,6 +67,7 @@ export function useWhileInteraction({
     updatePreserve(true)
     updateDistortion(whileHover)
     play({ to: whileHover, interaction: Interaction.Hover })
+    updateStyle(ref, whileHover)
   }
 
   function handleMouseEnterEnd() {
@@ -70,7 +76,8 @@ export function useWhileInteraction({
     cache.current.isHovered = false
     updatePreserve(false)
     updateDistortion(from)
-    play({ to: from, interaction: Interaction.Hover })
+    play({ to: from, interaction: Interaction.HoverEnd })
+    updateStyle(ref, from)
   }
 
   useEffect(() => {

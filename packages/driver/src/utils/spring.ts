@@ -11,7 +11,7 @@ type Props = Required<
     | 'mass'
     | 'velocity'
     | 'withInvertedScale'
-    | 'withEveryFrame'
+    | 'invertedAnimation'
   >
 >
 
@@ -22,7 +22,7 @@ export function spring({
   mass,
   velocity,
   withInvertedScale,
-  withEveryFrame,
+  invertedAnimation,
 }: Props): [Maxes, number] {
   let lastValue = 0,
     lastVelocity = velocity,
@@ -53,9 +53,8 @@ export function spring({
     const isMax =
       (lastVelocity < 0 && velocity > 0) || (lastVelocity > 0 && velocity < 0)
 
-    const isEveryFrame = (withInvertedScale || withEveryFrame) && frame > 0
-
-    if (isEveryFrame || isMax) maxes.push([value, frame, velocity, isMax])
+    if (((withInvertedScale || invertedAnimation) && frame > 0) || isMax)
+      maxes.push([value, frame, velocity, isMax])
 
     lastValue = value
     lastVelocity = velocity
