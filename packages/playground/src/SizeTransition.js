@@ -49,6 +49,8 @@ export default function SizeTransition() {
           <animated.div
             initial={{ scale: 1 }}
             animate={{ scale: 1 }}
+            whileHover={{ scale: 1.4 }}
+            whileTap={{ scale: 0.8 }}
             style={{
               width: 100,
               height: 100,

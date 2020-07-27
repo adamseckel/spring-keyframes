@@ -2,18 +2,17 @@ import { msPerFrame } from './msPerFrame'
 import { stepper } from './stepper'
 import { Maxes, Options } from './types'
 
-type Props = Required<
-  Pick<
-    Options,
-    | 'stiffness'
-    | 'damping'
-    | 'precision'
-    | 'mass'
-    | 'velocity'
-    | 'withInvertedScale'
-    | 'invertedAnimation'
-  >
+type RequiredSpringProps = Pick<
+  Options,
+  | 'stiffness'
+  | 'damping'
+  | 'precision'
+  | 'mass'
+  | 'velocity'
+  | 'withInvertedScale'
 >
+
+type Props = Required<RequiredSpringProps> & Pick<Options, 'invertedAnimation'>
 
 export function spring({
   stiffness,
