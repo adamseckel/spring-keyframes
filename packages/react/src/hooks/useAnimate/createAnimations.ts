@@ -3,7 +3,7 @@ import {
   driver,
   Frame,
   Property,
-  tweenedProperties,
+  tweened,
   Delta,
 } from '@spring-keyframes/driver'
 import { Transition } from './types'
@@ -15,7 +15,7 @@ const defaults: Transition = {
   mass: 1,
   precision: 0.01,
   velocity: 0,
-  tweenedProps: tweenedProperties,
+  tweenedProps: tweened,
   type: 'spring',
   timingFunction: 'cubic-bezier(0.15, 0, 0, 1)',
   withInvertedScale: false,

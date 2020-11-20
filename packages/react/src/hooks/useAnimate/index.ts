@@ -1,9 +1,5 @@
 import { useRef, useEffect, useContext } from 'react'
-import {
-  Frame,
-  tweenedProperties,
-  InvertedAnimation,
-} from '@spring-keyframes/driver'
+import { Frame, tweened, InvertedAnimation } from '@spring-keyframes/driver'
 import { KeyframesContext } from '../../components/Keyframes'
 import { Transition } from './types'
 import { createAnimations } from './createAnimations'
@@ -101,11 +97,11 @@ function createIdentityTo(distortion?: Frame) {
 
 export function useAnimate({
   callback,
-  updateIsInverted,
+  setState,
   state,
 }: {
   state: AnimationState
-  updateIsInverted: (inverted: boolean) => void
+  setState: (state: any) => void
   callback?: () => void
 }): {
   play: Play
@@ -135,7 +131,7 @@ export function useAnimate({
       ;(ref.current.childNodes[0] as HTMLElement).style.animation = ''
     }
     // Only exit out of inverting if the animation completes.
-    if (state.current.isInverted) updateIsInverted(false)
+    if (state.current.isInverted) setState({ isInverted: true })
 
     current.start = 0
     callback && callback()
@@ -159,7 +155,7 @@ export function useAnimate({
     mass: 1,
     precision: 0.01,
     velocity: 0,
-    tweenedProps: tweenedProperties,
+    tweenedProps: tweened,
   }
 
   function startAnimation(
@@ -214,9 +210,9 @@ export function useAnimate({
 
     if (inverted?.name) {
       setInversion(ref, inverted.animation, invertedAnimation)
-      updateIsInverted(true)
+      setState({ isInverted: true })
     } else {
-      updateIsInverted(false)
+      setState({ isInverted: false })
     }
     if (performance) current.start = performance.now()
     if (sprung) {

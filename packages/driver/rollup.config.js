@@ -2,13 +2,15 @@ import sourceMaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
 import { terser } from 'rollup-plugin-terser'
 import pkg from './package.json'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 
 export default {
-  input: './src/driver.ts',
+  input: './src/index.ts',
   output: [
     {
       name: '@spring-keyframes/driver',
-      file: './lib/driver.umd.js',
+      file: './dist/index.umd.js',
       format: 'umd',
       exports: 'named',
       sourcemap: true,
@@ -24,10 +26,7 @@ export default {
       sourcemap: true,
     },
   ],
-  external: [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-  ],
+  external: [...Object.keys(pkg.peerDependencies || {})],
   plugins: [
     typescript({
       exclude: '**/*.test.ts',
@@ -37,6 +36,10 @@ export default {
           sourceRoot: `${process.cwd()}/src`,
         },
       },
+    }),
+    resolve(),
+    commonjs({
+      include: /node_modules/,
     }),
     sourceMaps(),
     terser({

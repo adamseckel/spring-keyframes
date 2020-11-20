@@ -1,5 +1,5 @@
 import { Frame } from '@spring-keyframes/driver'
-import { fromMatrix, FromMatrix } from '@spring-keyframes/matrix'
+import { fromMatrix, Transforms } from '@spring-keyframes/matrix'
 
 export function computedStyle(
   keys: string[],
@@ -17,12 +17,12 @@ export function computedStyleForElement(keys: string[], element?: Element) {
   const frameTransforms =
     style.transform && style.transform !== 'none'
       ? fromMatrix(style.transform)
-      : ({} as FromMatrix)
+      : ({} as Transforms)
 
   // Couldn't do it.
   if (frameTransforms === null) return frame
 
-  new Set(keys).forEach(key => {
+  new Set(keys).forEach((key) => {
     // @ts-ignore
     if (frameTransforms[key] !== undefined) {
       // @ts-ignore

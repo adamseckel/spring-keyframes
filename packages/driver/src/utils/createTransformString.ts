@@ -1,8 +1,5 @@
 import * as React from 'react'
 
-const valueOrDefault = (v: number | undefined, d: number) =>
-  v !== undefined ? v : d
-
 export type Transforms = {
   x?: number
   y?: number
@@ -15,6 +12,43 @@ export type Transforms = {
   scaleX?: number
   scaleY?: number
   scaleZ?: number
+}
+
+function isDefined(value: any) {
+  return value !== undefined
+}
+
+enum Axis {
+  X,
+  Y,
+  Z,
+}
+
+function isAxis(axis: Axis, target: Axis) {
+  return axis === target ? 1 : 0
+}
+
+interface Axes {
+  x?: number
+  y?: number
+  z?: number
+}
+
+function createRotate({ x, y, z }: Axes) {
+  const axis = isDefined(x) ? Axis.X : isDefined(y) ? Axis.Y : Axis.Z
+  const rotate = x || y || z
+  return `rotate3d(${isAxis(axis, Axis.X)}, ${isAxis(axis, Axis.Y)}, ${isAxis(
+    axis,
+    Axis.Z
+  )}, ${rotate}deg)`
+}
+
+function createScale({ x = 1, y = 1, z = 1 }: Axes) {
+  return `scale3d(${x}, ${y}, ${z})`
+}
+
+function createTranslate({ x = 0, y = 0, z = 0 }: Axes) {
+  return `translate3d(${x}px, ${y}px, ${z}px)`
 }
 
 export function createTransformString(
@@ -36,40 +70,30 @@ export function createTransformString(
 
   const transform = []
 
-  if (x !== undefined || y !== undefined || z !== undefined) {
-    transform.push(`translate3d(${x || 0}px, ${y || 0}px, ${z || 0}px)`)
-  }
+  // Translate.
+  if (isDefined(x) || isDefined(y) || isDefined(z))
+    transform.push(createTranslate({ x, y, z }))
+
+  const hasRotate = isDefined(rotate)
+  const hasRotateZ = isDefined(rotateZ)
+  const isRotate = hasRotate && !hasRotateZ
+  const isRotateZ = !hasRotate && hasRotateZ
 
   // Stack rotates.
-  if (rotate !== undefined) {
-    transform.push(`rotate3d(0, 0, 1, ${rotate}deg)`)
-  }
-  if (rotateZ !== undefined && rotate === undefined) {
-    transform.push(`rotate3d(0, 0, 1, ${rotateZ}deg)`)
-  }
-  if (rotateY !== undefined) {
-    transform.push(`rotate3d(0, 1, 0, ${rotateY}deg)`)
-  }
-  if (rotateX !== undefined) {
-    transform.push(`rotate3d(1, 0, 0, ${rotateX}deg)`)
-  }
+  if (isRotate) transform.push(createRotate({ z: rotate }))
+  if (isRotateZ) transform.push(createRotate({ z: rotateZ }))
+  if (isDefined(rotateY)) transform.push(createRotate({ y: rotateY }))
+  if (isDefined(rotateX)) transform.push(createRotate({ x: rotateX }))
 
-  if (scale !== undefined) {
-    transform.push(
-      `scale3d(${valueOrDefault(scale, 1)}, ${valueOrDefault(scale, 1)}, 1)`
-    )
-  } else if (
-    scaleX !== undefined ||
-    scaleY !== undefined ||
-    scaleZ !== undefined
-  ) {
-    transform.push(
-      `scale3d(${valueOrDefault(scaleX, 1)}, ${valueOrDefault(
-        scaleY,
-        1
-      )}, ${valueOrDefault(scaleZ, 1)})`
-    )
-  }
+  // Scale.
+  const hasScale = isDefined(scale)
+  const hasAxesScale =
+    isDefined(scaleX) || isDefined(scaleY) || isDefined(scaleZ)
+
+  if (hasScale && !hasAxesScale)
+    transform.push(createScale({ x: scale, y: scale }))
+  if (!hasScale && hasAxesScale)
+    transform.push(createScale({ x: scaleX, y: scaleY, z: scaleZ }))
 
   return transform.join(' ')
 }

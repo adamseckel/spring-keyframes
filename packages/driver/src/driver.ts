@@ -12,54 +12,16 @@ import {
   ScaleFrame,
   InvertedAnimation,
 } from './utils/types'
+import { invertScale } from './utils/invertScale'
 import { msPerFrame } from './utils/msPerFrame'
 import {
-  Transforms,
   createTransformString,
+  Transforms,
 } from './utils/createTransformString'
 import { ScaleProperty } from 'csstype'
+import * as properties from './utils/properties'
+
 export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
-
-export {
-  Options,
-  Frame,
-  Property,
-  TransformFrame,
-  TransformProperty,
-  Delta,
-  InvertedAnimation,
-} from './utils/types'
-
-export { spring as springEveryFrame, Transforms, createTransformString }
-
-export const transforms = [
-  'x',
-  'y',
-  'z',
-  'rotate',
-  'rotateX',
-  'rotateY',
-  'rotateZ',
-  'scale',
-  'scaleX',
-  'scaleY',
-  'scaleZ',
-]
-
-const unitless = [
-  'transform',
-  'opacity',
-  'color',
-  'background',
-  'backgroundColor',
-]
-
-export const tweenedProperties: Property[] = [
-  'color',
-  'backgroundColor',
-  'background',
-  'opacity',
-]
 
 function convertMaxesToKeyframes(
   maxes: Maxes,
@@ -92,11 +54,9 @@ function toValue(
   let transform: TransformFrame[] = []
   let keys = Object.keys(from) as Property[]
 
-  if (withInvertedScale) {
-    keys = keys.filter(key => scales.includes(key))
-  }
+  if (withInvertedScale) keys = keys.filter((key) => scales.includes(key))
 
-  keys.forEach(key => {
+  keys.forEach((key) => {
     let v =
       typeof from[key] === 'number'
         ? Math.round(
@@ -107,7 +67,7 @@ function toValue(
         ? from[key]
         : to[key]
 
-    if (transforms.includes(key)) {
+    if (properties.transforms.includes(key)) {
       transform.push([key, v] as TransformFrame)
     } else {
       style.push([key, v] as CSSFrame)
@@ -140,10 +100,6 @@ function toValue(
   return style
 }
 
-const maxScale = 100000
-export const invertScale = (scale: number, parentScale: number = 1) =>
-  scale > 0.001 ? parentScale / scale : maxScale
-
 function createBlock(value: CSSFrame[]) {
   return value
     .map(
@@ -157,7 +113,7 @@ function camelCaseToDash(property: string) {
 }
 
 function unitForProp(prop: Property) {
-  return unitless.includes(prop) ? '' : 'px'
+  return properties.unitless.includes(prop) ? '' : 'px'
 }
 
 function convertKeyframesToCSS(keyframes: Keyframe[]): string {
@@ -172,7 +128,7 @@ const defaults: Options = {
   mass: 1,
   precision: 0.01,
   velocity: 0,
-  tweenedProps: tweenedProperties,
+  tweenedProps: properties.tweened,
   withInvertedScale: false,
   invertedAnimation: undefined,
 }

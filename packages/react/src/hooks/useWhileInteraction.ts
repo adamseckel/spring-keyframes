@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react'
 import { Play } from './useAnimate'
 import { Frame } from '@spring-keyframes/driver'
 import { Interaction } from '../utils/types'
+import { State } from './useAnimationState'
 
 interface Props {
   ref: React.RefObject<HTMLElement>
@@ -11,9 +12,8 @@ interface Props {
   whileTap?: Frame
   whileHover?: Frame
 
-  updateDistortion: (distortion: Frame) => void
-  updatePreserve: (preserve: boolean) => void
   updateStyle: (ref: React.RefObject<HTMLElement>, frame: Frame) => void
+  setState: (state: Partial<State>) => void
 }
 
 export function useWhileInteraction({
@@ -22,9 +22,8 @@ export function useWhileInteraction({
   from,
   whileTap,
   whileHover,
-  updateDistortion,
-  updatePreserve,
   updateStyle,
+  setState,
 }: Props): { isBeingInteracted: boolean } {
   const cache = useRef({
     isHovered: false,
@@ -37,35 +36,44 @@ export function useWhileInteraction({
 
     cache.current.isTapped = true
 
-    updatePreserve(true)
-    updateDistortion(whileTap)
+    setState({
+      distortion: whileTap,
+      preserve: true,
+    })
+
     play({ to: whileTap, interaction: Interaction.Tap })
     updateStyle(ref, whileTap)
   }
 
   function handleTapEnd() {
     if (!whileTap) return
-
-    updatePreserve(false)
+    let distortion
 
     if (whileHover) {
       const to = cache.current.isHovered ? whileHover : from
-      updateDistortion(to)
+      distortion = to
       play({ to, interaction: Interaction.TapEndHover })
       updateStyle(ref, to)
     } else {
-      updateDistortion(from)
+      distortion = from
       play({ to: from, interaction: Interaction.TapEnd })
       updateStyle(ref, from)
     }
+
+    setState({
+      preserve: false,
+      distortion,
+    })
   }
 
   function handleMouseEnter() {
     if (!whileHover) return
 
     cache.current.isHovered = true
-    updatePreserve(true)
-    updateDistortion(whileHover)
+    setState({
+      preserve: true,
+      distortion: whileHover,
+    })
     play({ to: whileHover, interaction: Interaction.Hover })
     updateStyle(ref, whileHover)
   }
@@ -74,8 +82,10 @@ export function useWhileInteraction({
     if (!whileHover) return
 
     cache.current.isHovered = false
-    updatePreserve(false)
-    updateDistortion(from)
+    setState({
+      preserve: false,
+      distortion: from,
+    })
     play({ to: from, interaction: Interaction.HoverEnd })
     updateStyle(ref, from)
   }

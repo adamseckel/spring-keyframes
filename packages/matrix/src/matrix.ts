@@ -19,7 +19,7 @@ function combine(a: any, b: any, ascl: any, bscl: any) {
   return result
 }
 
-export interface FromMatrix {
+export interface Transforms {
   perspective: any
   translateX: number
   translateY: number
@@ -37,7 +37,7 @@ export interface FromMatrix {
 }
 
 // Return a transform object if matrix can be decomposed, null if it can't
-function decompose(matrix: Matrix): FromMatrix | null {
+function decompose(matrix: Matrix): Transforms | null {
   const transform = {} as any
 
   // Normalize the matrix
@@ -166,7 +166,7 @@ function decompose(matrix: Matrix): FromMatrix | null {
 }
 
 // Returns an object with transform properties
-export function fromMatrix(transform: string): FromMatrix | null {
+export function fromMatrix(transform: string): Transforms | null {
   // Check if transform is 3d
   const is3d = transform.includes('matrix3d')
 

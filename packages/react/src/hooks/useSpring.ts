@@ -57,13 +57,7 @@ export function useSpring({
 }: Props) {
   const context = useContext(SpringContext)
   const exitRef = useRef(context)
-  const {
-    state,
-    updateOptions,
-    updateDistortion,
-    updateIsInverted,
-    updatePreserve,
-  } = useAnimationState(to, transition)
+  const [state, setState] = useAnimationState(to, transition)
 
   const { isExiting, onExitComplete } = context || {}
   const callback = useCallback(() => {
@@ -75,7 +69,7 @@ export function useSpring({
     onAnimationEnd && onAnimationEnd()
   }, [exit, onAnimationEnd])
 
-  const { ref, play } = useAnimate({ callback, updateIsInverted, state })
+  const { ref, play } = useAnimate({ callback, setState, state })
 
   useEffect(() => {
     exitRef.current = { isExiting, onExitComplete }
@@ -106,21 +100,21 @@ export function useSpring({
     from: to,
     whileHover,
     whileTap,
-    updateDistortion,
-    updatePreserve,
+    setState,
     updateStyle,
   })
 
   useDeepCompareEffectNoCheck(() => {
     if (!mountRef.current || isExiting) return
-
-    updateDistortion(to)
+    setState({
+      distortion: to,
+    })
     updateStyle(ref, to)
     play({ to, withDelay: true, interaction: Interaction.Animate })
   }, [to])
 
   useDeepCompareEffectNoCheck(() => {
-    if (transition) updateOptions(transition)
+    if (transition) setState({ options: transition })
   }, [transition])
 
   return {
