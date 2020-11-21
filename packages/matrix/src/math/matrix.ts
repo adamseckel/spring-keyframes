@@ -1,4 +1,4 @@
-'use strict'
+"use strict"
 
 export type Row = [number, number, number, number]
 
@@ -64,7 +64,7 @@ function canMultiplyFromLeft(a: Matrix, b: Matrix | Row) {
 }
 
 export function multiply(a: Matrix, b: Matrix): Matrix | null {
-  if (typeof b === 'number') {
+  if (typeof b === "number") {
     return map(a, function(x: number) {
       return x * b
     })

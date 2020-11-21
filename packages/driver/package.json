@@ -31,16 +31,16 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "24.0.17",
-    "csstype": "^2.6.7",
-    "jest": "24.9.0",
-    "prettier": "1.18.2",
+    "@types/jest": "^26.0.15",
+    "eslint": "^7.14.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.0",
     "rollup": "^1.27.9",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-typescript2": "^0.25.3",
-    "ts-jest": "24.0.2",
-    "typescript": "^3.7.2"
+    "ts-jest": "^26.4.4",
+    "typescript": "^4.1.2"
   },
   "jest": {
     "roots": [
@@ -52,6 +52,6 @@
   },
   "gitHead": "69a97e1653b8d5615a1df12a6254220a87a67346",
   "dependencies": {
-    "bezier-easing": "^2.1.0"
+    "popmotion": "^9.0.0"
   }
 }

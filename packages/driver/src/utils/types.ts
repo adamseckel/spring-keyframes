@@ -1,42 +1,29 @@
-import * as CSS from 'csstype'
-import { Transforms } from './createTransformString'
+import * as React from "react"
+import { Transforms } from "./createTransformString"
 
 export type FrameNumber = number
-type FrameValue = number
-type FrameVelocity = number
-type IsMax = boolean
-export type Max = [FrameValue, FrameNumber, FrameVelocity, IsMax]
-export type Maxes = Max[]
-export type TransformProperty =
-  | 'x'
-  | 'y'
-  | 'z'
-  | 'rotate'
-  | 'rotateX'
-  | 'rotateY'
-  | 'rotateZ'
-  | 'scale'
-  | 'scaleX'
-  | 'scaleY'
-  | 'scaleZ'
-type ScaleProperty = 'scale' | 'scaleX' | 'scaleY'
-export type CSSProperty = keyof Omit<CSS.Properties, 'transition'>
+export type ScaleProperty = "scale" | "scaleX" | "scaleY"
+export type CSSProperty = keyof Omit<React.CSSProperties, "transition">
 export type CSSFrame = [CSSProperty, number | string]
-export type TransformFrame = [TransformProperty, number]
-export type ScaleFrame = [ScaleProperty, number]
+export type Keyframe = [FrameNumber, string]
 export type Property = CSSProperty | TransformProperty
-export type Frame = Omit<
-  React.CSSProperties,
-  'scale' | 'rotate' | 'transition'
-> &
-  Transforms
-
-export type Keyframe = [
-  /** Frame */
-  FrameNumber,
-  /** value */
-  CSSFrame[]
-]
+export type TransformProperty =
+  | "x"
+  | "y"
+  | "z"
+  | "rotate"
+  | "rotateX"
+  | "rotateY"
+  | "rotateZ"
+  | "scale"
+  | "scaleX"
+  | "scaleY"
+  | "scaleZ"
+export type TransformFrame = [TransformProperty, number]
+export type KeyframeItem = [string, number | string]
+export type ScaleFrame = [ScaleProperty, number]
+export type Properties = CSSProperty | TransformProperty
+export type Frame = Omit<React.CSSProperties, "scale" | "rotate" | "transition"> & Transforms
 
 export type Delta =
   | {
@@ -58,7 +45,8 @@ export interface Options {
   mass?: number
   precision?: number
   velocity?: number
-  tweenedProps?: Property[]
+  tweened?: Properties[]
   withInvertedScale?: boolean
+  withInversion?: boolean
   invertedAnimation?: InvertedAnimation
 }

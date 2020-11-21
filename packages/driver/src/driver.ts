@@ -1,249 +1,72 @@
-import { spring } from './utils/spring'
-import { interpolate } from './utils/interpolate'
-import { playtimeToVelocity } from './utils/playtimeToVelocity'
-import {
-  TransformFrame,
-  Property,
-  Maxes,
-  Frame,
-  CSSFrame,
-  Keyframe,
-  Options,
-  ScaleFrame,
-  InvertedAnimation,
-} from './utils/types'
-import { invertScale } from './utils/invertScale'
-import { msPerFrame } from './utils/msPerFrame'
-import {
-  createTransformString,
-  Transforms,
-} from './utils/createTransformString'
-import { ScaleProperty } from 'csstype'
-import * as properties from './utils/properties'
+import type { Frame, Options, Keyframe } from "./utils/types"
+import { interpolate } from "./utils/interpolate"
+import { msPerFrame } from "./utils/msPerFrame"
+import { createSpring } from "./utils/popmotion/createSpring"
+import { makeCreateKeyframe } from "./createKeyframe"
+import { createSprungKeyframes, createTweenedKeyframes } from "./createKeyframeString"
+import * as Properties from "./utils/properties"
 
-export const EASE = 'cubic-bezier(0.445, 0.050, 0.550, 0.950)'
+export const EASE = "cubic-bezier(0.445, 0.050, 0.550, 0.950)"
 
-function convertMaxesToKeyframes(
-  maxes: Maxes,
-  toFrame: (value: number) => number,
-  from: Frame,
-  to: Frame,
-  withInvertedScale: boolean,
-  invertedAnimation?: InvertedAnimation
-): Keyframe[] {
-  return maxes.map(([value, index]) => [
-    Math.round(toFrame(index) * 100) / 100,
-    toValue(value, from, to, withInvertedScale, invertedAnimation),
-  ])
-}
-
-const scales = ['scale', 'scaleX', 'scaleY']
-const identity: Record<ScaleProperty, number> = {
+const identity = {
   scale: 1,
   scaleX: 1,
   scaleY: 1,
 }
-function toValue(
-  value: number,
-  from: Frame,
-  to: Frame,
-  withInvertedScale: boolean,
-  invertedAnimation?: InvertedAnimation
-): CSSFrame[] {
-  let style: CSSFrame[] = []
-  let transform: TransformFrame[] = []
-  let keys = Object.keys(from) as Property[]
 
-  if (withInvertedScale) keys = keys.filter((key) => scales.includes(key))
+const inverted = {
+  from: identity,
+  to: identity,
+}
 
-  keys.forEach((key) => {
-    let v =
-      typeof from[key] === 'number'
-        ? Math.round(
-            interpolate(0, 1, from[key] as number, to[key] as number)(value) *
-              100
-          ) / 100
-        : value === 0
-        ? from[key]
-        : to[key]
-
-    if (properties.transforms.includes(key)) {
-      transform.push([key, v] as TransformFrame)
-    } else {
-      style.push([key, v] as CSSFrame)
-    }
-  })
-
-  if (transform.length > 0) {
-    const props: Transforms = {}
-
-    if (withInvertedScale) {
-      ;(transform as ScaleFrame[]).forEach(([k, v]) => {
-        const { from, to } = invertedAnimation || {
-          from: identity,
-          to: identity,
-        }
-        const invertedValue =
-          Math.round(interpolate(0, 1, from[k], to[k])(value) * 100) / 100
-
-        props[k] = invertScale(v, invertedValue)
-      })
-    } else {
-      transform.forEach(([key, value]) => {
-        props[key] = value
-      })
-    }
-
-    style.push(['transform', createTransformString(props)])
+function withDefaults(options?: Options): Required<Options> {
+  const defaults: Required<Options> = {
+    stiffness: 180,
+    damping: 12,
+    mass: 1,
+    precision: 0.01,
+    velocity: 0,
+    tweened: Properties.tweened,
+    withInvertedScale: false,
+    withInversion: !!options?.invertedAnimation,
+    invertedAnimation: inverted,
   }
-
-  return style
-}
-
-function createBlock(value: CSSFrame[]) {
-  return value
-    .map(
-      ([prop, val]) => `${camelCaseToDash(prop)}: ${val}${unitForProp(prop)}`
-    )
-    .join('; ')
-}
-
-function camelCaseToDash(property: string) {
-  return property.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase()
-}
-
-function unitForProp(prop: Property) {
-  return properties.unitless.includes(prop) ? '' : 'px'
-}
-
-function convertKeyframesToCSS(keyframes: Keyframe[]): string {
-  return keyframes
-    .map(([frame, value]) => `${frame}% {${createBlock(value)};}`)
-    .join('\n ')
-}
-
-const defaults: Options = {
-  stiffness: 180,
-  damping: 12,
-  mass: 1,
-  precision: 0.01,
-  velocity: 0,
-  tweenedProps: properties.tweened,
-  withInvertedScale: false,
-  invertedAnimation: undefined,
-}
-
-// function createTweenedKeyframes(from: CSSFrame[], to: CSSFrame[]): Keyframe[] {
-//   return [[0, from], [100, to]]
-// }
-
-interface SplitFrame {
-  from: Frame
-  to: Frame
-}
-
-function breakupFrame(from: Frame, to: Frame, tweenedProps: string[]) {
-  const tweened: SplitFrame = { from: {}, to: {} }
-  const sprung: SplitFrame = { from: {}, to: {} }
-
-  for (const key in from) {
-    if (from[key as keyof Frame] === undefined) continue
-    if (tweenedProps.includes(key)) {
-      //@ts-ignore
-      tweened.from[key] = from[key]
-      //@ts-ignore
-      tweened.to[key] = to[key]
-    } else {
-      //@ts-ignore
-      sprung.from[key] = from[key]
-      //@ts-ignore
-      sprung.to[key] = to[key]
-    }
-  }
-
-  return [tweened, sprung] as const
-}
-
-function createKeyframes(
-  from: Frame,
-  to: Frame,
-  maxes: Maxes,
-  interpolate: (value: number) => number,
-  invert: boolean = false,
-  invertedAnimation?: InvertedAnimation
-) {
-  if (!Object.keys(from).length && !Object.keys(to).length) return
-
-  return convertKeyframesToCSS(
-    convertMaxesToKeyframes(
-      maxes,
-      interpolate,
-      from,
-      to,
-      invert,
-      invertedAnimation
-    )
-  )
-}
-
-const tween = (last: number): [number, number, number, boolean][] => [
-  [0, 0, 0, true],
-  [1, last, 0, true],
-]
-
-interface DriverOutput {
-  sprung?: string
-  tweened?: string
-  inverted?: string
-  duration: string
-  ease: string
-  playTimeToVelocity: (time: number) => number
-}
-
-export function driver(
-  from: Frame,
-  to: Frame,
-  options?: Options
-): DriverOutput {
-  const optionsWithDefaults = {
-    ...defaults,
-    ...options,
-  } as Required<Options>
-
-  const [maxes, lastFrame] = spring(optionsWithDefaults)
-
-  // Interpolate between keyframe values of 0 - 100 and frame indexes of 0 - x where x is the lastFrame.
-  const toFrame = interpolate(0, lastFrame, 0, 100)
-
-  // Separate Tweened and Sprung properties.
-  const [t, s] = breakupFrame(from, to, optionsWithDefaults.tweenedProps)
-  const sprung = createKeyframes(s.from, s.to, maxes, toFrame)
-  const tweened = createKeyframes(t.from, t.to, tween(lastFrame), toFrame)
-  const inverted =
-    optionsWithDefaults.withInvertedScale ||
-    optionsWithDefaults.invertedAnimation
-      ? createKeyframes(
-          s.from,
-          s.to,
-          maxes,
-          toFrame,
-          true,
-          optionsWithDefaults.invertedAnimation
-        )
-      : undefined
-
-  // Calculate duration based on the number of frames.
-  const duration = Math.round(msPerFrame * lastFrame * 100) / 100 + 'ms'
-
-  // Create a function to return a frame for a play time.
-  // Enables interrupting animations by creating new ones that start from the current velocity and frame.
 
   return {
-    sprung,
-    tweened,
-    inverted,
-    duration,
+    ...defaults,
+    ...options,
+  }
+}
+
+function pushValidKeyframes(value: any, keyframes: Keyframe[]) {
+  if (value) keyframes.push(value)
+}
+
+export function driver(from: Frame, to: Frame, options?: Options) {
+  const { withInversion, invertedAnimation, tweened, ...optionsWithDefaults } = withDefaults(options)
+  const spring = createSpring(optionsWithDefaults)
+
+  const keyframes: Keyframe[] = []
+  const invertedKeyframes: Keyframe[] = []
+
+  let lastFrame = 0
+
+  const createKeyframe = makeCreateKeyframe(from, to, tweened, invertedAnimation)
+
+  spring.forEachFrame((value, index, done) => {
+    pushValidKeyframes(createKeyframe(value, index, false), keyframes)
+    if (withInversion) pushValidKeyframes(createKeyframe(value, index, true), invertedKeyframes)
+
+    if (done) lastFrame = index
+  }, withInversion)
+
+  const toFrame = interpolate(0, lastFrame, 0, 100)
+
+  return {
+    ...createSprungKeyframes(keyframes, invertedKeyframes, toFrame),
+    tweened: createTweenedKeyframes(from, to, tweened),
+    duration: Math.round(msPerFrame * lastFrame * 100) / 100 + "ms",
     ease: EASE,
-    playTimeToVelocity: playtimeToVelocity(maxes),
+    resolveVelocity: spring.resolveVelocity,
   }
 }

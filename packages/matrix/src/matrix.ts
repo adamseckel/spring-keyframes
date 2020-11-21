@@ -1,5 +1,5 @@
-import { determinant, Matrix } from './math/matrix'
-import { modulus, toUnitVector, dot, cross } from './math/vector'
+import { determinant, Matrix } from "./math/matrix"
+import { modulus, toUnitVector, dot, cross } from "./math/vector"
 // import { isolatePerspective } from './utils/isolatePerspective'
 
 // Convert radians to degrees
@@ -69,7 +69,7 @@ function decompose(matrix: Matrix): Partial<Transforms> | null {
   let perspective
   if (matrix[0][3] !== 0 || matrix[1][3] !== 0 || matrix[2][3] !== 0) {
     // Apparently unnecessary
-    throw new Error('Needs to isolate perspective...')
+    throw new Error("Needs to isolate perspective...")
     // perspective = isolatePerspective(matrix, perspectiveMatrix)
 
     // Clear the perspective partition
@@ -166,14 +166,14 @@ function decompose(matrix: Matrix): Partial<Transforms> | null {
 }
 
 // Returns an object with transform properties
-export function fromMatrix(transform: string): Transforms | null {
+export function fromMatrix(transform: string): Partial<Transforms> | null {
   // Check if transform is 3d
-  const is3d = transform.includes('matrix3d')
+  const is3d = transform.includes("matrix3d")
 
   // Convert matrix values to an array of floats
   const split = transform.match(/\((.+)\)/)
   if (!split) return null
-  const t = split[1].split(',').map((value: string) => parseFloat(value))
+  const t = split[1].split(",").map((value: string) => parseFloat(value))
 
   // Convert transform to a matrix. Matrix columns become arrays
   const matrix: Matrix = is3d
