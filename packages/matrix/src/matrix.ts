@@ -37,7 +37,7 @@ export interface Transforms {
 }
 
 // Return a transform object if matrix can be decomposed, null if it can't
-function decompose(matrix: Matrix): Transforms | null {
+function decompose(matrix: Matrix): Partial<Transforms> | null {
   const transform = {} as any
 
   // Normalize the matrix

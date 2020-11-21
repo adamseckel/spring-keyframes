@@ -1,15 +1,12 @@
-import { useRef, useEffect, useContext } from 'react'
-import { Frame, tweened, InvertedAnimation } from '@spring-keyframes/driver'
-import { KeyframesContext } from '../../components/Keyframes'
-import { Transition } from './types'
-import { createAnimations } from './createAnimations'
-import {
-  computedStyle,
-  computedStyleForElement,
-} from '../../utils/computedFrom'
-import { axisScaleForFrame } from '../../utils/createDelta'
-import { Interaction } from '../../utils/types'
-import { AnimationState } from '../useAnimationState'
+import { useRef, useEffect, useContext } from "react"
+import { Frame, tweened, InvertedAnimation } from "@spring-keyframes/driver"
+import { KeyframesContext } from "../../components/Keyframes"
+import { Transition } from "./types"
+import { createAnimations } from "./createAnimations"
+import { computedStyle, computedStyleForElement } from "../../utils/computedFrom"
+import { axisScaleForFrame } from "../../utils/createDelta"
+import { Interaction } from "../../utils/types"
+import { AnimationState } from "../useAnimationState"
 
 export { Transition }
 
@@ -69,14 +66,11 @@ function requiresInvertedScale(interaction: Interaction, options?: Transition) {
   return options?.withInvertedScale
 }
 
-function createInvertedFrom(
-  ref: React.MutableRefObject<HTMLElement | null>,
-  from: Frame
-) {
+function createInvertedFrom(ref: React.MutableRefObject<HTMLElement | null>, from: Frame) {
   if (!ref.current) return identity
 
   const inverted = computedStyleForElement(
-    ['scaleX', 'scaleY'],
+    ["scaleX", "scaleY"],
     ref.current.childNodes[0] as HTMLElement
   )
 
@@ -95,19 +89,7 @@ function createIdentityTo(distortion?: Frame) {
   return identity
 }
 
-export function useAnimate({
-  callback,
-  setState,
-  state,
-}: {
-  state: AnimationState
-  setState: (state: any) => void
-  callback?: () => void
-}): {
-  play: Play
-  ref: React.MutableRefObject<HTMLElement | null>
-} {
-  const ref = useRef<HTMLElement>(null)
+export function useAnimate(ref: React.RefObject<HTMLElement>, callback: () => void): Play {
   const { keyframes, flush } = useContext(KeyframesContext)
 
   const cache = useRef<Cache>({
@@ -123,12 +105,9 @@ export function useAnimate({
 
   function handleAnimationEnd({ animationName }: { animationName: string }) {
     if (animationName !== current.animation) return
-    if (
-      cache.current.lastInteractionType === Interaction.Layout &&
-      ref.current
-    ) {
-      ref.current.style.animation = ''
-      ;(ref.current.childNodes[0] as HTMLElement).style.animation = ''
+    if (cache.current.lastInteractionType === Interaction.Layout && ref.current) {
+      ref.current.style.animation = ""
+      ;(ref.current.childNodes[0] as HTMLElement).style.animation = ""
     }
     // Only exit out of inverting if the animation completes.
     if (state.current.isInverted) setState({ isInverted: true })
@@ -139,11 +118,11 @@ export function useAnimate({
 
   useEffect(() => {
     if (!ref.current) return
-    ref.current.addEventListener('animationend', handleAnimationEnd)
+    ref.current.addEventListener("animationend", handleAnimationEnd)
 
     return () => {
       if (!ref.current) return
-      ref.current.removeEventListener('animationend', handleAnimationEnd)
+      ref.current.removeEventListener("animationend", handleAnimationEnd)
 
       flush(Array.from(current.animations))
     }
@@ -170,8 +149,7 @@ export function useAnimate({
   ) {
     if (!ref.current) return
 
-    const velocity =
-      current.start > 0 && current.convert ? current.convert(playTime) : 0
+    const velocity = current.start > 0 && current.convert ? current.convert(playTime) : 0
 
     const withInvertedScale = requiresInvertedScale(interaction, options)
 
@@ -206,7 +184,7 @@ export function useAnimate({
 
     ref.current.style.animation = [sprung?.animation, tweened?.animation]
       .filter((t) => t)
-      .join(', ')
+      .join(", ")
 
     if (inverted?.name) {
       setInversion(ref, inverted.animation, invertedAnimation)
@@ -233,9 +211,7 @@ export function useAnimate({
   }: AnimateToProps) => {
     if (!ref.current) return
 
-    const additionalKeys = state.current.isInverted
-      ? Object.keys(identity)
-      : undefined
+    const additionalKeys = state.current.isInverted ? Object.keys(identity) : undefined
 
     const keys = [...Object.keys(to), ...(additionalKeys ? additionalKeys : [])]
 
@@ -261,5 +237,5 @@ export function useAnimate({
     )
   }
 
-  return { ref, play }
+  return play
 }

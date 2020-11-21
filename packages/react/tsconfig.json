@@ -6,6 +6,7 @@
     "module": "ESNext" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
     "outDir": "./lib",
     "jsx": "react",
-    "allowJs": true
+    "allowJs": true,
+    "downlevelIteration": true
   }
 }
