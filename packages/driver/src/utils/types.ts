@@ -3,7 +3,7 @@ import { Transforms } from "./createTransformString"
 
 export type FrameNumber = number
 export type ScaleProperty = "scale" | "scaleX" | "scaleY"
-export type CSSProperty = keyof Omit<React.CSSProperties, "transition">
+export type CSSProperty = keyof Omit<React.CSSProperties, "transition" | "scale" | "rotate">
 export type CSSFrame = [CSSProperty, number | string]
 export type Keyframe = [FrameNumber, string]
 export type Property = CSSProperty | TransformProperty
@@ -23,7 +23,7 @@ export type TransformFrame = [TransformProperty, number]
 export type KeyframeItem = [string, number | string]
 export type ScaleFrame = [ScaleProperty, number]
 export type Properties = CSSProperty | TransformProperty
-export type Frame = Omit<React.CSSProperties, "scale" | "rotate" | "transition"> & Transforms
+export type Frame = Partial<Record<Properties, string | number>>
 
 export type Delta =
   | {

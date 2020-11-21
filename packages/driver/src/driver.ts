@@ -4,6 +4,7 @@ import { msPerFrame } from "./utils/msPerFrame"
 import { createSpring } from "./utils/popmotion/createSpring"
 import { makeCreateKeyframe } from "./utils/createKeyframe"
 import { createSprungKeyframes, createTweenedKeyframes } from "./utils/createKeyframeString"
+import { resolveCurrentValues } from "./utils/resolveCurrentValues"
 import * as Properties from "./utils/properties"
 
 export const EASE = "cubic-bezier(0.445, 0.050, 0.550, 0.950)"
@@ -44,7 +45,7 @@ function pushValidKeyframes(value: any, keyframes: Keyframe[]) {
 
 export function driver(from: Frame, to: Frame, options?: Options) {
   const { withInversion, invertedAnimation, tweened, ...optionsWithDefaults } = withDefaults(options)
-  const { forEachFrame, resolveVelocity } = createSpring(optionsWithDefaults)
+  const { forEachFrame, resolveVelocity, resolveValue } = createSpring(optionsWithDefaults)
 
   const keyframes: Keyframe[] = []
   const invertedKeyframes: Keyframe[] = []
@@ -68,5 +69,6 @@ export function driver(from: Frame, to: Frame, options?: Options) {
     duration: Math.round(msPerFrame * lastFrame * 100) / 100 + "ms",
     ease: EASE,
     resolveVelocity,
+    resolveValues: resolveCurrentValues(resolveValue, from, to),
   }
 }
