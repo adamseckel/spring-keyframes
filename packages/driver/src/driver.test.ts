@@ -108,6 +108,34 @@ it("returns a velocity for a in-progress animation", () => {
   expect(duration).toBeDefined()
 })
 
+it("returns resolved values for a in-progress animation", () => {
+  const { sprung, duration, resolveValues } = driver({ x: 0 }, { x: 400 }, { stiffness: 100, damping: 2 })
+  expect(sprung).toMatchInlineSnapshot(`
+    "0% {transform: translate3d(0px, 0px, 0px);}
+    18.1% {transform: translate3d(691.69px, 0px, 0px);}
+    36.19% {transform: translate3d(187.32px, 0px, 0px);}
+    54.29% {transform: translate3d(555.07px, 0px, 0px);}
+    72.38% {transform: translate3d(286.95px, 0px, 0px);}
+    90.48% {transform: translate3d(482.41px, 0px, 0px);}
+    100% {transform: translate3d(400px, 0px, 0px);}
+    "
+  `)
+
+  expect(duration).toMatchInlineSnapshot(`"1750ms"`)
+
+  // Assume that 18.1 has been rounded up from 18.0x
+  expect(resolveValues(0.18 * 1750)).toMatchObject({
+    x: 691.69,
+  })
+  // Assume that 54.29 has been rounded up from 54.28x
+  expect(resolveValues(0.5428 * 1750)).toMatchObject({
+    x: 555.07,
+  })
+  expect(resolveValues(0.7238 * 1750)).toMatchObject({
+    x: 286.95,
+  })
+})
+
 it("returns keyframes for scale props, for each frame when withInvertedScale is true", () => {
   const { sprung, inverted, duration, ease, resolveVelocity } = driver(
     { x: 0, scaleY: 0 },
