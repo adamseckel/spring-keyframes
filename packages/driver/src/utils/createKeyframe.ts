@@ -1,17 +1,9 @@
-import type {
-  Frame,
-  InvertedAnimation,
-  KeyframeItem,
-  Property,
-  ScaleFrame,
-  TransformFrame,
-  Keyframe,
-} from "./utils/types"
-import { interpolate } from "./utils/interpolate"
-import { isNumber, isUndefined } from "./utils/typechecks"
-import * as Properties from "./utils/properties"
-import { createTransformString, Transforms } from "./utils/createTransformString"
-import { invertScale } from "./utils/invertScale"
+import type { Frame, InvertedAnimation, KeyframeItem, Property, ScaleFrame, TransformFrame, Keyframe } from "./types"
+import { interpolate } from "./interpolate"
+import { isNumber, isUndefined } from "./typechecks"
+import * as Properties from "./properties"
+import { createTransformString, Transforms } from "./createTransformString"
+import { invertScale } from "./invertScale"
 
 const scales = ["scale", "scaleX", "scaleY"]
 

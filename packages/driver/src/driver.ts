@@ -2,8 +2,8 @@ import type { Frame, Options, Keyframe } from "./utils/types"
 import { interpolate } from "./utils/interpolate"
 import { msPerFrame } from "./utils/msPerFrame"
 import { createSpring } from "./utils/popmotion/createSpring"
-import { makeCreateKeyframe } from "./createKeyframe"
-import { createSprungKeyframes, createTweenedKeyframes } from "./createKeyframeString"
+import { makeCreateKeyframe } from "./utils/createKeyframe"
+import { createSprungKeyframes, createTweenedKeyframes } from "./utils/createKeyframeString"
 import * as Properties from "./utils/properties"
 
 export const EASE = "cubic-bezier(0.445, 0.050, 0.550, 0.950)"
@@ -44,7 +44,7 @@ function pushValidKeyframes(value: any, keyframes: Keyframe[]) {
 
 export function driver(from: Frame, to: Frame, options?: Options) {
   const { withInversion, invertedAnimation, tweened, ...optionsWithDefaults } = withDefaults(options)
-  const spring = createSpring(optionsWithDefaults)
+  const { forEachFrame, resolveVelocity } = createSpring(optionsWithDefaults)
 
   const keyframes: Keyframe[] = []
   const invertedKeyframes: Keyframe[] = []
@@ -53,7 +53,7 @@ export function driver(from: Frame, to: Frame, options?: Options) {
 
   const createKeyframe = makeCreateKeyframe(from, to, tweened, invertedAnimation)
 
-  spring.forEachFrame((value, index, done) => {
+  forEachFrame((value, index, done) => {
     pushValidKeyframes(createKeyframe(value, index, false), keyframes)
     if (withInversion) pushValidKeyframes(createKeyframe(value, index, true), invertedKeyframes)
 
@@ -64,9 +64,9 @@ export function driver(from: Frame, to: Frame, options?: Options) {
 
   return {
     ...createSprungKeyframes(keyframes, invertedKeyframes, toFrame),
-    tweened: createTweenedKeyframes(from, to, tweened),
+    ...createTweenedKeyframes(from, to, tweened),
     duration: Math.round(msPerFrame * lastFrame * 100) / 100 + "ms",
     ease: EASE,
-    resolveVelocity: spring.resolveVelocity,
+    resolveVelocity,
   }
 }

@@ -1,4 +1,4 @@
-import type { Keyframe, Property, Frame } from "./utils/types"
+import type { Keyframe, Property, Frame } from "./types"
 import { createKeyframe } from "./createKeyframe"
 
 export const createKeyframeString = (percent: number, value: string) => `${percent}% {${value};}`
@@ -26,7 +26,8 @@ export function createSprungKeyframes(
 export function createTweenedKeyframes(from: Frame, to: Frame, tweened: Property[]) {
   const start = createKeyframe(from, to, 0, 0, tweened, true)
   const end = createKeyframe(from, to, 1, 1, tweened, true)
-  if (start && end) return `${createKeyframeString(0, start[1])}${"\n"}${createKeyframeString(100, end[1])}`
+  if (start && end)
+    return { tweened: `${createKeyframeString(0, start[1])}${"\n"}${createKeyframeString(100, end[1])}` }
 
-  return undefined
+  return { tweened: undefined }
 }
