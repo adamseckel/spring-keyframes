@@ -5,7 +5,7 @@ import * as Properties from "./properties"
 import { createTransformString, Transforms } from "./createTransformString"
 import { invertScale } from "./invertScale"
 
-const scales = ["scale", "scaleX", "scaleY"]
+const inversions = ["scale", "scaleX", "scaleY"]
 
 function isTransformFrame(property: Property, _frame: KeyframeItem): _frame is TransformFrame {
   return Properties.transforms.includes(property)
@@ -48,7 +48,7 @@ export function createKeyframe(
   const transforms: TransformFrame[] = []
 
   let properties = Object.keys(from) as Property[]
-  if (withInversion) properties = properties.filter((key) => scales.includes(key))
+  if (withInversion) properties = properties.filter((key) => inversions.includes(key))
 
   for (const property of properties) {
     if (tweened.includes(property) ? !asTweened : asTweened) continue

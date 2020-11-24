@@ -21,21 +21,18 @@ const inverted = {
 }
 
 function withDefaults(options?: Options): Required<Options> {
-  const defaults: Required<Options> = {
+  const withInversion = options?.withInversion || !!options?.invertedAnimation || false
+  const invertedAnimation = options?.invertedAnimation || inverted
+
+  return {
     stiffness: 180,
     damping: 12,
     mass: 1,
-    precision: 0.01,
-    velocity: 0,
-    tweened: Properties.tweened,
-    withInvertedScale: false,
-    withInversion: !!options?.invertedAnimation,
-    invertedAnimation: inverted,
-  }
-
-  return {
-    ...defaults,
     ...options,
+    velocity: options?.velocity || 0,
+    tweened: options?.tweened || Properties.tweened,
+    withInversion,
+    invertedAnimation,
   }
 }
 

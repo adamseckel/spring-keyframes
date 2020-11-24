@@ -49,7 +49,7 @@ export function createTransformString(style: Omit<React.CSSProperties, "scale" |
   const transform = []
 
   // Translate.
-  if (isUndefined(x) || isUndefined(y) || isUndefined(z)) transform.push(createTranslate({ x, y, z }))
+  if (!isUndefined(x) || !isUndefined(y) || !isUndefined(z)) transform.push(createTranslate({ x, y, z }))
 
   const hasRotate = !isUndefined(rotate)
   const hasRotateZ = !isUndefined(rotateZ)

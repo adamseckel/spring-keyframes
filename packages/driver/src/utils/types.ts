@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Transforms } from "./createTransformString"
 
 export type FrameNumber = number
 export type ScaleProperty = "scale" | "scaleX" | "scaleY"
@@ -43,10 +42,8 @@ export interface Options {
   stiffness?: number
   damping?: number
   mass?: number
-  precision?: number
   velocity?: number
   tweened?: Properties[]
-  withInvertedScale?: boolean
   withInversion?: boolean
   invertedAnimation?: InvertedAnimation
 }

@@ -1,24 +1,34 @@
-import * as React from 'react'
-import { useAnimate } from '../hooks/useAnimate'
-import { Frame } from '@spring-keyframes/driver'
+import * as React from "react"
+import { useSpringKeyframes } from "../hooks/useSpringKeyframes"
+
+import { useLayoutTransition } from "../hooks/useLayoutTransition"
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  as: string
-  enter?: Frame
-  exit?: Frame
+  as: any
+  containerStyle?: React.CSSProperties
+  onAnimationEnd?: () => void
 }
 
-export function AnimatePresence({
-  as = 'div',
-  enter,
-  exit,
-  initial,
+export const AnimateLayout = function ({
+  as: Element = "div",
+  onAnimationEnd,
+  children,
+  containerStyle,
+  style,
+
   ...rest
 }: Props) {
-  const { ref, play } = useAnimate({ callback, setState, state })
+  const ref = React.useRef<HTMLElement>(null)
+  const invertedRef = React.useRef<HTMLDivElement>(null)
+  const { animate, resolveValues } = useSpringKeyframes(ref, onAnimationEnd, invertedRef)
 
+  useLayoutTransition(animate, resolveValues, ref)
 
-  return React.createElement(as, {
-    ...rest,
-    ref,
+  return (
+    <Element ref={ref} style={containerStyle} {...rest}>
+      <div style={style} ref={invertedRef}>
+        {children}
+      </div>
+    </Element>
+  )
 }

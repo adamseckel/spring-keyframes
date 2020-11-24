@@ -1,8 +1,10 @@
-import { useLayoutEffect, useRef, useCallback } from 'react'
-import { Play } from './useAnimate'
-import { computedStyle, computedStyleForElement } from '../utils/computedFrom'
-import { Interaction } from '../utils/types'
-import { AnimationState } from './useAnimationState'
+import * as React from "react"
+
+import { Interaction } from "../utils/types"
+
+import { Animate, ResolveValues } from "./useSpringKeyframes"
+import { Transforms } from "@spring-keyframes/driver"
+import { computedStyle } from "../utils/computedFrom"
 
 export type Layout = {
   left: number
@@ -20,58 +22,58 @@ const identity = {
   y: 0,
 }
 
-const keys = Object.keys(identity)
+// const keys = Object.keys(identity)
 
-function getRect(ref: React.RefObject<HTMLElement>) {
-  const { x = 0, y = 0, scaleX = 1, scaleY = 1 } = computedStyle(keys, ref)
-  const { top, left, right, bottom } = ref.current!.getBoundingClientRect()
+// function getRect(ref: React.RefObject<HTMLElement>) {
+//   const { x = 0, y = 0, scaleX = 1, scaleY = 1 } = computedStyle(keys, ref)
+//   const { top, left, right, bottom } = ref.current!.getBoundingClientRect()
 
-  return {
-    top,
-    left,
-    right,
-    bottom,
-    x,
-    y,
-    scaleX,
-    scaleY,
-  }
+//   return {
+//     top,
+//     left,
+//     right,
+//     bottom,
+//     x,
+//     y,
+//     scaleX,
+//     scaleY,
+//   }
+// }
+
+function rect(ref: React.RefObject<HTMLElement>) {
+  if (!ref.current) return { top: 0, left: 0, right: 0, bottom: 0 }
+
+  const { top, left, right, bottom } = ref.current.getBoundingClientRect()
+  return { top, left, right, bottom }
+}
+
+const transforms = {
+  x: undefined,
+  y: undefined,
+  scaleX: undefined,
+  scaleY: undefined,
+  scale: undefined,
+  translateX: undefined,
+  translateY: undefined,
 }
 
 export const useLayoutTransition = (
-  ref: React.MutableRefObject<HTMLElement | null>,
-  animate: Play,
-  layout: boolean,
-  state: AnimationState
+  animate: Animate,
+  resolveValues: ResolveValues,
+  ref: React.RefObject<HTMLElement>
 ) => {
-  const lastRect = useRef<Layout | null>(null)
-
-  const updateLayout = useCallback(() => {
+  const lastRect = React.useRef<Layout | null>(null)
+  console.log("reeval")
+  React.useLayoutEffect(() => {
+    console.log("pre layout")
     if (!ref.current) return
 
-    const { top, left, right, bottom, x, y, scaleX, scaleY } = getRect(ref)
-
-    lastRect.current = {
-      top: top - y,
-      left: left - x,
-      bottom: bottom - y,
-      right: right - x,
-      height: (bottom - top) / scaleY,
-      width: (right - left) / scaleX,
-    }
-  }, [])
-
-  useLayoutEffect(() => {
-    if (!layout) return
-    if (!ref.current) return
-    const { top, left, right, bottom, x, y, scaleX, scaleY } = getRect(ref)
-    const scale = state.current.distortion.scale
-    const {
-      x: offsetX = 0,
-      y: offsetY = 0,
-      scaleX: offsetScaleX = scale || 1,
-      scaleY: offsetScaleY = scale || 1,
-    } = state.current.distortion
+    const { top, left, right, bottom } = rect(ref)
+    const styles = computedStyle(["scaleX", "scaleY"], ref)
+    const { from: current } = resolveValues(undefined, transforms)
+    const { scale = 1 } = current as Required<Transforms>
+    const { x = 0, y = 0, scaleX = scale, scaleY = scale } = current as Required<Transforms>
+    console.log(styles, { x, y, scaleX, scaleY })
 
     const newRect: Layout = {
       top: top - y + window.scrollY,
@@ -84,6 +86,8 @@ export const useLayoutTransition = (
 
     if (lastRect.current === null) {
       lastRect.current = { ...newRect }
+      console.log("no last rect")
+
       return
     }
 
@@ -95,57 +99,44 @@ export const useLayoutTransition = (
       newRect.height !== oldRect.height ||
       newRect.width !== oldRect.width
 
+    console.log(hasRectChanged, "has changed")
     if (!hasRectChanged) return
 
     lastRect.current = { ...newRect }
 
-    const requiresInvertedAnimation =
-      state.current.distortion && !state.current.options?.withInvertedScale
-    let from
-    if (state.current.isInverted) {
-      const inverted = computedStyleForElement(
-        ['scaleX', 'scaleY'],
-        ref.current.childNodes[0] as HTMLElement
-      )
+    // const from = { scaleX, scaleY }
+    // if (state.current.isInverted) {
+    //   const inverted = computedStyleForElement(["scaleX", "scaleY"], ref.current.childNodes[0] as HTMLElement)
 
-      from = {
-        scaleX: scaleX * (inverted?.scaleX || 1),
-        scaleY: scaleY * (inverted?.scaleY || 1),
-      }
-    } else {
-      from = { scaleX, scaleY }
+    //   from = {
+    //     scaleX: scaleX * (inverted?.scaleX || 1),
+    //     scaleY: scaleY * (inverted?.scaleY || 1),
+    //   }
+    // } else {
+
+    // const invertedAnimation: InvertedAnimation = {
+    //   from,
+    //   to: { scaleX: 1, scaleY: 1 },
+    // }
+
+    const flippedFrom = {
+      x: (oldRect.right - newRect.right + oldRect.left - newRect.left) / 2 + x,
+      y: (oldRect.bottom - newRect.bottom + oldRect.top - newRect.top) / 2 + y,
+      scaleX: (oldRect.width * scaleX) / newRect.width,
+      scaleY: (oldRect.height * scaleY) / newRect.height,
     }
 
-    const invertedAnimation = {
-      from,
-      to: { scaleX: offsetScaleX, scaleY: offsetScaleY },
-    }
+    console.log({ flippedFrom })
 
-    animate({
-      to: {
-        x: identity.x + offsetX,
-        y: identity.y + offsetY,
-        scaleX: identity.scaleX * offsetScaleX,
-        scaleY: identity.scaleY * offsetScaleY,
+    animate(
+      {
+        x: identity.x,
+        y: identity.y,
+        scaleX: identity.scaleX,
+        scaleY: identity.scaleY,
       },
-      from: {
-        x:
-          (oldRect.right - newRect.right + oldRect.left - newRect.left) / 2 + x,
-        y:
-          (oldRect.bottom - newRect.bottom + oldRect.top - newRect.top) / 2 + y,
-        scaleX: (oldRect.width * scaleX) / newRect.width,
-        scaleY: (oldRect.height * scaleY) / newRect.height,
-      },
-      withDelay: false,
-      interaction: Interaction.Layout,
-
-      // If there is distortion created by an interaction, and that interaction is inverting that distortion onto it's children,
-      // Ensure that we factor that inverted distortion into the inversion we create for our layout transition. 🤯
-      invertedAnimation: requiresInvertedAnimation
-        ? invertedAnimation
-        : undefined,
-    })
-  }, [animate])
-
-  return { updateLayout }
+      Interaction.Layout,
+      flippedFrom
+    )
+  })
 }

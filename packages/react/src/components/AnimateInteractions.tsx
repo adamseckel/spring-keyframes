@@ -1,35 +1,34 @@
-import * as React from 'react'
-import { useAnimate } from '../hooks/useAnimate'
-import { Frame } from '@spring-keyframes/driver'
+import * as React from "react"
+import { Frame } from "@spring-keyframes/driver"
+import { useSpringKeyframes } from "../hooks/useSpringKeyframes"
+import { useWhileInteraction } from "../hooks/useWhileInteraction"
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   as: string
-  initial: Frame
   whileHover?: Frame
   whilePress?: Frame
+  onAnimationEnd?: () => void
 }
 
-export function AnimateInteractions({
-  as = 'div',
+export const AnimateInteractions = React.memo(function ({
+  as = "div",
   whileHover,
   whilePress,
-  initial,
+  onAnimationEnd,
+  children,
   ...rest
 }: Props) {
-  const ref = React.useRef<HTMLElement>()
-  const animate = useAnimate(ref, callback)
+  const ref = React.useRef<HTMLElement>(null)
+  const { animate } = useSpringKeyframes(ref, onAnimationEnd)
 
-  useWhileInteraction({
-    ref,
-    play,
-    from: to,
-    whileHover,
-    whileTap,
-    setState,
-    updateStyle,
-  })
+  useWhileInteraction(animate, ref, { whileHover, whilePress })
 
-  return React.createElement(as, {
-    ...rest,
-    ref,
-}
+  return React.createElement(
+    as,
+    {
+      ...rest,
+      ref,
+    },
+    children
+  )
+})

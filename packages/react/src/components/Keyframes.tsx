@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { StyleSheet } from '../utils/sheet'
-import hash from '@emotion/hash'
+import * as React from "react"
+import { StyleSheet } from "../utils/sheet"
+import hash from "@emotion/hash"
 
 const key = hash(new Date().toDateString())
 const sheet = new StyleSheet({ key, speedy: true })
@@ -34,12 +34,13 @@ function flush(keys: string[]) {
 
   if (flushableKeys.length) {
     setTimeout(() => {
-      flushableKeys.forEach(key => {
+      flushableKeys.forEach((key) => {
         if (animations[key] > 0) return
-        sheet.flushKeys([key])      
+        sheet.flushKeys([key])
+        //@ts-ignore
         animations[name] = Math.max(0, animations[name] - 1)
       })
-    }, 500);
+    }, 500)
   }
 }
 
@@ -49,9 +50,5 @@ export const KeyframesContext = React.createContext<{
 }>({ keyframes, flush })
 
 export function KeyframesProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <KeyframesContext.Provider value={{ keyframes, flush }}>
-      {children}
-    </KeyframesContext.Provider>
-  )
+  return <KeyframesContext.Provider value={{ keyframes, flush }}>{children}</KeyframesContext.Provider>
 }
