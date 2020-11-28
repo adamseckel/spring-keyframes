@@ -3,7 +3,6 @@ import typescript from "rollup-plugin-typescript2"
 import { terser } from "rollup-plugin-terser"
 import resolve from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
-import analyze from "rollup-plugin-analyzer"
 import pkg from "./package.json"
 import visualizer from "rollup-plugin-visualizer"
 
@@ -39,11 +38,11 @@ export default {
     terser({
       sourcemap: true,
       output: { comments: false },
-      warnings: true,
-      ecma: 5,
-      // Compress and/or mangle variables in top level scope.
-      // @see https://github.com/terser-js/terser
-      toplevel: true,
+      // warnings: true,
+      // ecma: 5,
+      // // Compress and/or mangle variables in top level scope.
+      // // @see https://github.com/terser-js/terser
+      // toplevel: true,
     }),
     visualizer({
       gzipSize: true,

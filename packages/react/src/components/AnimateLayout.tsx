@@ -26,10 +26,17 @@ export const AnimateLayout = React.forwardRef<HTMLElement, Props>(function (
   useLayoutTransition(animate, resolveValues, readRef, transition)
 
   return (
-    <div ref={writeRef} style={{ display: "inline-block", width: rest?.style?.width, height: rest?.style?.height }}>
+    <div
+      ref={writeRef}
+      style={{
+        display: "inline-block",
+        transformOrigin: "50% 50%",
+        width: rest?.style?.width,
+        height: rest?.style?.height,
+      }}>
       <Element ref={readRef} {...rest} transition={transition} style={{ ...rest.style, height: "100%", width: "100%" }}>
         {withInversion ? (
-          <div ref={invertedRef} style={{}}>
+          <div ref={invertedRef} style={{ height: "100%", width: "100%", transformOrigin: "0% 50%" }}>
             {children}
           </div>
         ) : (

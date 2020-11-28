@@ -19,7 +19,7 @@ const inverted = {
   to: identity,
 }
 
-function withDefaults(options?: Options): Required<Options> {
+function withDefaults(options?: Options) {
   const withInversion = options?.withInversion || !!options?.invertedAnimation || false
   const invertedAnimation = options?.invertedAnimation || inverted
 
@@ -27,6 +27,7 @@ function withDefaults(options?: Options): Required<Options> {
     stiffness: 180,
     damping: 12,
     mass: 1,
+    restDelta: 0.001,
     ...options,
     velocity: options?.velocity || 0,
     tweened: options?.tweened || Properties.tweened,

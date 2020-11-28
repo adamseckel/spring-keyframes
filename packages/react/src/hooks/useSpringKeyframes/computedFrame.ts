@@ -15,7 +15,7 @@ export function computedFrame(targetFrame?: Frame, ref?: React.RefObject<HTMLEle
   const currentStyle = getComputedStyle(ref.current)
   const transforms = collectTransforms(currentStyle)
 
-  if (!targetFrame || !transforms) return currentStyle
+  if (!targetFrame) return currentStyle
 
   return onlyTargetProperties(targetFrame, currentStyle, transforms)
 }
@@ -24,7 +24,7 @@ function isUndefined(value: unknown): value is undefined {
   return value === undefined
 }
 
-export function onlyTargetProperties(target: Frame, current: Frame, transforms?: Partial<Transforms>) {
+export function onlyTargetProperties(target: Frame, current: Frame, transforms?: Partial<Transforms> | null) {
   const newFrame: Frame = {}
   const properties = Object.keys(target) as Property[]
 

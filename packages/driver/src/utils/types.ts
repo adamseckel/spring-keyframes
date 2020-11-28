@@ -1,3 +1,4 @@
+import { SpringOptions } from "popmotion"
 import * as React from "react"
 
 export type FrameNumber = number
@@ -38,7 +39,7 @@ export interface InvertedAnimation {
   to: InvertedFrame
 }
 
-export interface Options {
+export interface Options extends Omit<SpringOptions, "from" | "to"> {
   stiffness?: number
   damping?: number
   mass?: number
