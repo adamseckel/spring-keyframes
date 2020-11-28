@@ -24,16 +24,35 @@ function App() {
           as="button"
           whileHover={{ scale: 2 }}
           whilePress={{ scale: 1.5 }}
-          style={{ width: 100, height: 30, background: "red", border: "none" }}
+          style={{ width: 200, height: 200, background: "red", border: "none" }}
         />
       </AnimatePresence>
 
-      <AnimateLayout
-        as={"div"}
-        containerStyle={{ width: isOn ? 200 : 400, height: isOn ? 100 : 300, backgroundColor: "red" }}
-        style={{ width: "100%", height: "100%", background: "yellow" }}>
-        <AnimateLayout as={"div"} style={{ width: 20, height: 20, background: "blue" }}></AnimateLayout>
-      </AnimateLayout>
+      <div
+        style={{ display: "flex", justifyContent: isOn ? "space-between" : "space-around", width: 800, height: 200 }}>
+        {[1].map((i) => (
+          <AnimateLayout
+            key={i}
+            as={AnimateInteractions}
+            withInversion
+            whileHover={{ scale: 2 }}
+            transition={{ damping: 50, spring: 100 }}
+            style={{
+              backgroundColor: "red",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              border: "1px solid blue",
+              width: 100,
+
+              height: isOn ? 100 : 200,
+            }}>
+            <div style={{ width: 20, height: 20, background: "blue" }}></div>
+            <div style={{ width: 20, height: 20, background: "blue" }}></div>
+            <div style={{ width: 20, height: 20, background: "blue" }}></div>
+          </AnimateLayout>
+        ))}
+      </div>
     </div>
   )
 }

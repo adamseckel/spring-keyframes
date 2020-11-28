@@ -1,6 +1,5 @@
 import { determinant, Matrix } from "./math/matrix"
 import { modulus, toUnitVector, dot, cross } from "./math/vector"
-// import { isolatePerspective } from './utils/isolatePerspective'
 
 // Convert radians to degrees
 function rad2deg(rad: number) {
@@ -20,14 +19,14 @@ function combine(a: any, b: any, ascl: any, bscl: any) {
 }
 
 export interface Transforms {
-  perspective: any
-  translateX: number
-  translateY: number
-  translateZ: number
+  x: number
+  y: number
+  z: number
   rotate: number
   rotateX: number
   rotateY: number
   rotateZ: number
+  scale: number
   scaleX: number
   scaleY: number
   scaleZ: number
@@ -36,8 +35,29 @@ export interface Transforms {
   skewY: number
 }
 
+export const identity: Record<keyof Transforms, number> = {
+  x: 0,
+  y: 0,
+  z: 0,
+  rotate: 0,
+  rotateX: 0,
+  rotateY: 0,
+  rotateZ: 0,
+  scale: 1,
+  scaleX: 1,
+  scaleY: 1,
+  scaleZ: 1,
+  skew: 0,
+  skewX: 0,
+  skewY: 0,
+}
+
+export function isTransform(key: string): key is keyof Transforms {
+  return key in identity
+}
+
 // Return a transform object if matrix can be decomposed, null if it can't
-function decompose(matrix: Matrix): Partial<Transforms> | null {
+function decompose(matrix: Matrix): Transforms | null {
   const transform = {} as any
 
   // Normalize the matrix
@@ -148,15 +168,15 @@ function decompose(matrix: Matrix): Partial<Transforms> | null {
   }
 
   return {
-    perspective,
-    translateX,
-    translateY,
-    translateZ,
+    x: translateX,
+    y: translateY,
+    z: translateZ,
     rotate: rad2deg(rotateZ),
     rotateX: rad2deg(rotateX),
     rotateY: rad2deg(rotateY),
     rotateZ: rad2deg(rotateZ),
     scaleX,
+    scale: scaleX,
     scaleY,
     scaleZ,
     skew: rad2deg(skew),
@@ -166,7 +186,7 @@ function decompose(matrix: Matrix): Partial<Transforms> | null {
 }
 
 // Returns an object with transform properties
-export function fromMatrix(transform: string): Partial<Transforms> | null {
+export function fromMatrix(transform: string): Transforms | null {
   // Check if transform is 3d
   const is3d = transform.includes("matrix3d")
 

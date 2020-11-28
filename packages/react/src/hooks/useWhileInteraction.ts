@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Frame } from "@spring-keyframes/driver"
+import { Frame, Options } from "@spring-keyframes/driver"
 import { Interaction } from "../utils/types"
 import { Animate } from "./useSpringKeyframes"
 
@@ -11,7 +11,8 @@ interface Props {
 export function useWhileInteraction(
   animate: Animate,
   ref: React.RefObject<HTMLElement>,
-  { whilePress, whileHover }: Props
+  { whilePress, whileHover }: Props,
+  transition?: Options
 ): void {
   const cache = React.useRef({
     isHovered: false,
@@ -24,7 +25,7 @@ export function useWhileInteraction(
 
     cache.current.isTapped = true
 
-    animate(whilePress, Interaction.Tap)
+    animate(whilePress, Interaction.Tap, undefined, undefined, transition)
   }
 
   function handleTapEnd() {
@@ -32,9 +33,9 @@ export function useWhileInteraction(
 
     if (whileHover) {
       const to = cache.current.isHovered ? whileHover : undefined
-      animate(to, Interaction.TapEndHover)
+      animate(to, Interaction.TapEndHover, undefined, undefined, transition)
     } else {
-      animate(undefined, Interaction.TapEnd)
+      animate(undefined, Interaction.TapEnd, undefined, undefined, transition)
     }
   }
 
@@ -42,14 +43,14 @@ export function useWhileInteraction(
     if (!whileHover) return
 
     cache.current.isHovered = true
-    animate(whileHover, Interaction.Hover)
+    animate(whileHover, Interaction.Hover, undefined, undefined, transition)
   }
 
   function handleMouseEnterEnd() {
     if (!whileHover) return
 
     cache.current.isHovered = false
-    animate(undefined, Interaction.HoverEnd)
+    animate(undefined, Interaction.HoverEnd, undefined, undefined, transition)
   }
 
   React.useEffect(() => {

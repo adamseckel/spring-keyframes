@@ -1,5 +1,11 @@
 import { Frame, Property } from "@spring-keyframes/driver"
+import { fromMatrix, isTransform, identity, Transforms } from "@spring-keyframes/matrix"
 import * as React from "react"
+
+function collectTransforms(currentStyle: CSSStyleDeclaration): Transforms | null {
+  if (!currentStyle.transform || currentStyle.transform === "none") return null
+  return fromMatrix(currentStyle.transform)
+}
 
 export function computedFrame(targetFrame?: Frame, ref?: React.RefObject<HTMLElement>): Frame {
   if (!ref?.current && targetFrame) return targetFrame
@@ -7,40 +13,24 @@ export function computedFrame(targetFrame?: Frame, ref?: React.RefObject<HTMLEle
   if (!ref?.current) return {}
 
   const currentStyle = getComputedStyle(ref.current)
+  const transforms = collectTransforms(currentStyle)
 
-  if (!targetFrame) return currentStyle
+  if (!targetFrame || !transforms) return currentStyle
 
-  return onlyTargetProperties(targetFrame, currentStyle)
+  return onlyTargetProperties(targetFrame, currentStyle, transforms)
 }
 
 function isUndefined(value: unknown): value is undefined {
   return value === undefined
 }
 
-const identity = {
-  scaleX: 1,
-  scaleY: 1,
-  x: 0,
-  y: 0,
-  translateX: 0,
-  translateY: 0,
-  scale: 1,
-} as const
-
-type Identity = keyof typeof identity
-
-function isTransform(key: string): key is Identity {
-  return key in identity
-}
-
-export function onlyTargetProperties(target: Frame, current: Frame) {
+export function onlyTargetProperties(target: Frame, current: Frame, transforms?: Partial<Transforms>) {
   const newFrame: Frame = {}
   const properties = Object.keys(target) as Property[]
 
   for (const property of properties) {
-    const value = current[property]
-    if (isTransform(property) && !isUndefined(value)) {
-      newFrame[property] = typeof value === "number" ? value : parseInt(value)
+    if (isTransform(property) && transforms && !isUndefined(transforms[property])) {
+      newFrame[property] = transforms[property]
     } else if (isUndefined(current[property])) {
       newFrame[property] = isTransform(property) ? identity[property] : 0
     } else {

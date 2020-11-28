@@ -1,13 +1,14 @@
-import sourceMaps from 'rollup-plugin-sourcemaps'
-import typescript from 'rollup-plugin-typescript2'
-import { terser } from 'rollup-plugin-terser'
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
-import analyze from 'rollup-plugin-analyzer'
-import pkg from './package.json'
+import sourceMaps from "rollup-plugin-sourcemaps"
+import typescript from "rollup-plugin-typescript2"
+import { terser } from "rollup-plugin-terser"
+import resolve from "@rollup/plugin-node-resolve"
+import commonjs from "@rollup/plugin-commonjs"
+import analyze from "rollup-plugin-analyzer"
+import pkg from "./package.json"
+import visualizer from "rollup-plugin-visualizer"
 
 export default {
-  input: './src/index.ts',
+  input: "./src/index.ts",
   output: [
     // {
     //   name: '@spring-keyframes/react',
@@ -23,13 +24,13 @@ export default {
     // },
     {
       file: pkg.module,
-      format: 'es',
+      format: "es",
       sourcemap: true,
     },
   ],
   external: [...Object.keys(pkg.peerDependencies || {})],
   plugins: [
-    typescript({ exclude: '**/*.test.ts' }),
+    typescript({ exclude: "**/*.test.ts", objectHashIgnoreUnknownHack: true }),
     resolve(),
     commonjs({
       include: /node_modules/,
@@ -44,6 +45,9 @@ export default {
       // @see https://github.com/terser-js/terser
       toplevel: true,
     }),
-    // analyze(),
+    visualizer({
+      gzipSize: true,
+      brotliSize: true,
+    }),
   ],
 }

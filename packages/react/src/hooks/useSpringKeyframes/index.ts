@@ -22,44 +22,18 @@ export type ResolveValues = (to: Frame | undefined, from?: Frame) => { from: Fra
 export interface Cache {
   start: number
   animation: string | null
-  animations: Set<string>
+  animations: string[]
   isAnimating: boolean
   lastFrame?: Frame
   baseComputedStyle?: Frame
   lastInteractionType?: Interaction
   resolveVelocity?: (time: number) => number
-  resolveValues?: (time: number) => Frame
 }
-
-// const identity = {
-//   scaleX: 1,
-//   scaleY: 1,
-// }
 
 function requiresInversion(interaction: Interaction, options?: Transition) {
   if (interaction === Interaction.Layout) return true
   return options?.withInversion
 }
-
-// function createInvertedFrom(ref: React.MutableRefObject<HTMLElement | null>, from: Frame) {
-//   if (!ref.current) return identity
-
-//   const inverted = computedStyleForElement(["scaleX", "scaleY"], ref.current.childNodes[0] as HTMLElement)
-
-//   return {
-//     scaleX: (from?.scaleX || 1) * (inverted?.scaleX || 1),
-//     scaleY: (from?.scaleY || 1) * (inverted?.scaleY || 1),
-//   }
-// }
-
-// function createIdentityTo(distortion?: Frame) {
-//   if (distortion) {
-//     const { scale = 1 } = distortion
-//     const { scaleX = scale, scaleY = scale } = distortion
-//     return { scaleX, scaleY }
-//   }
-//   return identity
-// }
 
 function getAnimationTime(startTime: number) {
   return performance.now() - startTime
@@ -76,6 +50,7 @@ export const Initial = Symbol("initial")
 export function useSpringKeyframes(
   ref: React.RefObject<HTMLElement>,
   callback?: () => void,
+  readRef: React.RefObject<HTMLElement> = ref,
   invertedRef?: React.RefObject<HTMLElement>
 ): {
   animate: Animate
@@ -87,7 +62,7 @@ export function useSpringKeyframes(
     isAnimating: false,
     start: 0,
     animation: null,
-    animations: new Set(),
+    animations: [],
   })
 
   function handleAnimationEnd({ animationName }: { animationName: string }) {
@@ -98,6 +73,8 @@ export function useSpringKeyframes(
     }
     cache.current.isAnimating = false
     cache.current.start = 0
+
+    flush(cache.current.animations)
 
     callback?.()
   }
@@ -110,15 +87,14 @@ export function useSpringKeyframes(
       if (!ref.current) return
 
       ref.current.removeEventListener("animationend", handleAnimationEnd)
-      flush(Array.from(cache.current.animations))
     }
   }, [])
 
   React.useLayoutEffect(() => {
-    if (!ref.current) return
+    if (!readRef.current) return
 
     if (!cache.current.lastFrame) {
-      cache.current.baseComputedStyle = computedFrame(undefined, ref)
+      cache.current.baseComputedStyle = computedFrame(undefined, readRef)
     }
   }, [])
 
@@ -129,15 +105,13 @@ export function useSpringKeyframes(
   } => {
     if (!ref.current) return { from: { scale: 1 }, to: { scale: 1 }, velocity: 0 }
 
-    const { isAnimating, start, resolveVelocity, resolveValues, baseComputedStyle, lastFrame } = cache.current
+    const { isAnimating, start, resolveVelocity, baseComputedStyle, lastFrame } = cache.current
     const time = isAnimating ? getAnimationTime(start) : 0
     const velocity = getVelocity(isAnimating, time, resolveVelocity)
 
     // If a specific From and To Frame are provided, use them both. We assume
     // they match.
     if (from && to) {
-      // console.log("a")
-
       return { from, to, velocity }
     }
 
@@ -145,19 +119,18 @@ export function useSpringKeyframes(
       // If From is provided but To is not, we assume the target animation is to
       // the base style.
       if (from && !to) {
-        console.log("b")
         return { from, to: onlyTargetProperties(from, baseComputedStyle), velocity }
       }
       // If To is provided but From is not, we assume we are animating from
       // current styles, to To.
       if (!from && to) {
         /**@TODO is there a scenario where we need to merge computed style and resolved values */
-        if (isAnimating && resolveValues) {
-          console.log("c", time, resolveValues(time))
-          return { from: onlyTargetProperties(to, resolveValues(time)), to, velocity }
+        if (isAnimating) {
+          console.log("c")
+          return { from: computedFrame(to, ref), to, velocity }
         }
 
-        if (!isAnimating && lastFrame && resolveValues) {
+        if (!isAnimating && lastFrame) {
           console.log("d")
           return { from: onlyTargetProperties(to, { ...baseComputedStyle, ...lastFrame }), to, velocity }
         } else if (!isAnimating) {
@@ -170,17 +143,19 @@ export function useSpringKeyframes(
       // animated to a specific Frame, we animate from that Frame to the base
       // style.
       if (!from && !to && lastFrame) {
-        if (isAnimating && resolveValues) {
-          console.log("f")
-          return { from: resolveValues(time), to: onlyTargetProperties(lastFrame, baseComputedStyle), velocity }
+        if (isAnimating) {
+          return {
+            from: computedFrame(lastFrame, ref),
+            to: onlyTargetProperties(lastFrame, baseComputedStyle),
+            velocity,
+          }
         }
 
-        console.log("g")
         return { from: lastFrame, to: onlyTargetProperties(lastFrame, baseComputedStyle), velocity }
       }
     }
 
-    return { from: { scale: 1 }, to: { scale: 1 }, velocity }
+    return { from: {}, to: {}, velocity }
   }, [])
 
   const animate = React.useCallback(
@@ -196,8 +171,6 @@ export function useSpringKeyframes(
 
       const withInversion = requiresInversion(interaction, options)
       const { from: resolvedFrom, to: resolvedTo, velocity } = resolveValues(from, to)
-      // console.log({ resolvedFrom, resolvedTo, velocity })
-      console.log({ withInversion })
       const animation = createAnimations(resolvedFrom, resolvedTo, !!withDelay, interaction, {
         ...options,
         velocity,
@@ -205,14 +178,7 @@ export function useSpringKeyframes(
         invertedAnimation,
       })(keyframes)
 
-      console.log(animation)
-
-      if (animation.sprung?.name) cache.current.animations.add(animation.sprung.name)
-      if (animation.tweened?.name) cache.current.animations.add(animation.tweened.name)
-      if (animation.inverted?.name) cache.current.animations.add(animation.inverted.name)
-
       cache.current.resolveVelocity = animation.resolveVelocity
-      cache.current.resolveValues = animation.resolveValues
 
       ref.current.style.animation = [animation.sprung?.animation, animation.tweened?.animation]
         .filter((t) => !!t)
@@ -227,6 +193,14 @@ export function useSpringKeyframes(
       cache.current.lastInteractionType = interaction
       cache.current.lastFrame = to
       cache.current.isAnimating = true
+
+      flush(cache.current.animations)
+
+      cache.current.animations = []
+
+      if (animation.sprung?.name) cache.current.animations.push(animation.sprung.name)
+      if (animation.tweened?.name) cache.current.animations.push(animation.tweened.name)
+      if (animation.inverted?.name) cache.current.animations.push(animation.inverted.name)
     },
     []
   )

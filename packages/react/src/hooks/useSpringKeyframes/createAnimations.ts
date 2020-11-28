@@ -65,7 +65,7 @@ export const createAnimations = (
   interaction: Interaction,
   options: Transition
 ) => (keyframes: (name: string, rule: string) => string) => {
-  const { duration, ease, resolveVelocity, resolveValues, ...allAnimations } = driver(from, to, options)
+  const { duration, ease, resolveVelocity, ...allAnimations } = driver(from, to, options)
 
   const delay = options.delay && withDelay ? `${options.delay}ms` : "0ms"
   const fill = interactionFillMap[interaction]
@@ -73,9 +73,9 @@ export const createAnimations = (
   const timing = toTimingFunction(!!options.withInversion, ease)
 
   const toAnimation = (name: string, sprung: boolean) => `${name} ${timing(sprung)} ${duration} ${delay} 1 ${fill}`
-  console.log({ allAnimations })
+
   const hashedName = hash(JSON.stringify({ to, from, options }))
   const animations = processFrameToAnimations(keyframes, allAnimations, hashedName, toAnimation, interaction)
 
-  return { ...animations, resolveVelocity, resolveValues }
+  return { ...animations, resolveVelocity }
 }

@@ -1,28 +1,29 @@
-import sourceMaps from 'rollup-plugin-sourcemaps'
-import typescript from 'rollup-plugin-typescript2'
-import { terser } from 'rollup-plugin-terser'
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
-import pkg from './package.json'
+import sourceMaps from "rollup-plugin-sourcemaps"
+import typescript from "rollup-plugin-typescript2"
+import { terser } from "rollup-plugin-terser"
+import resolve from "@rollup/plugin-node-resolve"
+import commonjs from "@rollup/plugin-commonjs"
+import pkg from "./package.json"
+import visualizer from "rollup-plugin-visualizer"
 
 export default {
-  input: './src/matrix.ts',
+  input: "./src/matrix.ts",
   output: [
     {
-      name: '@spring-keyframes/matrix',
-      file: './dist/matrix.umd.js',
-      format: 'umd',
-      exports: 'named',
+      name: "@spring-keyframes/matrix",
+      file: "./dist/matrix.umd.js",
+      format: "umd",
+      exports: "named",
       sourcemap: true,
     },
     {
       file: pkg.main,
-      format: 'cjs',
+      format: "cjs",
       sourcemap: true,
     },
     {
       file: pkg.module,
-      format: 'es',
+      format: "es",
       sourcemap: true,
     },
   ],
@@ -32,13 +33,14 @@ export default {
   ],
   plugins: [
     typescript({
-      exclude: '**/*.test.ts',
+      exclude: "**/*.test.ts",
       tsconfigOverride: {
         compilerOptions: {
           declaration: true,
           sourceRoot: `${process.cwd()}/src`,
         },
       },
+      objectHashIgnoreUnknownHack: true,
     }),
     resolve(),
     commonjs(),
@@ -52,7 +54,11 @@ export default {
       // @see https://github.com/terser-js/terser
       toplevel: true,
       compress: true,
-      // mangle: true,
+      mangle: true,
+    }),
+    visualizer({
+      gzipSize: true,
+      brotliSize: true,
     }),
   ],
 }

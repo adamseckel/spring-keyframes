@@ -18,9 +18,9 @@ export type Options = {
 }
 
 function createStyleElement(options: { key: string }): HTMLStyleElement {
-  let tag = document.createElement('style')
-  tag.setAttribute('data-keyframes', options.key)
-  tag.appendChild(document.createTextNode(''))
+  let tag = document.createElement("style")
+  tag.setAttribute("data-keyframes", options.key)
+  tag.appendChild(document.createTextNode(""))
   return tag
 }
 
@@ -32,7 +32,7 @@ export class StyleSheet {
   nonce: string | void
   before: Element | null
   constructor(options: Options) {
-    this.isSpeedy = false
+    this.isSpeedy = true
     this.tags = []
     this.ctr = 0
     this.nonce = options.nonce
@@ -68,11 +68,8 @@ export class StyleSheet {
         // the big drawback is that the css won't be editable in devtools
         sheet.insertRule(rule, sheet.cssRules.length)
       } catch (e) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn(
-            `There was a problem inserting the following rule: "${rule}"`,
-            e
-          )
+        if (process.env.NODE_ENV !== "production") {
+          console.warn(`There was a problem inserting the following rule: "${rule}"`, e)
         }
       }
     } else {
@@ -83,7 +80,7 @@ export class StyleSheet {
   flushKeys(keys: string[]) {
     let count = 0
 
-    this.tags.forEach(tag => {
+    this.tags.forEach((tag) => {
       if (this.isSpeedy) {
         const sheet = sheetForTag(tag)
 
@@ -98,7 +95,7 @@ export class StyleSheet {
           }
         }
       } else {
-        const tagName = tag.getAttribute('data-keyframes')
+        const tagName = tag.getAttribute("data-keyframes")
         // console.log(tagName, keys)
         if (tagName && keys.includes(tagName) && tag.parentNode) {
           tag.parentNode.removeChild(tag)
@@ -110,7 +107,7 @@ export class StyleSheet {
     this.ctr = this.ctr - count
   }
   flushAll() {
-    this.tags.forEach(tag => {
+    this.tags.forEach((tag) => {
       if (tag.parentNode) tag.parentNode.removeChild(tag)
     })
     this.tags = []

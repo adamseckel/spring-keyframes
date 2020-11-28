@@ -26,7 +26,8 @@
     "rollup-plugin-internal": "^1.0.4",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-terser": "^5.1.2",
-    "rollup-plugin-typescript2": "^0.25.3"
+    "rollup-plugin-typescript2": "^0.25.3",
+    "rollup-plugin-visualizer": "^4.2.0"
   },
   "peerDependencies": {
     "react": "^16.12.0",
