@@ -12,13 +12,13 @@ function App() {
     <div
       className="App"
       onClick={() => setIsOn(!isOn)}
-      style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start" }}>
-      <AnimateState
-        as="button"
-        animate={{ scale: 1 }}
-        style={{ width: 100, height: 30, background: "red", border: "none" }}
-      />
-
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        position: "relative",
+      }}>
       <AnimatePresence as="div" enterFrom={{ scale: 3 }} default={{ scale: 1 }}>
         <AnimateInteractions
           as="button"

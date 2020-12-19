@@ -171,8 +171,7 @@ export function useSpringKeyframes(
 
       const withInversion = requiresInversion(interaction, options)
       const { from: resolvedFrom, to: resolvedTo, velocity } = resolveValues(from, to)
-      console.log(resolvedFrom, resolvedTo)
-      debugger
+
       const animation = createAnimations(resolvedFrom, resolvedTo, !!withDelay, interaction, {
         ...options,
         velocity,
