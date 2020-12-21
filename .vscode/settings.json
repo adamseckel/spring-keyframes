@@ -1,9 +1,10 @@
 {
-  "cSpell.words": [
-    "Unmatrix",
-    "sourcemap",
-    "toplevel",
-    "tweened",
-    "unitless"
-  ]
+  "cSpell.words": ["tweened", "unitless"],
+  "search.exclude": {
+    "node_modules": true,
+    "dist": true,
+    "yarn.lock": true,
+    "stats.html": true
+  },
+  "jestrunner.runOptions": ["--config", "./jest.config.js"]
 }

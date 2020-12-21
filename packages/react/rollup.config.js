@@ -9,18 +9,18 @@ import visualizer from "rollup-plugin-visualizer"
 export default {
   input: "./src/index.ts",
   output: [
-    // {
-    //   name: '@spring-keyframes/react',
-    //   file: './dist/react.umd.js',
-    //   format: 'umd',
-    //   exports: 'named',
-    //   sourcemap: true,
-    // },
-    // {
-    //   file: pkg.main,
-    //   format: 'cjs',
-    //   sourcemap: true,
-    // },
+    {
+      name: "@spring-keyframes/react",
+      file: "./dist/react.umd.js",
+      format: "umd",
+      exports: "named",
+      sourcemap: true,
+    },
+    {
+      file: pkg.main,
+      format: "cjs",
+      sourcemap: true,
+    },
     {
       file: pkg.module,
       format: "es",
@@ -36,7 +36,6 @@ export default {
     }),
     sourceMaps(),
     terser({
-      sourcemap: true,
       output: { comments: false },
       // warnings: true,
       // ecma: 5,

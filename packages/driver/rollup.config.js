@@ -44,7 +44,6 @@ export default {
     }),
     sourceMaps(),
     terser({
-      sourcemap: true,
       output: { comments: false },
       warnings: true,
       ecma: 2015,
