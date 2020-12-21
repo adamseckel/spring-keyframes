@@ -1,11 +1,19 @@
 export const enum Interaction {
+  None,
+  Base,
   Mount,
-  Animate,
   Layout,
+  Animate,
   Hover,
-  HoverEnd,
-  Tap,
-  TapEnd,
-  TapEndHover,
+  Press,
   Exit,
 }
+
+export const interactionPriority = [
+  Interaction.Exit,
+  Interaction.Layout,
+  Interaction.Press,
+  Interaction.Hover,
+  Interaction.Animate,
+  Interaction.Mount,
+]

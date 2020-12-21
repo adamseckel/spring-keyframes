@@ -14,7 +14,8 @@
   },
   "devDependencies": {
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "xcssmatrix": "0.2.2"
   },
   "peerDependencies": {
     "react": "*",
@@ -29,7 +30,16 @@
     "prebuild": "yarn run clean",
     "prepublish": "yarn run build",
     "type-check": "tsc --noEmit",
-    "watch": "rollup -cw"
+    "watch": "rollup -cw",
+    "test": "jest"
   },
-  "gitHead": "69a97e1653b8d5615a1df12a6254220a87a67346"
+  "gitHead": "69a97e1653b8d5615a1df12a6254220a87a67346",
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  }
 }

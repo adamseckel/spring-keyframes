@@ -1,8 +1,6 @@
 {
   "version": "0.0.40",
   "npmClient": "yarn",
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/driver", "packages/react", "packages/matrix"],
   "useWorkspaces": true
 }

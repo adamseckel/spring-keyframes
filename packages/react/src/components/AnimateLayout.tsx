@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useSpringKeyframes } from "../hooks/useSpringKeyframes"
+import { useDriver } from "../hooks/useDriver"
 import { useCombinedRefs } from "../hooks/useCombinedRefs"
 
 import { useLayoutTransition } from "../hooks/useLayoutTransition"
@@ -21,9 +21,9 @@ export const AnimateLayout = React.forwardRef<HTMLElement, Props>(function (
   const writeRef = React.useRef<HTMLDivElement>(null)
   const invertedRef = React.useRef<HTMLDivElement>(null)
 
-  const { animate, resolveValues } = useSpringKeyframes(writeRef, onAnimationEnd, readRef, invertedRef)
+  const driver = useDriver(writeRef, onAnimationEnd, readRef, invertedRef)
 
-  useLayoutTransition(animate, resolveValues, readRef, transition)
+  useLayoutTransition(driver, readRef, { layout: true }, invertedRef, transition)
 
   return (
     <div
