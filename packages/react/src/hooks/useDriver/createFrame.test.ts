@@ -18,7 +18,7 @@ describe("createComputedFrame", () => {
 
   it("returns only computed style if no target frame is provided", () => {
     const ref = ({ current: true } as unknown) as React.RefObject<HTMLElement>
-    const transform = new XCSSMatrix().translate(20, 10).scale(2).toString()
+    const transform = new XCSSMatrix(undefined).translate(20, 10, 0).scale(2).toString()
 
     // @ts-ignore
     Style.default.mockReturnValue({
@@ -32,7 +32,7 @@ describe("createComputedFrame", () => {
 
   it("returns target properties if targetFrame is provided", () => {
     const ref = ({ current: true } as unknown) as React.RefObject<HTMLElement>
-    const transform = new XCSSMatrix().translate(20, 10).scale(2).toString()
+    const transform = new XCSSMatrix(undefined).translate(20, 10, 0).scale(2).toString()
 
     // @ts-ignore
     Style.default.mockReturnValue({
@@ -83,7 +83,7 @@ describe("createResolvedFrame", () => {
   })
 
   it("if isAnimating is true, and baseFrame and to are provided, it generates a computed frame from to's properties", () => {
-    const transform = new XCSSMatrix().translate(20, 10).scale(2).toString()
+    const transform = new XCSSMatrix(undefined).translate(20, 10, 0).scale(2).toString()
 
     // @ts-ignore
     Style.default.mockReturnValue({
@@ -135,7 +135,7 @@ describe("createResolvedFrame", () => {
   })
 
   it("if isAnimating is true, and baseFrame and lastResolvedFrame are provided, it generates a computed frame from lastResolvedFrame's properties and uses lastResolvedFrame as to", () => {
-    const transform = new XCSSMatrix().translate(20, 10).scale(1.2).toString()
+    const transform = new XCSSMatrix(undefined).translate(20, 10, 0).scale(1.2).toString()
 
     // @ts-ignore
     Style.default.mockReturnValue({
