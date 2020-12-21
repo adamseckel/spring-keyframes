@@ -15,9 +15,9 @@ export function computedFrame(targetFrame?: Frame, ref?: React.RefObject<HTMLEle
   const currentStyle = getComputedStyle(ref.current)
   const transforms = collectTransforms(currentStyle)
 
-  if (!targetFrame) return currentStyle
+  if (!targetFrame) return currentStyle as Frame
 
-  return onlyTargetProperties(targetFrame, currentStyle, transforms)
+  return onlyTargetProperties(targetFrame, currentStyle as Frame, transforms)
 }
 
 function isUndefined(value: unknown): value is undefined {

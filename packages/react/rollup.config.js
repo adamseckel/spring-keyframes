@@ -29,7 +29,7 @@ export default {
   ],
   external: [...Object.keys(pkg.peerDependencies || {})],
   plugins: [
-    typescript({ exclude: "**/*.test.ts", objectHashIgnoreUnknownHack: true }),
+    typescript({ exclude: "**/*.test.ts" }),
     resolve(),
     commonjs({
       include: /node_modules/,

@@ -40,7 +40,6 @@ export default {
           sourceRoot: `${process.cwd()}/src`,
         },
       },
-      objectHashIgnoreUnknownHack: true,
     }),
     resolve(),
     commonjs(),
