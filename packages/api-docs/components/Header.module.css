@@ -3,8 +3,9 @@
 }
 
 .title {
-  font-size: 64px;
+  font-size: 74px;
   margin-left: -1px;
+  line-height: 1;
 }
 
 .label {

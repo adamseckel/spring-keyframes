@@ -15,6 +15,7 @@ body {
 
   background: var(--background);
   color: var(--body-text);
+  scroll-behavior: smooth;
 }
 
 a {
@@ -51,7 +52,7 @@ h4 {
 }
 
 .page-container > div {
-  margin-bottom: 48px;
+  padding-top: var(--gutter);
 }
 
 .page-container > div > h2 {

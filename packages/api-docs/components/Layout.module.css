@@ -2,19 +2,22 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: stretch;
   width: 100%;
+  position: relative;
 }
 
 .navigationContainer {
-  width: 380px;
-  height: 100vh;
-  position: relative;
+  width: 480px;
+  max-width: 480px;
+  min-width: 380px;
+  flex-grow: 1;
 }
 
 .bodyContainer {
   flex-grow: 1;
   max-width: 1000px;
-  margin: 0 auto;
   font-size: 18px;
+  margin-top: calc(var(--gutter) * -1 + -8px);
+  padding-right: var(--gutter);
 }

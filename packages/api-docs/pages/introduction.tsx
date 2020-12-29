@@ -7,16 +7,18 @@ export default function Introduction() {
       <div id="introduction">
         <h2>Introduction</h2>
         <p>
-          <b>spring-keyframes</b> is a set of tools that enables running natural spring-based animations in the browser
+          <b>spring keyframes</b> is a set of tools that enables running natural spring-based animations in the browser
           without relying on javascript to update the animation on every frame.
         </p>
       </div>
       <div id="how-it-works">
         <h3>How It Works</h3>
         <p>
-          <b>spring-keyframes</b> is built around a driver that is capable of generating the minimum number of css
-          keyframes required to animate a set of values from a to b, based on whatever spring settings it is configured
-          with.
+          <b>spring keyframes</b> is built around a driver that is capable of generating the minimum number of{" "}
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes" rel="external">
+            css keyframes
+          </a>{" "}
+          required to animate a set of values from a to b, based on whatever spring settings it is configured with.
         </p>
         <p>
           This output can be used to generate static keyframes that can be compiled at build time, for example when
@@ -30,8 +32,9 @@ export default function Introduction() {
           </a>
           , or at runtime, when paired with other tools like emotion.
         </p>
+        <p>Finally this output can also be used to generate animations "just-in-time".</p>
         <p>
-          Finally this output can also be used to generate animations "just-in-time". It's this ability that powers{" "}
+          It's this ability that powers{" "}
           <Link href="/api#react">
             <a>@spring-keyframes/react</a>
           </Link>
@@ -58,8 +61,8 @@ export default function Introduction() {
             <a>@spring-keyframes/react</a>
           </Link>{" "}
           excel in situations where the product demands smooth animations even when the web page is busy, something that
-          other animation libraries like framer-motion and react-spring cannot accomplish due to being dependent on the
-          browser having the capacity to schedule an animation frame every 16ms.
+          other animation libraries like <b>framer-motion</b> and <b>react-spring</b> cannot accomplish due to being
+          dependent on the browser having the capacity to schedule an animation frame every 16ms.
         </p>
         <p>
           <Link href="/api#driver">
