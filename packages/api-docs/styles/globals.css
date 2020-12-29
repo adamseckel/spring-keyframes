@@ -1,0 +1,68 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
+    Helvetica Neue, sans-serif;
+
+  --background: #000;
+  --header-text: #fff;
+  --body-text: #a6a6a6;
+  --label-text: #5e5e5e;
+  --badge-color: #262626;
+
+  --gutter: 48px;
+
+  background: var(--background);
+  color: var(--body-text);
+}
+
+a {
+  color: var(--header-text);
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+* {
+  color: var(--body-text);
+  box-sizing: border-box;
+  margin: 0;
+}
+b,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--header-text);
+}
+
+h2 {
+  font-size: 48px;
+}
+
+h3 {
+  font-size: 36px;
+}
+
+h4 {
+  font-size: 28px;
+}
+
+.page-container > div {
+  margin-bottom: 48px;
+}
+
+.page-container > div > h2 {
+  margin-bottom: 24px;
+}
+
+.page-container > div > h3 {
+  margin-bottom: 18px;
+}
+
+.page-container > div > p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}

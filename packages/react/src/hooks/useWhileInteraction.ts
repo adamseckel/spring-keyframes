@@ -4,8 +4,8 @@ import { Interaction } from "../utils/types"
 import { UseDriver } from "./useDriver"
 
 export interface Props {
-  whilePress: Frame | undefined
-  whileHover: Frame | undefined
+  whilePress?: Frame
+  whileHover?: Frame
 }
 
 export function useWhileInteraction(

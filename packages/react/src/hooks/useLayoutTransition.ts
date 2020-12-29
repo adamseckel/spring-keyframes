@@ -49,7 +49,7 @@ function getTransformDistortion(distortion?: Frame): Identity {
 }
 
 export interface Props {
-  layout: boolean
+  layout?: boolean
 }
 
 export const useLayoutTransition = (

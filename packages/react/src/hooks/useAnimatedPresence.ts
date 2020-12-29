@@ -5,15 +5,10 @@ import { UseDriver } from "./useDriver"
 
 export interface Props {
   enterFrom?: Frame
-  default: Frame
   exitTo?: Frame
 }
 
-export function useAnimatedPresence(
-  driver: UseDriver,
-  { enterFrom, default: defaultStyle }: Props,
-  transition?: Options
-) {
+export function useAnimatedPresence(driver: UseDriver, { enterFrom }: Props, transition?: Options) {
   const mountRef = React.useRef(false)
 
   React.useEffect(() => {
@@ -22,6 +17,6 @@ export function useAnimatedPresence(
 
   React.useLayoutEffect(() => {
     if (mountRef.current === false && enterFrom)
-      driver.animate(defaultStyle, Interaction.Mount, enterFrom, undefined, transition)
+      driver.animate(undefined, Interaction.Mount, enterFrom, undefined, transition)
   }, [])
 }

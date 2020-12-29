@@ -1,6 +1,6 @@
 export const enum Interaction {
   None,
-  Base,
+  Identity,
   Mount,
   Layout,
   Animate,

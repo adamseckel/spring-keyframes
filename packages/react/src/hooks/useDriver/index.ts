@@ -4,7 +4,13 @@ import { KeyframesContext } from "../../components/Keyframes"
 import { Transition } from "./types"
 import { createAnimations } from "./createAnimations"
 import { Interaction, interactionPriority } from "../../utils/types"
-import { createComputedFrame, createResolvedFrame } from "./createFrame"
+import {
+  createComputedFrame,
+  createResolvedBase,
+  createResolvedFrame,
+  getNextStackInteraction,
+  Stack,
+} from "./createFrame"
 
 export { Transition }
 
@@ -20,8 +26,6 @@ export type Animate = (
 export type ResolveValues = (to: Frame | undefined, from?: Frame) => { from: Frame; to: Frame; velocity: number }
 export type GetCurrentTargetFrame = () => Frame | undefined
 
-type Stack = Map<Interaction, Frame>
-
 export interface Cache {
   start: number
   animation: string | null
@@ -30,7 +34,7 @@ export interface Cache {
   isInverted: boolean
   lastInteraction: Interaction
   lastResolvedFrame?: Frame
-  stack?: Stack
+  stack: Stack
   resolveVelocity?: (time: number) => number
 }
 
@@ -39,36 +43,6 @@ const requiresInversion = (interaction: Interaction, options?: Transition): bool
 const getAnimationTime = (startTime: number) => performance.now() - startTime
 const getVelocity = (isAnimating: boolean, animationTime: number, resolveVelocity?: (time: number) => number) =>
   isAnimating && resolveVelocity ? resolveVelocity(animationTime) : 0
-
-const getNextInteraction = (candidate: Interaction, cache: Cache): Interaction => {
-  if (candidate === Interaction.None) {
-    if (!cache.lastInteraction) return Interaction.Base
-
-    for (let index = cache.lastInteraction - 1; index > 0; index--) {
-      const stackItem = cache.stack?.has(index)
-      if (stackItem) return index
-    }
-
-    return Interaction.Base
-  } else if (cache.lastInteraction && candidate < cache.lastInteraction) {
-    return cache.lastInteraction
-  } else {
-    return candidate
-  }
-}
-
-const getResolvedBase = (nextInteraction: Interaction, cache: Cache): Frame | undefined => {
-  if (!cache.stack) return undefined
-
-  const resolvedBase = {}
-  for (let interaction = Interaction.Mount; interaction < nextInteraction; interaction++) {
-    if (cache.stack.has(interaction)) Object.assign(resolvedBase, cache.stack.get(interaction))
-  }
-
-  return resolvedBase
-}
-
-export const Initial = Symbol("initial")
 
 export interface UseDriver {
   animate: Animate
@@ -80,7 +54,6 @@ export interface UseDriver {
 export function useDriver(
   ref: React.RefObject<HTMLElement>,
   callback?: () => void,
-  readRef: React.RefObject<HTMLElement> = ref,
   invertedRef?: React.RefObject<HTMLElement>
 ): UseDriver {
   const { keyframes, flush } = React.useContext(KeyframesContext)
@@ -91,21 +64,25 @@ export function useDriver(
     start: 0,
     animation: null,
     animations: [],
-    lastInteraction: Interaction.Base,
+    lastInteraction: Interaction.Identity,
+    stack: new Map(),
   })
 
   const resolveInteraction = React.useCallback((candidate: Interaction): Interaction => {
-    const nextInteraction = getNextInteraction(candidate, cache.current)
+    const nextInteraction = getNextStackInteraction(candidate, cache.current.stack, cache.current.lastInteraction)
 
     if (cache.current.lastInteraction && nextInteraction >= cache.current.lastInteraction) {
       return nextInteraction
-    } else {
-      for (let index = nextInteraction + 1; index < interactionPriority.length; index++) {
-        cache.current.stack?.delete(index)
-      }
-
-      return nextInteraction
     }
+    console.log("pre delete", nextInteraction, cache.current.stack)
+    for (let index = nextInteraction + 1; index < interactionPriority.length; index++) {
+      console.log("DELETING", index)
+      cache.current.stack?.delete(index)
+    }
+
+    console.log({ nextInteraction }, Object.fromEntries(cache.current.stack.entries()))
+
+    return nextInteraction
   }, [])
 
   function handleAnimationEnd({ animationName }: { animationName: string }) {
@@ -136,14 +113,14 @@ export function useDriver(
   }, [])
 
   React.useLayoutEffect(() => {
-    if (!readRef.current) return
+    if (!ref.current) return
 
-    if (cache.current.lastInteraction === Interaction.Base) {
-      cache.current.stack?.set(Interaction.Base, createComputedFrame(undefined, readRef))
+    if (cache.current.lastInteraction === Interaction.Identity) {
+      cache.current.stack?.set(Interaction.Identity, createComputedFrame(undefined, ref))
     }
   }, [])
 
-  const resolveValues = React.useCallback((from: Frame | undefined, to?: Frame, lastResolvedFrame?: Frame): {
+  const resolveValues = React.useCallback((from: Frame | undefined, to?: Frame, newBase?: Frame): {
     from: Frame
     to: Frame
     velocity: number
@@ -151,11 +128,18 @@ export function useDriver(
     if (!ref.current) return { from: { scale: 1 }, to: { scale: 1 }, velocity: 0 }
 
     const { isAnimating, start, resolveVelocity } = cache.current
-    const baseFrame = cache.current.stack?.get(Interaction.Base)
+    const identity = cache.current.stack?.get(Interaction.Identity)
     const time = isAnimating ? getAnimationTime(start) : 0
     const velocity = getVelocity(isAnimating, time, resolveVelocity)
 
-    return createResolvedFrame(ref, from, to, baseFrame, lastResolvedFrame, velocity, isAnimating)
+    return createResolvedFrame(
+      ref,
+      from,
+      to,
+      { identity, base: newBase, lastFrame: cache.current.lastResolvedFrame },
+      velocity,
+      isAnimating
+    )
   }, [])
 
   const animate = React.useCallback(
@@ -173,7 +157,7 @@ export function useDriver(
       const base =
         nextInteraction >= cache.current.lastInteraction
           ? cache.current.lastResolvedFrame
-          : getResolvedBase(nextInteraction, cache.current)
+          : createResolvedBase(nextInteraction, cache.current.stack)
       const { from: resolvedFrom, to: resolvedTo, velocity } = resolveValues(from, to, base)
 
       const animation = createAnimations(resolvedFrom, resolvedTo, !!withDelay, nextInteraction, {
@@ -198,8 +182,8 @@ export function useDriver(
       cache.current.lastInteraction = nextInteraction
       cache.current.lastResolvedFrame = resolvedTo
       cache.current.isAnimating = true
-
-      if (to) cache.current.stack?.set(interaction, to)
+      console.log("SET", { base, interaction, to, resolvedTo })
+      if (interaction !== Interaction.None) cache.current.stack?.set(interaction, to || {})
       if (withInversion) cache.current.isInverted = true
 
       flush(cache.current.animations)

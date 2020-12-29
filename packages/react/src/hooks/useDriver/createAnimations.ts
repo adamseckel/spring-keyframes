@@ -47,7 +47,7 @@ function processFrameToAnimations(
 }
 
 const interactionFillMap: Record<Interaction, React.CSSProperties["animationFillMode"]> = {
-  [Interaction.Base]: "none",
+  [Interaction.Identity]: "none",
   [Interaction.None]: "none",
   [Interaction.Mount]: "backwards",
   [Interaction.Animate]: "forwards",

@@ -1,7 +1,8 @@
-import { createComputedFrame, createResolvedFrame } from "./createFrame"
+import { createComputedFrame, createResolvedBase, createResolvedFrame, getNextStackInteraction } from "./createFrame"
 import * as Style from "./computedStyle"
 //@ts-ignore
 import XCSSMatrix from "XCSSMatrix"
+import { Interaction } from "../../utils/types"
 
 jest.mock("./computedStyle")
 
@@ -94,15 +95,13 @@ describe("createResolvedFrame", () => {
 
     const ref = ({ current: true } as unknown) as React.RefObject<HTMLElement>
     const lastResolvedFrame = { opacity: 0.5 }
-    const baseFrame = { width: 20 }
 
     const to = { scale: 0, color: "blue" }
     const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(
       ref,
       undefined,
       to,
-      baseFrame,
-      lastResolvedFrame,
+      { identity: { width: 20 }, lastFrame: { opacity: 0.5 } },
       undefined,
       true
     )
@@ -160,5 +159,86 @@ describe("createResolvedFrame", () => {
 
     expect(resolvedFrom).toEqual({ ...lastResolvedFrame, scale: 1.2, opacity: 0.5, x: 20 })
     expect(resolvedTo).toEqual(lastResolvedFrame)
+  })
+})
+
+describe("getNextStackInteraction", () => {
+  it("returns the last interaction of the candidate is a lower priority", () => {
+    const next = getNextStackInteraction(Interaction.Hover, new Map(), Interaction.Press)
+    expect(next).toEqual(Interaction.Press)
+  })
+
+  it("returns the candidate if the candidate is not None, and greater than the last interaction", () => {
+    const next = getNextStackInteraction(Interaction.Press, new Map(), Interaction.Hover)
+    expect(next).toEqual(Interaction.Press)
+  })
+
+  it("returns the next highest-priority interaction if the candidate is None", () => {
+    expect(getNextStackInteraction(Interaction.None, new Map([[Interaction.Identity, {}]]), Interaction.Hover)).toEqual(
+      Interaction.Identity
+    )
+
+    expect(
+      getNextStackInteraction(
+        Interaction.None,
+        new Map([
+          [Interaction.Identity, {}],
+          [Interaction.Animate, {}],
+          [Interaction.Hover, {}],
+          [Interaction.Press, {}],
+        ]),
+        Interaction.Hover
+      )
+    ).toEqual(Interaction.Animate)
+
+    expect(
+      getNextStackInteraction(
+        Interaction.None,
+        new Map([
+          [Interaction.Identity, {}],
+          [Interaction.Animate, {}],
+          [Interaction.Hover, {}],
+          [Interaction.Press, {}],
+        ]),
+        Interaction.Press
+      )
+    ).toEqual(Interaction.Hover)
+  })
+
+  it("returns Base if the candidate is None and there was no recent interaction", () => {
+    const next = getNextStackInteraction(Interaction.None, new Map(), undefined)
+    expect(next).toEqual(Interaction.Identity)
+  })
+})
+
+describe("createResolvedBase", () => {
+  it("builds a base including all animated properties of lower priority the next interaction except Base", () => {
+    expect(
+      createResolvedBase(
+        Interaction.Hover,
+        new Map([
+          [Interaction.Identity, { color: "red" }],
+          [Interaction.Mount, { background: "blue" }],
+          [Interaction.Animate, { width: 20 }],
+          [Interaction.Hover, { height: 20 }],
+        ])
+      )
+    ).toEqual({
+      background: "blue",
+      width: 20,
+    })
+
+    expect(
+      createResolvedBase(
+        Interaction.Hover,
+        new Map([
+          [Interaction.Identity, { color: "red" }],
+          [Interaction.Animate, { width: 20 }],
+          [Interaction.Hover, { height: 20 }],
+        ])
+      )
+    ).toEqual({
+      width: 20,
+    })
   })
 })

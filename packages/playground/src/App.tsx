@@ -1,5 +1,5 @@
 import React from "react"
-import { AnimateInteractions, AnimateState, AnimatePresence, AnimateLayout, driver } from "@spring-keyframes/react"
+import { Animate, driver } from "@spring-keyframes/react"
 
 import "./App.css"
 
@@ -19,23 +19,22 @@ function App() {
         alignItems: "flex-start",
         position: "relative",
       }}>
-      <AnimatePresence as="div" enterFrom={{ scale: 3 }} default={{ scale: 1 }}>
-        <AnimateInteractions
-          as="button"
-          whileHover={{ scale: 2 }}
-          whilePress={{ scale: 1.5 }}
-          transition={{ damping: 10, stiffness: 200 }}
-          style={{ width: 200, height: 200, background: "red", border: "none", outline: "none" }}
-        />
-      </AnimatePresence>
+      <Animate
+        as="button"
+        enterFrom={{ scale: 3 }}
+        whileHover={{ scale: 2 }}
+        whilePress={{ scale: 1.5 }}
+        transition={{ damping: 10, stiffness: 200 }}
+        style={{ width: 200, height: 200, background: "red", border: "none", outline: "none", transform: "scale(1.2)" }}
+      />
 
-      <div
+      {/* <div
         style={{ display: "flex", justifyContent: isOn ? "space-around" : "space-between", width: 800, height: 200 }}>
         {[1, 2, 3].map((i) => (
-          <AnimateLayout
+          <Animate
             key={i}
             as={"div"}
-            withInversion
+            layout
             transition={{ damping: 20, stiffness: 100 }}
             style={{
               backgroundColor: "red",
@@ -47,15 +46,17 @@ function App() {
               alignItems: "flex-start",
               width: 100,
             }}>
-            <AnimateInteractions
-              as={"div"}
-              whileHover={{ scale: 2 }}
-              whilePress={{ scale: 1.5 }}
-              style={{ width: "100%", height: 20, marginBottom: 10, background: "blue" }}
-            />
-          </AnimateLayout>
+            <CorrectLayoutDistortion as="div">
+              <Animate
+                as={"div"}
+                whileHover={{ scale: 2 }}
+                whilePress={{ scale: 1.5 }}
+                style={{ width: "100%", height: 20, marginBottom: 10, background: "blue" }}
+              />
+            </CorrectLayoutDistortion>
+          </Animate>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }
