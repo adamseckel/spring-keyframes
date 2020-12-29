@@ -29,6 +29,7 @@ a {
   box-sizing: border-box;
   margin: 0;
 }
+
 b,
 h1,
 h2,
@@ -53,6 +54,10 @@ h4 {
 
 .page-container > div {
   padding-top: var(--gutter);
+}
+
+.page-container:last-child {
+  margin-bottom: calc(var(--gutter) * 4);
 }
 
 .page-container > div > h2 {
