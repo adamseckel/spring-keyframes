@@ -5,6 +5,9 @@ import resolve from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
 import pkg from "./package.json"
 import visualizer from "rollup-plugin-visualizer"
+import path from "path"
+
+console.log(path.resolve("./src"))
 
 export default {
   input: "./src/matrix.ts",
@@ -37,7 +40,6 @@ export default {
       tsconfigOverride: {
         compilerOptions: {
           declaration: true,
-          sourceRoot: `${process.cwd()}/src`,
         },
       },
     }),

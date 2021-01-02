@@ -34,7 +34,6 @@ export default {
       tsconfigOverride: {
         compilerOptions: {
           declaration: true,
-          sourceRoot: `${process.cwd()}/src`,
         },
       },
     }),
