@@ -1,5 +1,6 @@
 import * as React from "react"
 import Link from "next/link"
+import { CodeBlock } from "../components/CodeBlock"
 
 export default function Introduction() {
   return (
@@ -85,6 +86,7 @@ export default function Introduction() {
           javascript bundle, or any other time that an animation will be performed when other cpu-intensive tasks are
           being executed.
         </p>
+        <CodeBlock code={`import * as React from "react"`} />
       </div>
     </>
   )

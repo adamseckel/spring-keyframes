@@ -19,7 +19,19 @@ interface Props
 }
 
 export const Animate = React.forwardRef<HTMLElement, Props>(function (
-  { as: Element = "div", onAnimationEnd, transition, children, ...props },
+  {
+    as: Element = "div",
+    onAnimationEnd,
+    transition,
+    children,
+    animate,
+    layout,
+    whilePress,
+    whileHover,
+    enterFrom,
+    exitTo,
+    ...props
+  },
   ref
 ) {
   const innerRef = React.useRef<HTMLElement>(null)
@@ -27,18 +39,21 @@ export const Animate = React.forwardRef<HTMLElement, Props>(function (
   const invertedRef = React.useRef<HTMLDivElement>(null)
   const driver = useDriver(readWriteRef, onAnimationEnd, invertedRef)
 
-  useAnimatedState(driver, props, transition)
-  useWhileInteraction(driver, readWriteRef, props, transition)
-  useAnimatedPresence(driver, props, transition)
-  useLayoutTransition(driver, readWriteRef, props, invertedRef, transition)
+  const hookProps = { animate, layout, whilePress, whileHover, enterFrom, exitTo }
+
+  useAnimatedState(driver, hookProps, transition)
+  useWhileInteraction(driver, readWriteRef, hookProps, transition)
+  useAnimatedPresence(driver, hookProps, transition)
+  useLayoutTransition(driver, readWriteRef, hookProps, invertedRef, transition)
 
   //style={addFrameStyle(props.style, props.animate)}
 
   if (
-    props.layout &&
-    React.Children.only(children) &&
+    layout &&
+    React.Children.count(children) === 1 &&
     React.isValidElement(children) &&
-    children.type === CorrectLayoutDistortion
+    children.type === CorrectLayoutDistortion &&
+    React.Children.only(children)
   ) {
     return (
       <Element ref={readWriteRef} {...props}>

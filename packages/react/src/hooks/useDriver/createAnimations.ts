@@ -4,7 +4,7 @@ import { Transition } from "./types"
 import { Interaction } from "../../utils/types"
 
 const toTimingFunction = (isLinear: boolean, ease: string) => (sprung?: boolean) => {
-  if (sprung && isLinear) return "linear"
+  if (sprung && isLinear) return "cubic-bezier(1,1,0,0)"
   return ease
 }
 
@@ -65,7 +65,7 @@ export const createAnimations = (
   options: Transition
 ) => (keyframes: (name: string, rule: string) => string) => {
   const { duration, ease, resolveVelocity, ...allAnimations } = driver(from, to, options)
-
+  console.log(from, to, allAnimations)
   const delay = options.delay && withDelay ? `${options.delay}ms` : "0ms"
   const fill = interactionFillMap[interaction]
 

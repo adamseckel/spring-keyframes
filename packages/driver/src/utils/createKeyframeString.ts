@@ -14,7 +14,7 @@ export function createSprungKeyframes(
   for (let index = 0; index < keyframes.length; index++) {
     const [frame, value] = keyframes[index]
 
-    const percent = Math.round(toFrame(frame) * 100) / 100
+    const percent = Math.round(toFrame(frame) * 10000) / 10000
     sprung += createKeyframeString(percent, value) + "\n"
 
     if (invertedKeyframes.length) inverted += createKeyframeString(percent, invertedKeyframes[index][1]) + "\n"

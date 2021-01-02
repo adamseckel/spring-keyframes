@@ -63,7 +63,7 @@ export function driver(from: Frame, to: Frame, options?: Options) {
   return {
     ...createSprungKeyframes(keyframes, invertedKeyframes, toFrame),
     ...createTweenedKeyframes(from, to, tweened),
-    duration: Math.round(msPerFrame * lastFrame * 100) / 100 + "ms",
+    duration: Math.round(msPerFrame * lastFrame * 10000) / 10000 + "ms",
     ease: EASE,
     resolveVelocity,
   }

@@ -8,8 +8,8 @@
 }
 
 .navigationContainer {
-  width: 480px;
-  max-width: 480px;
+  width: 380px;
+  max-width: 380px;
   min-width: 380px;
   flex-grow: 1;
 }

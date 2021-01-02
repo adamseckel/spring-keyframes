@@ -159,6 +159,7 @@ export function useDriver(
           ? cache.current.lastResolvedFrame
           : createResolvedBase(nextInteraction, cache.current.stack)
       const { from: resolvedFrom, to: resolvedTo, velocity } = resolveValues(from, to, base)
+      console.log({ from, resolvedFrom, to, resolvedTo })
 
       const animation = createAnimations(resolvedFrom, resolvedTo, !!withDelay, nextInteraction, {
         ...options,

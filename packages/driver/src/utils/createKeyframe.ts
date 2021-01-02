@@ -54,7 +54,7 @@ export function createKeyframe(
     if (tweened.includes(property) ? !asTweened : asTweened) continue
 
     const propertyValue = isNumber(from[property])
-      ? Math.round(interpolate(0, 1, from[property] as number, to[property] as number)(value) * 100) / 100
+      ? Math.round(interpolate(0, 1, from[property] as number, to[property] as number)(value) * 10000) / 10000
       : value === 0
       ? from[property]
       : to[property]
@@ -89,7 +89,7 @@ function processInvertedScaleTransforms(
 
   for (const [property, v] of transforms) {
     const { from, to } = invertedAnimation
-    const invertedValue = Math.round(interpolate(0, 1, from[property], to[property])(value) * 100) / 100
+    const invertedValue = Math.round(interpolate(0, 1, from[property], to[property])(value) * 10000) / 10000
     props[property] = invertScale(v, invertedValue)
   }
 

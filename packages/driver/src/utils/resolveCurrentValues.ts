@@ -15,7 +15,7 @@ export function resolveCurrentValues(
 
     for (const property of properties) {
       const propertyValue = isNumber(from[property])
-        ? Math.round(interpolate(0, 1, from[property] as number, to[property] as number)(value) * 100) / 100
+        ? Math.round(interpolate(0, 1, from[property] as number, to[property] as number)(value) * 10000) / 10000
         : value === 0
         ? from[property]
         : to[property]

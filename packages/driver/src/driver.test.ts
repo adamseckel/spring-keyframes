@@ -7,7 +7,7 @@ it("returns an array of keyframe strings, duration, and ease", () => {
   )
 
   expect(sprung).toMatchSnapshot()
-  expect(duration).toBe("433.33ms")
+  expect(duration).toMatchInlineSnapshot(`"950ms"`)
   expect(ease).toBe(EASE)
 })
 
@@ -15,7 +15,7 @@ it("returns an array of keyframe strings, and duration for a long spring", () =>
   const { sprung, duration } = driver({ width: 100 }, { width: 200 }, { stiffness: 400, damping: 3 })
 
   expect(sprung).toMatchSnapshot()
-  expect(duration).toBe("1816.67ms")
+  expect(duration).toMatchInlineSnapshot(`"2916.6667ms"`)
 })
 
 it("returns an array of keyframes for 0 value animations", () => {
@@ -27,14 +27,14 @@ it("returns an array of keyframes for 0 value animations", () => {
 
   expect(sprung).toMatchSnapshot()
   expect(tweened).toMatchSnapshot()
-  expect(duration).toBe("1816.67ms")
+  expect(duration).toMatchInlineSnapshot(`"2916.6667ms"`)
 })
 
 it("returns an array of keyframe strings, and duration for a short spring", () => {
   const { sprung, duration } = driver({ width: 0 }, { width: 200 }, { stiffness: 2, damping: 3 })
 
   expect(sprung).toMatchSnapshot()
-  expect(duration).toBe("5300ms")
+  expect(duration).toMatchInlineSnapshot(`"7616.6667ms"`)
 })
 
 it("returns an array of keyframe strings, and duration for a tweened animation", () => {
@@ -42,7 +42,7 @@ it("returns an array of keyframe strings, and duration for a tweened animation",
 
   expect(tweened).toMatchSnapshot()
   expect(sprung).toBeUndefined()
-  expect(duration).toBe("1450ms")
+  expect(duration).toMatchInlineSnapshot(`"2400ms"`)
 })
 
 it("returns an array of keyframe strings, and duration for a tweened and sprung animation", () => {
@@ -54,14 +54,14 @@ it("returns an array of keyframe strings, and duration for a tweened and sprung 
 
   expect(sprung).toMatchSnapshot()
   expect(tweened).toMatchSnapshot()
-  expect(duration).toBe("1450ms")
+  expect(duration).toMatchInlineSnapshot(`"2400ms"`)
 })
 
 it("returns an array of valid keyframes for camelCase properties", () => {
   const { sprung, duration } = driver({ borderRadius: 0 }, { borderRadius: 20 }, { stiffness: 100, damping: 3 })
 
   expect(sprung).toMatchSnapshot()
-  expect(duration).toBe("1450ms")
+  expect(duration).toMatchInlineSnapshot(`"2400ms"`)
 })
 
 it("returns tweened animations for all tweened property values", () => {
@@ -73,7 +73,7 @@ it("returns tweened animations for all tweened property values", () => {
 
   expect(tweened).toMatchSnapshot()
   expect(sprung).toBeUndefined()
-  expect(duration).toBe("1450ms")
+  expect(duration).toMatchInlineSnapshot(`"2400ms"`)
 })
 
 it("returns tweened animations for custom tweened property values", () => {
@@ -85,7 +85,7 @@ it("returns tweened animations for custom tweened property values", () => {
 
   expect(sprung).toMatchSnapshot()
   expect(tweened).toMatchSnapshot()
-  expect(duration).toBe("1450ms")
+  expect(duration).toMatchInlineSnapshot(`"2400ms"`)
 })
 
 it("returns an array of valid keyframes for backgroundColor", () => {
@@ -148,4 +148,17 @@ it("returns keyframes for scale props, for each frame when withInvertedScale is 
   expect(duration).toMatchSnapshot()
   expect(sprung).toMatchSnapshot()
   expect(inverted).toMatchSnapshot()
+})
+
+it("doesn't overwrite scaleX and scaleY with a scale value", () => {
+  const { sprung } = driver({ x: 0, scale: 1, scaleY: 0, scaleX: 0 }, { x: 400, scale: 1, scaleY: 0.5, scaleX: 0.5 })
+
+  expect(sprung).toMatchInlineSnapshot(`
+    "0% {transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1);}
+    28.0702% {transform: translate3d(482.978px, 0px, 0px) scale3d(0.6037, 0.6037, 1);}
+    56.1404% {transform: translate3d(382.8561px, 0px, 0px) scale3d(0.4786, 0.4786, 1);}
+    84.2105% {transform: translate3d(403.5284px, 0px, 0px) scale3d(0.5044, 0.5044, 1);}
+    100% {transform: translate3d(400px, 0px, 0px) scale3d(0.5, 0.5, 1);}
+    "
+  `)
 })

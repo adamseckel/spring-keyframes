@@ -67,7 +67,7 @@ export function createTransformString(style: Omit<React.CSSProperties, "scale" |
   const hasAxesScale = !isUndefined(scaleX) || !isUndefined(scaleY) || !isUndefined(scaleZ)
 
   if (hasScale && !hasAxesScale) transform.push(createScale({ x: scale, y: scale }))
-  if (!hasScale && hasAxesScale) transform.push(createScale({ x: scaleX, y: scaleY, z: scaleZ }))
+  if (hasAxesScale) transform.push(createScale({ x: scaleX ?? scale, y: scaleY ?? scale, z: scaleZ ?? scale }))
 
   return transform.join(" ")
 }
