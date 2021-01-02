@@ -39,6 +39,17 @@ export interface InvertedAnimation {
   to: InvertedFrame
 }
 
+export const identity = {
+  scale: 1,
+  scaleX: 1,
+  scaleY: 1,
+}
+
+export const inverted = {
+  from: identity,
+  to: identity,
+}
+
 export interface Options extends Omit<SpringOptions, "from" | "to"> {
   stiffness?: number
   damping?: number

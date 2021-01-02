@@ -7,7 +7,10 @@ export function createSprungKeyframes(
   keyframes: Keyframe[],
   invertedKeyframes: Keyframe[],
   toFrame: (value: number) => number
-) {
+): {
+  sprung: string | undefined
+  inverted: string | undefined
+} {
   let sprung = keyframes.length ? "" : undefined
   let inverted = invertedKeyframes.length ? "" : undefined
 

@@ -53,12 +53,10 @@ export function createTransformString(style: Omit<React.CSSProperties, "scale" |
 
   const hasRotate = !isUndefined(rotate)
   const hasRotateZ = !isUndefined(rotateZ)
-  const isRotate = hasRotate && !hasRotateZ
-  const isRotateZ = !hasRotate && hasRotateZ
 
   // Stack rotates.
-  if (isRotate) transform.push(createRotate({ z: rotate }))
-  if (isRotateZ) transform.push(createRotate({ z: rotateZ }))
+  if (hasRotate && !hasRotateZ) transform.push(createRotate({ z: rotate }))
+  if (hasRotateZ) transform.push(createRotate({ z: rotateZ }))
   if (!isUndefined(rotateY)) transform.push(createRotate({ y: rotateY }))
   if (!isUndefined(rotateX)) transform.push(createRotate({ x: rotateX }))
 
@@ -67,7 +65,7 @@ export function createTransformString(style: Omit<React.CSSProperties, "scale" |
   const hasAxesScale = !isUndefined(scaleX) || !isUndefined(scaleY) || !isUndefined(scaleZ)
 
   if (hasScale && !hasAxesScale) transform.push(createScale({ x: scale, y: scale }))
-  if (hasAxesScale) transform.push(createScale({ x: scaleX ?? scale, y: scaleY ?? scale, z: scaleZ ?? scale }))
+  if (hasAxesScale) transform.push(createScale({ x: scaleX ?? scale, y: scaleY ?? scale, z: scaleZ }))
 
   return transform.join(" ")
 }

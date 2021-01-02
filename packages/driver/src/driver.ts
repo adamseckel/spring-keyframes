@@ -1,4 +1,4 @@
-import type { Frame, Options, Keyframe } from "./utils/types"
+import { Frame, Options, Keyframe, inverted } from "./utils/types"
 import { interpolate } from "./utils/interpolate"
 import { msPerFrame } from "./utils/msPerFrame"
 import { createSpring } from "./utils/popmotion/createSpring"
@@ -7,17 +7,6 @@ import { createSprungKeyframes, createTweenedKeyframes } from "./utils/createKey
 import * as Properties from "./utils/properties"
 
 export const EASE = "cubic-bezier(0.445, 0.050, 0.550, 0.950)"
-
-const identity = {
-  scale: 1,
-  scaleX: 1,
-  scaleY: 1,
-}
-
-const inverted = {
-  from: identity,
-  to: identity,
-}
 
 function withDefaults(options?: Options) {
   const withInversion = options?.withInversion || !!options?.invertedAnimation || false
