@@ -72,3 +72,13 @@ h4 {
   margin-bottom: 12px;
   line-height: 1.6;
 }
+
+code {
+  color: var(--header-text);
+}
+
+pre {
+  background: transparent !important;
+  font-size: 14px;
+  border: none !important;
+}

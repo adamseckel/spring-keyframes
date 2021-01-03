@@ -1,0 +1,19 @@
+.column {
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+  gap: 48px;
+}
+
+.text {
+  grid-area: 1/1 / span 1 / span 1;
+}
+
+.block {
+  grid-area: 1/2 / span 1 / span 1;
+  border-radius: 8px;
+  padding: 8px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  background-color: var(--badge-color);
+}

@@ -12,42 +12,65 @@ const items: Item[] = [
     ],
   },
   {
-    title: "Quick Start",
-    slug: "/quick-start",
-    items: [
-      { title: "@spring-keyframes/react", slug: "/quick-start#react" },
-      { title: "@spring-keyframes/driver", slug: "/quick-start#driver" },
-      { title: "@spring-keyframes/from-matrix", slug: "/quick-start#from-matrix" },
-    ],
-  },
-  {
-    title: "API",
-    slug: "/api",
+    title: "@spring-keyframes/react",
+    slug: "/react",
     items: [
       {
-        title: "@spring-keyframes/react",
-        slug: "/api#react",
+        title: "Quick Start",
+        slug: "/react#quick-start",
+      },
+      {
+        title: "Components",
+        slug: "/react#components",
         items: [
           {
             title: "Animated",
-            slug: "/api#animated",
+            slug: "/react#animated",
           },
           {
             title: "CorrectDistortion",
-            slug: "/api#correct-distortion",
+            slug: "/react#correct-distortion",
           },
           {
             title: "AnimateExit",
-            slug: "/api#animate-exit",
+            slug: "/react#animate-exit",
           },
           {
             title: "Keyframes",
-            slug: "/api#keyframes",
+            slug: "/react#keyframes",
           },
         ],
       },
-      { title: "@spring-keyframes/driver", slug: "/api#driver" },
-      { title: "@spring-keyframes/from-matrix", slug: "/api#from-matrix" },
+      {
+        title: "Hooks",
+        slug: "/react#hooks",
+        items: [
+          {
+            title: "useDriver",
+            slug: "/react#use-driver",
+          },
+        ],
+      },
+      {
+        title: "Examples",
+        slug: "/react#examples",
+      },
+    ],
+  },
+  {
+    title: "@spring-keyframes/driver",
+    slug: "/driver",
+    items: [
+      { title: "Quick Start", slug: "/driver#quick-start" },
+      { title: "Examples", slug: "/driver#examples" },
+    ],
+  },
+  {
+    title: "@spring-keyframes/from-matrix",
+    slug: "/from-matrix",
+    items: [
+      { title: "Quick Start", slug: "/from-matrix#quick-start" },
+      { title: "Examples", slug: "/from-matrix#examples" },
     ],
   },
   {

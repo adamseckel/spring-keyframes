@@ -16,7 +16,7 @@
 
 .bodyContainer {
   flex-grow: 1;
-  max-width: 1000px;
+  max-width: 1200px;
   font-size: 18px;
   margin-top: calc(var(--gutter) * -1 + -8px);
   padding-right: var(--gutter);
