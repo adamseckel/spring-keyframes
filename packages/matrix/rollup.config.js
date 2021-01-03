@@ -7,8 +7,6 @@ import pkg from "./package.json"
 import visualizer from "rollup-plugin-visualizer"
 import path from "path"
 
-console.log(path.resolve("./src"))
-
 export default {
   input: "./src/matrix.ts",
   output: [

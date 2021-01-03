@@ -65,7 +65,6 @@ export const createAnimations = (
   options: Transition
 ) => (keyframes: (name: string, rule: string) => string) => {
   const { duration, ease, resolveVelocity, ...allAnimations } = driver(from, to, options)
-  console.log(from, to, allAnimations)
   const delay = options.delay && withDelay ? `${options.delay}ms` : "0ms"
   const fill = interactionFillMap[interaction]
 

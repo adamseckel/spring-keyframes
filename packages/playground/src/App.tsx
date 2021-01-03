@@ -1,10 +1,8 @@
 import React from "react"
-import { Animate, driver } from "@spring-keyframes/react"
+import { Animate } from "@spring-keyframes/react"
 
 import "./App.css"
 
-const { sprung, inverted } = driver({ scale: 1 }, { scale: 2 }, { withInversion: true })
-console.log({ sprung, inverted })
 function App() {
   const [isOn, setIsOn] = React.useState(false)
 

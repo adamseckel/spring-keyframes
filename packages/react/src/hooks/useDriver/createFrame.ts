@@ -31,15 +31,11 @@ function onlyTargetProperties(target: Frame, current: Frame, transforms?: Partia
   const properties = Object.keys(target) as Property[]
 
   for (const property of properties) {
-    console.log(property, isTransform(property), transforms)
     if (isTransform(property) && transforms && !isUndefined(transforms[property])) {
-      console.log("a", property, transforms[property])
       newFrame[property] = transforms[property]
     } else if (isUndefined(current[property])) {
-      console.log("b", property, current[property])
       newFrame[property] = isTransform(property) ? identity[property] : 0
     } else {
-      console.log("c", property, current[property])
       newFrame[property] = current[property]
     }
   }

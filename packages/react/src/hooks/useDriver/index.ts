@@ -74,13 +74,10 @@ export function useDriver(
     if (cache.current.lastInteraction && nextInteraction >= cache.current.lastInteraction) {
       return nextInteraction
     }
-    console.log("pre delete", nextInteraction, cache.current.stack)
+
     for (let index = nextInteraction + 1; index < interactionPriority.length; index++) {
-      console.log("DELETING", index)
       cache.current.stack?.delete(index)
     }
-
-    console.log({ nextInteraction }, Object.fromEntries(cache.current.stack.entries()))
 
     return nextInteraction
   }, [])
@@ -159,7 +156,6 @@ export function useDriver(
           ? cache.current.lastResolvedFrame
           : createResolvedBase(nextInteraction, cache.current.stack)
       const { from: resolvedFrom, to: resolvedTo, velocity } = resolveValues(from, to, base)
-      console.log({ from, resolvedFrom, to, resolvedTo })
 
       const animation = createAnimations(resolvedFrom, resolvedTo, !!withDelay, nextInteraction, {
         ...options,
@@ -183,7 +179,7 @@ export function useDriver(
       cache.current.lastInteraction = nextInteraction
       cache.current.lastResolvedFrame = resolvedTo
       cache.current.isAnimating = true
-      console.log("SET", { base, interaction, to, resolvedTo })
+
       if (interaction !== Interaction.None) cache.current.stack?.set(interaction, to || {})
       if (withInversion) cache.current.isInverted = true
 

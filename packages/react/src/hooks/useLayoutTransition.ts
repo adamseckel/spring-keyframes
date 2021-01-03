@@ -98,7 +98,6 @@ export const useLayoutTransition = (
     if (!hasRectChanged) return
 
     lastRect.current = { ...newRect }
-    console.log({ oldRect, newRect, x })
     const flippedFrom = {
       x: (oldRect.right - newRect.right + oldRect.left - newRect.left) / 2 + x,
       y: (oldRect.bottom - newRect.bottom + oldRect.top - newRect.top) / 2 + y,
@@ -114,7 +113,7 @@ export const useLayoutTransition = (
       },
       to: { scaleX: offset.scaleX, scaleY: offset.scaleY },
     }
-    console.log("DRIVER ANIMATE")
+
     driver.animate(
       {
         x: identity.x + offset.x,

@@ -96,7 +96,6 @@ export class StyleSheet {
         }
       } else {
         const tagName = tag.getAttribute("data-keyframes")
-        // console.log(tagName, keys)
         if (tagName && keys.includes(tagName) && tag.parentNode) {
           tag.parentNode.removeChild(tag)
           // this.tags = [...this.tags.splice(i, 1)]
