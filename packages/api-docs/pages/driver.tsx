@@ -1,10 +1,14 @@
 import * as React from "react"
-import Link from "next/link"
-import { CodeBlock, TwoColumnCodeBlock } from "../components/CodeBlock"
+
+import { TwoColumnCodeBlock } from "../components/CodeBlock"
+import Head from "next/head"
 
 export default function Introduction() {
   return (
     <>
+      <Head>
+        <title>Spring Keyframes Docs | Driver</title>
+      </Head>
       <div id="driver">
         <h2>@spring-keyframes/driver</h2>
         <p>

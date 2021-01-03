@@ -1,3 +1,5 @@
+import Head from "next/head"
+import * as React from "react"
 import { Layout } from "../components/Layout"
 import { Item } from "../components/Navigation"
 import "../styles/globals.css"
@@ -90,6 +92,11 @@ const items: Item[] = [
 function MyApp({ Component, pageProps }) {
   return (
     <Layout items={items}>
+      <Head>
+        <title>Spring Keyframes Docs</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        {/* <link rel="icon" href="/favicon.ico" /> */}
+      </Head>
       <Component {...pageProps} />
     </Layout>
   )

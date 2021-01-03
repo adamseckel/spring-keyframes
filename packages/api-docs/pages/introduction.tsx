@@ -1,10 +1,13 @@
 import * as React from "react"
 import Link from "next/link"
-import { CodeBlock } from "../components/CodeBlock"
+import Head from "next/head"
 
 export default function Introduction() {
   return (
     <>
+      <Head>
+        <title>Spring Keyframes Docs | Introduction</title>
+      </Head>
       <div id="introduction">
         <h2>Introduction</h2>
         <p>
@@ -33,10 +36,9 @@ export default function Introduction() {
           </a>
           , or at runtime, when paired with other tools like emotion.
         </p>
-        <p>Finally this output can also be used to generate animations "just-in-time".</p>
         <p>
-          It's this ability that powers{" "}
-          <Link href="/api#react">
+          Finally this output can also be used to generate animations "just-in-time". It's this ability that powers{" "}
+          <Link href="/react">
             <a>@spring-keyframes/react</a>
           </Link>
           .
@@ -54,11 +56,11 @@ export default function Introduction() {
           .
         </p>
         <p>
-          <Link href="/api#driver">
+          <Link href="/driver">
             <a>@spring-keyframes/driver</a>
           </Link>{" "}
           and{" "}
-          <Link href="/api#react">
+          <Link href="/react">
             <a>@spring-keyframes/react</a>
           </Link>{" "}
           excel in situations where the product demands smooth animations even when the web page is busy, something that
@@ -66,7 +68,7 @@ export default function Introduction() {
           dependent on the browser having the capacity to schedule an animation frame every 16ms.
         </p>
         <p>
-          <Link href="/api#driver">
+          <Link href="/driver">
             <a>@spring-keyframes/driver</a>
           </Link>{" "}
           is particularly useful when you have an uninterrupted animation that will always play from one set value to
@@ -76,7 +78,7 @@ export default function Introduction() {
           the rest of the site or app, regardless of how much stress the browser is already under.
         </p>
         <p>
-          <Link href="/api#driver">
+          <Link href="/driver">
             <a> @spring-keyframes/react</a>
           </Link>{" "}
           on the other hand is particularly useful when you want to perform animations with dynamic or user-defined
