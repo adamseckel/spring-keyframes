@@ -28,13 +28,17 @@ export default function Introduction() {
           This output can be used to generate static keyframes that can be compiled at build time, for example when
           paired with a static css-in-js tool like{" "}
           <a href="https://github.com/callstack/linaria" rel="external">
-            linaria
+            Linaria
           </a>{" "}
           or{" "}
           <a href="https://github.com/seek-oss/treat" rel="external">
-            treat
+            Treat
           </a>
-          , or at runtime, when paired with other tools like emotion.
+          , or at runtime, when paired with other tools like{" "}
+          <a href="https://github.com/emotion-js/emotion" rel="external">
+            Emotion
+          </a>
+          .
         </p>
         <p>
           Finally this output can also be used to generate animations "just-in-time". It's this ability that powers{" "}
