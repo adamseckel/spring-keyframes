@@ -64,6 +64,8 @@ const items: Item[] = [
     slug: "/driver",
     items: [
       { title: "Quick Start", slug: "/driver#quick-start" },
+      { title: "Usage", slug: "/driver#usage" },
+      { title: "Options", slug: "/driver#options" },
       { title: "Examples", slug: "/driver#examples" },
     ],
   },

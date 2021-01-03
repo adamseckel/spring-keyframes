@@ -51,10 +51,6 @@ export const inverted = {
 }
 
 export interface Options extends Omit<SpringOptions, "from" | "to"> {
-  stiffness?: number
-  damping?: number
-  mass?: number
-  velocity?: number
   tweened?: Properties[]
   withInversion?: boolean
   invertedAnimation?: InvertedAnimation

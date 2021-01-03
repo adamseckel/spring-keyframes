@@ -19,8 +19,10 @@ export function TwoColumnCodeBlock({ code, children, lang = "jsx" }) {
   return (
     <div className={styles.column}>
       <div className={styles.text}>{children}</div>
-      <div className={styles.block}>
-        <CodeBlock code={code} lang={lang} />
+      <div>
+        <div className={styles.block}>
+          <CodeBlock code={code} lang={lang} />
+        </div>
       </div>
     </div>
   )
