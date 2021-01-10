@@ -15682,7 +15682,7 @@ ws@^7.2.3:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.1.tgz#a333be02696bd0e54cea0434e21dcc8a9ac294bb"
   integrity sha512-pTsP8UAfhy3sk1lSk/O/s4tjD0CRwvMnzvwr4OKGX7ZvqZtUyx4KIJB5JWbkykPoc55tixMGgTNoh3k4FkNGFQ==
 
-xcssmatrix@0.2.2:
+xcssmatrix@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/xcssmatrix/-/xcssmatrix-0.2.2.tgz#b448f7877c8c09df92ca748be5b4ded85b1a3318"
   integrity sha1-tEj3h3yMCd+SynSL5bTe2FsaMxg=

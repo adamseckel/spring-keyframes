@@ -1,7 +1,7 @@
 import { createComputedFrame, createResolvedBase, createResolvedFrame, getNextStackInteraction } from "./createFrame"
 import * as Style from "./computedStyle"
 //@ts-ignore
-import XCSSMatrix from "XCSSMatrix"
+import XCSSMatrix from "xcssmatrix"
 import { Interaction } from "../../utils/types"
 
 jest.mock("./computedStyle")
@@ -52,35 +52,32 @@ describe("createComputedFrame", () => {
 })
 
 describe("createResolvedFrame", () => {
-  it("if from and to are provided, it returns from and to extended with lastResolvedFrame", () => {
+  it("if from and to are provided, it returns from and to extended with the base", () => {
     const ref = ({ current: true } as unknown) as React.RefObject<HTMLElement>
-    const lastResolvedFrame = { opacity: 0.5 }
+    const base = { opacity: 0.5 }
 
     const from = { scale: 0 }
     const to = { scale: 1 }
 
-    const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(ref, from, to, undefined, lastResolvedFrame)
+    const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(ref, from, to, { base })
 
-    expect(resolvedFrom).toEqual({ ...lastResolvedFrame, ...from })
-    expect(resolvedTo).toEqual({ ...lastResolvedFrame, ...to })
+    expect(resolvedFrom).toEqual({ ...base, ...from })
+    expect(resolvedTo).toEqual({ ...base, ...to })
   })
 
-  it("if baseFrame and from are provided, it creates a to based on from's properties", () => {
+  it("if base and from are provided, it creates a to based on from's properties", () => {
     const ref = ({ current: true } as unknown) as React.RefObject<HTMLElement>
-    const lastResolvedFrame = { opacity: 0.5 }
-    const baseFrame = { color: "red", width: 20 }
+    const base = { opacity: 0.5 }
+    const identity = { color: "red", width: 20 }
 
     const from = { scale: 0, color: "blue" }
-    const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(
-      ref,
-      from,
-      undefined,
-      baseFrame,
-      lastResolvedFrame
-    )
+    const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(ref, from, undefined, {
+      identity,
+      base,
+    })
 
-    expect(resolvedFrom).toEqual({ ...lastResolvedFrame, ...from })
-    expect(resolvedTo).toEqual({ ...lastResolvedFrame, scale: 1, color: "red" })
+    expect(resolvedFrom).toEqual({ ...base, ...from })
+    expect(resolvedTo).toEqual({ ...base, scale: 1, color: "red" })
   })
 
   it("if isAnimating is true, and baseFrame and to are provided, it generates a computed frame from to's properties", () => {
@@ -101,7 +98,7 @@ describe("createResolvedFrame", () => {
       ref,
       undefined,
       to,
-      { identity: { width: 20 }, lastFrame: { opacity: 0.5 } },
+      { identity: { width: 20 }, base: { opacity: 0.5 } },
       undefined,
       true
     )
@@ -112,22 +109,25 @@ describe("createResolvedFrame", () => {
 
   it("if isAnimating is false, and baseFrame, to, and lastResolvedFrame are provided, it generates a frame from to's properties", () => {
     const ref = ({ current: true } as unknown) as React.RefObject<HTMLElement>
-    const lastResolvedFrame = { opacity: 0.5 }
-    const baseFrame = { color: "red", width: 20 }
+    const base = { opacity: 0.5 }
+    const identity = { color: "red", width: 20 }
 
     const to = { scale: 0, color: "blue" }
-    const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(ref, undefined, to, baseFrame, lastResolvedFrame)
+    const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(ref, undefined, to, {
+      identity,
+      base,
+    })
 
-    expect(resolvedFrom).toEqual({ ...lastResolvedFrame, scale: 1, color: "red" })
-    expect(resolvedTo).toEqual({ ...lastResolvedFrame, ...to })
+    expect(resolvedFrom).toEqual({ ...base, scale: 1, color: "red" })
+    expect(resolvedTo).toEqual({ ...base, ...to })
   })
 
   it("if isAnimating is false, and baseFrame, and to are provided, it generates a frame from to's properties", () => {
     const ref = ({ current: true } as unknown) as React.RefObject<HTMLElement>
-    const baseFrame = { color: "red", width: 20 }
+    const identity = { color: "red", width: 20 }
 
     const to = { scale: 0, color: "blue" }
-    const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(ref, undefined, to, baseFrame)
+    const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(ref, undefined, to, { identity })
 
     expect(resolvedFrom).toEqual({ scale: 1, color: "red" })
     expect(resolvedTo).toEqual(to)
@@ -144,21 +144,20 @@ describe("createResolvedFrame", () => {
     })
 
     const ref = ({ current: true } as unknown) as React.RefObject<HTMLElement>
-    const lastResolvedFrame = { scale: 0.5, x: 50, opacity: 0.2 }
-    const baseFrame = { width: 20 }
+    const base = { scale: 0.5, x: 50, opacity: 0.2 }
+    const identity = { width: 20 }
 
     const { from: resolvedFrom, to: resolvedTo } = createResolvedFrame(
       ref,
       undefined,
       undefined,
-      baseFrame,
-      lastResolvedFrame,
-      undefined,
+      { identity, base, lastFrame: base },
+      0,
       true
     )
 
-    expect(resolvedFrom).toEqual({ ...lastResolvedFrame, scale: 1.2, opacity: 0.5, x: 20 })
-    expect(resolvedTo).toEqual(lastResolvedFrame)
+    expect(resolvedFrom).toEqual({ ...base, scale: 1.2, opacity: 0.5, x: 20 })
+    expect(resolvedTo).toEqual(base)
   })
 })
 

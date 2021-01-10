@@ -76,16 +76,16 @@ export function getNextStackInteraction(
 }
 
 interface Options {
-  identity: Frame | undefined
-  base: Frame | undefined
-  lastFrame: Frame | undefined
+  identity?: Frame
+  base?: Frame
+  lastFrame?: Frame
 }
 
 export function createResolvedFrame(
   ref: React.RefObject<HTMLElement>,
   from: Frame | undefined,
   to: Frame | undefined,
-  { identity, base, lastFrame }: Options,
+  { identity, base, lastFrame }: Options = {},
   velocity: number = 0,
   isAnimating: boolean = false
 ) {
