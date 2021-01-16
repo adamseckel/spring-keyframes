@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "yarn build:driver && next build",
+    "start": "next start",
+    "build:driver": "cd ../driver && yarn build && cd ../api-docs"
   },
   "dependencies": {
     "next": "10.0.4",
