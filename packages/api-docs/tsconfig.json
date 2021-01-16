@@ -1,8 +1,8 @@
 {
   "paths": {
-    "@spring-keyframes/driver": ["./packages/driver"],
-    "@spring-keyframes/matrix": ["./packages/matrix"],
-    "@spring-keyframes/react": ["./packages/react"]
+    "@spring-keyframes/driver": ["../driver"],
+    "@spring-keyframes/matrix": ["../matrix"],
+    "@spring-keyframes/react": ["../react"]
   },
   "compilerOptions": {
     "target": "es5",
