@@ -28,7 +28,7 @@ function withDepth(item: Item, depth = 0): Item & { depth: number } {
 }
 
 function mapWithDepth(items: Item[]) {
-  const list = []
+  const list: Item[] = []
 
   addDepth(items, 0, list)
 

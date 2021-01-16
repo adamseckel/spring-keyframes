@@ -1,10 +1,7 @@
 {
-  "paths": {
-    "@spring-keyframes/driver": ["../driver"],
-    "@spring-keyframes/matrix": ["../matrix"],
-    "@spring-keyframes/react": ["../react"]
-  },
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "incremental": false /* Enable incremental compilation */,
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

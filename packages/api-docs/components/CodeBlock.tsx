@@ -15,7 +15,7 @@ export function CodeBlock({ code, lang = "jsx" }: { code: string; lang?: string 
   )
 }
 
-export function TwoColumnCodeBlock({ code, children, lang = "jsx" }) {
+export function TwoColumnCodeBlock({ code, children, lang = "jsx" }: { code: string; children: any; lang?: string }) {
   return (
     <div className={styles.column}>
       <div className={styles.text}>{children}</div>

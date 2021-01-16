@@ -130,7 +130,7 @@ const cssRule = `
   }
 `
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: any) {
   return (
     <Layout items={items}>
       <Head>
