@@ -17,9 +17,11 @@
 .labelContainer {
   margin-top: 8px;
 
-  display: flex;
+  display: inline-flex;
   justify-content: flex-start;
   align-items: center;
+  transform-origin: center center;
+  animation-delay: 1000ms;
 }
 
 .badge {
@@ -33,4 +35,17 @@
   align-items: center;
   font-size: 12px;
   font-weight: 700;
+}
+
+.box {
+  display: flex;
+  overflow: hidden;
+  align-items: flex-end;
+  margin: -10px 0;
+  padding: 10px 0;
+  margin-top: -26px;
+}
+
+.delay {
+  animation-delay: 200ms;
 }

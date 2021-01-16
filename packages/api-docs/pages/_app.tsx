@@ -2,6 +2,7 @@ import Head from "next/head"
 import * as React from "react"
 import { Layout } from "../components/Layout"
 import { Item } from "../components/Navigation"
+import { driver } from "@spring-keyframes/driver"
 import "../styles/globals.css"
 
 const items: Item[] = [
@@ -91,6 +92,44 @@ const items: Item[] = [
   },
 ]
 
+const slideIn = driver({ y: 90 }, { y: 0 }, { stiffness: 90, damping: 10, restDelta: 0.001 })
+
+const scaleIn = driver(
+  { scale: 0.7, opacity: 0 },
+  { scale: 1, opacity: 1 },
+  { stiffness: 150, damping: 10, restDelta: 0.001 }
+)
+const cssRule = `
+@keyframes sprung { 
+  ${slideIn.sprung} 
+}
+
+@keyframes tweened { 
+  ${slideIn.tweened} 
+}
+
+.spring-up {
+    animation-name: sprung, tweened;
+    animation-duration: ${slideIn.duration};
+    animation-timing-function: ${slideIn.ease};
+    animation-fill-mode: both;
+    display: block;
+  }
+
+  @keyframes scale-in { 
+    ${scaleIn.sprung} 
+  }
+  
+  @keyframes scale-in-fade { 
+    ${scaleIn.tweened} 
+  }
+  
+  .scale-in {
+    animation: scale-in ${scaleIn.duration} ${scaleIn.ease} both, scale-in-fade 500ms ${scaleIn.ease} both;
+    display: block;
+  }
+`
+
 function MyApp({ Component, pageProps }) {
   return (
     <Layout items={items}>
@@ -98,6 +137,7 @@ function MyApp({ Component, pageProps }) {
         <title>Spring Keyframes Docs</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         {/* <link rel="icon" href="/favicon.ico" /> */}
+        <style dangerouslySetInnerHTML={{ __html: cssRule }}></style>
       </Head>
       <Component {...pageProps} />
     </Layout>

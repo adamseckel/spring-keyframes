@@ -39,6 +39,9 @@ h5,
 h6 {
   color: var(--header-text);
 }
+h1 span {
+  color: var(--header-text);
+}
 
 h2 {
   font-size: 48px;
