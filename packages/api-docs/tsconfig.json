@@ -1,4 +1,9 @@
 {
+  "paths": {
+    "@spring-keyframes/driver": ["./packages/driver"],
+    "@spring-keyframes/matrix": ["./packages/matrix"],
+    "@spring-keyframes/react": ["./packages/react"]
+  },
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
