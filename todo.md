@@ -7,3 +7,4 @@
 - [ ] invert border radius
 - [ ] invert box-shadow
 - [x] respect changing options
+- [ ] Multiple scale corrected children

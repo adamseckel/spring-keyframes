@@ -4,6 +4,9 @@ import { TwoColumnCodeBlock } from "../components/CodeBlock"
 import Head from "next/head"
 import Link from "next/link"
 
+import { driver } from "@spring-keyframes/driver"
+const { sprung } = driver({ scale: 0 }, { scale: 1 })
+
 export default function Introduction() {
   return (
     <>
@@ -22,6 +25,13 @@ export default function Introduction() {
             popmotion
           </a>
           's physics-based spring algorithm.
+        </p>
+        <p>
+          Gzipped, and excluding <code>tslib</code>, <b>@spring-keyframes/driver</b> comes in at{" "}
+          <b>
+            <code>6.8kb</code>
+          </b>
+          .
         </p>
       </div>
       <div id="quick-start">
@@ -63,6 +73,7 @@ const animation = driver(
           </p>
         </TwoColumnCodeBlock>
       </div>
+
       <div>
         <TwoColumnCodeBlock
           code={`import { driver } from "@spring-keyframes/driver"
@@ -85,6 +96,34 @@ const {
             <code>sprung</code>, <code>tweened</code>, and <code>inverted</code>; and finally{" "}
             <code>resolveVelocity</code>, a function that when given a playtime in milliseconds, returns the approximate
             velocity at that time.
+          </p>
+        </TwoColumnCodeBlock>
+      </div>
+      <div>
+        <TwoColumnCodeBlock
+          lang={"javascript"}
+          code={`import { driver } from "@spring-keyframes/driver"
+
+const { sprung } = driver(...)
+
+// Returns: 
+${sprung
+  .split("\n")
+  .filter((v) => v !== "")
+  .map((l) => `// ${l}`)
+  .join("\n")}
+`}>
+          <p>
+            The each of <code>sprung</code>, <code>tweened</code>, and <code>inverted</code> are a strings that can be
+            directly inserted as the value of an <code>@keyframes</code> declaration.
+          </p>
+          <p>
+            The result is always the minimum number of frames required to achieve the spring generated from the options.
+          </p>
+          <p>
+            Unless you are generating a matching inverted animation to perform scale correction, each frame will be the
+            next highest or lowest point of the spring's oscillation. Particularly damped springs can be comprised of
+            just 2 or 3 keyframes!
           </p>
         </TwoColumnCodeBlock>
       </div>
