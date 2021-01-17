@@ -29,12 +29,15 @@
   padding: 2px 8px;
   border-radius: 8px;
   background: var(--badge-color);
-  color: var(--header-text);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 12px;
   font-weight: 700;
+}
+
+.badge p {
+  color: var(--badge-text);
 }
 
 .box {

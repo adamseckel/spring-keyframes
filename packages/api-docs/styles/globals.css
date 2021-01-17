@@ -10,6 +10,7 @@ body {
   --body-text: #a6a6a6;
   --label-text: #787878;
   --badge-color: #262626;
+  --badge-text: #a6a6a6;
 
   --gutter: 48px;
 
@@ -18,16 +19,16 @@ body {
   scroll-behavior: smooth;
 }
 
-a {
-  color: var(--header-text);
-  text-decoration: underline;
-  font-weight: bold;
-}
-
 * {
   color: var(--body-text);
   box-sizing: border-box;
   margin: 0;
+}
+
+a {
+  color: var(--header-text);
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 b,
@@ -88,3 +89,15 @@ pre {
   font-size: 14px;
   border: none !important;
 }
+
+/* @media (prefers-color-scheme: light) {
+  html,
+  body {
+    --background: #fff;
+    --header-text: #000;
+    --body-text: #757575;
+    --label-text: #787878;
+    --badge-color: #000;
+    --badge-text: #fff;
+  }
+} */
