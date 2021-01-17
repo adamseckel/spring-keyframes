@@ -1,6 +1,6 @@
 import styles from "./Header.module.css"
 
-export function Header() {
+export function Header({ version }: { version: string }) {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>
@@ -12,7 +12,7 @@ export function Header() {
         </span>
       </h1>
       <div className={"scale-in" + " " + styles.labelContainer}>
-        <p className={styles.label}>API Docs — 0.0.1</p>
+        <p className={styles.label}>API Docs — {version}</p>
         <div className={styles.badge}>
           <p>beta</p>
         </div>

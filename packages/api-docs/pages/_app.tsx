@@ -4,6 +4,7 @@ import { Layout } from "../components/Layout"
 import { Item } from "../components/Navigation"
 import { driver } from "@spring-keyframes/driver"
 import "../styles/globals.css"
+import pkg from "../../driver/package.json"
 
 const items: Item[] = [
   {
@@ -70,14 +71,15 @@ const items: Item[] = [
       { title: "Examples", slug: "/driver#examples" },
     ],
   },
-  // {
-  //   title: "@spring-keyframes/from-matrix",
-  //   slug: "/from-matrix",
-  //   items: [
-  //     { title: "Quick Start", slug: "/from-matrix#quick-start" },
-  //     { title: "Examples", slug: "/from-matrix#examples" },
-  //   ],
-  // },
+  {
+    title: "@spring-keyframes/from-matrix",
+    slug: "/from-matrix",
+    items: [
+      { title: "Quick Start", slug: "/from-matrix#quick-start" },
+      { title: "Usage", slug: "/from-matrix#usage" },
+      { title: "Acknowledgements", slug: "/from-matrix#acknowledgments" },
+    ],
+  },
   // {
   //   title: "History",
   //   slug: "/history",
@@ -132,7 +134,7 @@ const cssRule = `
 
 function MyApp({ Component, pageProps }: any) {
   return (
-    <Layout items={items}>
+    <Layout items={items} version={pkg.version}>
       <Head>
         <title>Spring Keyframes Docs</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
