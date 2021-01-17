@@ -60,45 +60,34 @@ export class StyleSheet {
 
     const tag = this.tags[this.tags.length - 1]
 
-    if (this.isSpeedy) {
-      const sheet = sheetForTag(tag)
-      if (!sheet) return
-      try {
-        // this is the ultrafast version, works across browsers
-        // the big drawback is that the css won't be editable in devtools
-        sheet.insertRule(rule, sheet.cssRules.length)
-      } catch (e) {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn(`There was a problem inserting the following rule: "${rule}"`, e)
-        }
+    const sheet = sheetForTag(tag)
+    if (!sheet) return
+    try {
+      // this is the ultrafast version, works across browsers
+      // the big drawback is that the css won't be editable in devtools
+      sheet.insertRule(rule, sheet.cssRules.length)
+    } catch (e) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(`There was a problem inserting the following rule: "${rule}"`, e)
       }
-    } else {
-      tag.appendChild(document.createTextNode(rule))
     }
+
     this.ctr++
   }
   flushKeys(keys: string[]) {
     let count = 0
 
     this.tags.forEach((tag) => {
-      if (this.isSpeedy) {
-        const sheet = sheetForTag(tag)
+      const sheet = sheetForTag(tag)
 
-        if (!sheet) return
+      if (!sheet) return
 
-        for (let index = 0; index < sheet.cssRules.length; index++) {
-          const element = sheet.cssRules[index] as CSSKeyframesRule
+      for (let index = 0; index < sheet.cssRules.length; index++) {
+        const element = sheet.cssRules[index] as CSSKeyframesRule
 
-          if (keys.includes(element.name)) {
-            sheet.deleteRule(index)
-            count += 1
-          }
-        }
-      } else {
-        const tagName = tag.getAttribute("data-keyframes")
-        if (tagName && keys.includes(tagName) && tag.parentNode) {
-          tag.parentNode.removeChild(tag)
-          // this.tags = [...this.tags.splice(i, 1)]
+        if (keys.includes(element.name)) {
+          sheet.deleteRule(index)
+          count += 1
         }
       }
     })

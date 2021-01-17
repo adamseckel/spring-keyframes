@@ -50,7 +50,19 @@ export default function Introduction() {
       <div id="quick-start">
         <h3>Usage</h3>
         <p>
-          Use <b>driver</b> in any place in which you want to generate a keyframes string.
+          Use <b>driver</b> in any place in which you want to generate a keyframes string.{" "}
+        </p>
+        <p>
+          <b>driver</b> shines in two specific use-cases:
+        </p>
+        <p>
+          <b>1.</b> Generating static, physics-based css animations between known start and end values at build-time.
+          Think expressive hero transitions on any static site without shipping any animation library javascript!
+        </p>
+        <p>
+          <b>2.</b> Generating physics-based css animations during run-time in response to user-input. Imagine an
+          expanding accordion animation revealing n-number of user defined rows running at 60fps even when the main
+          thread is busy.
         </p>
       </div>
       <div>
