@@ -1,10 +1,6 @@
-import sourceMaps from "rollup-plugin-sourcemaps"
 import typescript from "rollup-plugin-typescript2"
-import { terser } from "rollup-plugin-terser"
 import resolve from "@rollup/plugin-node-resolve"
-import commonjs from "@rollup/plugin-commonjs"
 import pkg from "./package.json"
-import visualizer from "rollup-plugin-visualizer"
 
 export default {
   input: "./src/index.ts",
@@ -22,30 +18,27 @@ export default {
       sourcemap: true,
     },
     {
-      file: pkg.module,
       format: "es",
       sourcemap: true,
+      preserveModules: true,
+      dir: "dist/es",
     },
   ],
-  external: [...Object.keys(pkg.peerDependencies || {})],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
+    "@spring-keyframes/driver",
+    "@spring-keyframes/matrix",
+  ],
   plugins: [
-    typescript({ exclude: "**/*.test.ts" }),
+    typescript({
+      exclude: "**/*.test.ts",
+      tsconfigOverride: {
+        compilerOptions: {
+          declaration: true,
+        },
+      },
+    }),
     resolve(),
-    commonjs({
-      include: /node_modules/,
-    }),
-    sourceMaps(),
-    terser({
-      output: { comments: false },
-      // warnings: true,
-      // ecma: 5,
-      // // Compress and/or mangle variables in top level scope.
-      // // @see https://github.com/terser-js/terser
-      // toplevel: true,
-    }),
-    visualizer({
-      gzipSize: true,
-      brotliSize: true,
-    }),
   ],
 }

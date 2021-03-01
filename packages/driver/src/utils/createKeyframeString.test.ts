@@ -1,4 +1,4 @@
-import { createKeyframeString, createSprungKeyframes } from "./createKeyframeString"
+import { createKeyframeString } from "./createKeyframeString"
 
 describe("createKeyframeString", () => {
   it("creates a valid css animation keyframe", () => {

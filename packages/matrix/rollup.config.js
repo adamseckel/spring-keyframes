@@ -22,9 +22,10 @@ export default {
       sourcemap: true,
     },
     {
-      file: pkg.module,
       format: "es",
       sourcemap: true,
+      preserveModules: true,
+      dir: "dist/es",
     },
   ],
   external: [
@@ -41,21 +42,21 @@ export default {
       },
     }),
     resolve(),
-    commonjs(),
-    sourceMaps(),
-    terser({
-      output: { comments: false },
-      warnings: true,
-      ecma: 2015,
-      // Compress and/or mangle variables in top level scope.
-      // @see https://github.com/terser-js/terser
-      toplevel: true,
-      compress: true,
-      mangle: true,
-    }),
-    visualizer({
-      gzipSize: true,
-      brotliSize: true,
-    }),
+    // commonjs(),
+    // sourceMaps(),
+    // terser({
+    //   output: { comments: false },
+    //   warnings: true,
+    //   ecma: 2015,
+    //   // Compress and/or mangle variables in top level scope.
+    //   // @see https://github.com/terser-js/terser
+    //   toplevel: true,
+    //   compress: true,
+    //   mangle: true,
+    // }),
+    // visualizer({
+    //   gzipSize: true,
+    //   brotliSize: true,
+    // }),
   ],
 }

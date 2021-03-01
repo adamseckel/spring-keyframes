@@ -19,6 +19,7 @@
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "downlevelIteration": true
   },
+  "exclude": ["node_modules", "dist", "lib"],
   "paths": {
     "@spring-keyframes/driver": ["./packages/driver"],
     "@spring-keyframes/matrix": ["./packages/matrix"],

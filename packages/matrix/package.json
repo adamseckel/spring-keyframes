@@ -3,7 +3,7 @@
   "version": "0.0.40",
   "license": "MIT",
   "main": "dist/matrix.js",
-  "module": "dist/matrix.es.js",
+  "module": "dist/es/matrix.js",
   "types": "dist/matrix.d.ts",
   "private": false,
   "files": [
@@ -12,7 +12,7 @@
   "scripts": {
     "test": "NODE_ENV=test jest",
     "build": "rollup -c",
-    "clean": "rimraf lib",
+    "clean": "rimraf dist",
     "prebuild": "yarn run clean",
     "prepublish": "yarn run build",
     "type-check": "tsc --noEmit",
@@ -21,5 +21,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "69a97e1653b8d5615a1df12a6254220a87a67346"
+  "gitHead": "69a97e1653b8d5615a1df12a6254220a87a67346",
+  "dependencies": {
+    "tslib": "^2.1.0"
+  }
 }

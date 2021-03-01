@@ -3,7 +3,7 @@
   "description": "Use javascript to generate css keyframe animations based on spring physics",
   "version": "0.0.40",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "module": "dist/es/index.js",
   "types": "dist/index.d.ts",
   "private": false,
   "files": [
@@ -20,7 +20,7 @@
   "scripts": {
     "test": "NODE_ENV=test jest",
     "build": "rollup -c",
-    "clean": "rimraf lib",
+    "clean": "rimraf dist",
     "prebuild": "yarn run clean",
     "prepublish": "yarn run build",
     "type-check": "tsc --noEmit",
@@ -40,7 +40,9 @@
   },
   "gitHead": "69a97e1653b8d5615a1df12a6254220a87a67346",
   "dependencies": {
-    "popmotion": "^9.0.0"
+    "hey-listen": "^1.0.8",
+    "popmotion": "^9.0.0",
+    "tslib": "^2.1.0"
   },
   "devDependencies": {
     "ts-jest": "^26.4.4"

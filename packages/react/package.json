@@ -2,7 +2,7 @@
   "name": "@spring-keyframes/react",
   "version": "0.0.40",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "module": "dist/es/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -10,12 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "@emotion/hash": "^0.7.4",
+    "tslib": "^2.1.0",
     "use-deep-compare-effect": "1.6.1"
-  },
-  "devDependencies": {
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "xcssmatrix": "0.2.2"
   },
   "peerDependencies": {
     "react": "*",
@@ -26,7 +22,7 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rimraf dist",
     "prebuild": "yarn run clean",
     "prepublish": "yarn run build",
     "type-check": "tsc --noEmit",
