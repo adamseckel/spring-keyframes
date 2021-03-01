@@ -18,15 +18,19 @@ export default function Introduction() {
       <div id="how-it-works">
         <h3>How It Works</h3>
         <p>
-          <b>spring keyframes</b> is built around a driver that is capable of generating the minimum number of{" "}
+          <b>spring keyframes</b> is built around{" "}
+          <Link href="/driver">
+            <a>@spring-keyframes/driver</a>
+          </Link>{" "}
+          , a function that is capable of generating the minimum number of{" "}
           <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes" rel="external">
             css keyframes
           </a>{" "}
           required to animate a set of values from a to b, based on whatever spring settings it is configured with.
         </p>
         <p>
-          This output can be used to generate static keyframes that can be compiled at build time, for example when
-          paired with a static css-in-js tool like{" "}
+          This output can be used to generate static keyframes that can be compiled at build time when paired with a
+          static css-in-js tool like{" "}
           <a href="https://github.com/callstack/linaria" rel="external">
             Linaria
           </a>{" "}
@@ -34,11 +38,15 @@ export default function Introduction() {
           <a href="https://github.com/seek-oss/treat" rel="external">
             Treat
           </a>
-          , or at runtime, when paired with other tools like{" "}
+          , or at runtime when paired with other tools like{" "}
           <a href="https://github.com/emotion-js/emotion" rel="external">
             Emotion
-          </a>
-          .
+          </a>{" "}
+          while only adding{" "}
+          <b>
+            <code>6.8kb</code>
+          </b>{" "}
+          of bundle-size.
         </p>
         <p>
           Finally this output can also be used to generate animations "just-in-time". It's this ability that powers{" "}
@@ -46,6 +54,18 @@ export default function Introduction() {
             <a>@spring-keyframes/react</a>
           </Link>
           .
+        </p>
+        <p>
+          None of this would be possible without{" "}
+          <Link href="/from-matrix">
+            <a>@spring-keyframes/from-matrix</a>
+          </Link>{" "}
+          which delivers the ability to extract individual transform function values from a transform matrix string,
+          while only adding{" "}
+          <b>
+            <code>2.54kb</code>
+          </b>{" "}
+          to the bundle size, allowing animations to be smoothly interrupted.
         </p>
       </div>
       <div id="benefits">
