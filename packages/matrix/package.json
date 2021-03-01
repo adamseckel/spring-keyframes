@@ -5,6 +5,7 @@
   "main": "dist/matrix.js",
   "module": "dist/es/matrix.js",
   "types": "dist/matrix.d.ts",
+  "sideEffects": false,
   "private": false,
   "files": [
     "dist"
