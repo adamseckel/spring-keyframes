@@ -2,6 +2,7 @@ import { KeyframesContext } from "../components/Keyframes"
 import { Driver } from "../Driver"
 import { useConstant } from "./useConstant"
 import { useLayoutEffect, useEffect, useContext, useCallback } from "react"
+import { usePresence } from "framer-motion"
 
 const createAnimation = (ref: React.RefObject<HTMLElement>, invertedRef?: React.RefObject<HTMLElement>) => (
   animations: string[],
@@ -19,6 +20,7 @@ export function useDriver(
   invertedRef?: React.RefObject<HTMLElement>
 ): Driver {
   const keyframes = useContext(KeyframesContext)
+  const presence = usePresence()
   const driver = useConstant(() => new Driver(ref, keyframes, createAnimation(ref, invertedRef)))
 
   const onAnimationEnd = useCallback(
@@ -32,6 +34,9 @@ export function useDriver(
 
       if (driver.inverted && invertedRef?.current) invertedRef.current.style.animation = ""
       if (callback) callback()
+
+      const [isPresent, safeToRemove] = presence
+      if (isPresent === false && safeToRemove) safeToRemove()
     },
     [driver]
   )
