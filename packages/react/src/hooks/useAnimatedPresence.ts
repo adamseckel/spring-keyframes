@@ -1,22 +1,32 @@
-import { Frame, Options } from "@spring-keyframes/driver"
-import * as React from "react"
-import { Interaction } from "../utils/types"
-import { UseDriver } from "./useDriver"
+import type { Driver } from "../Driver"
+import type { Frame, Options } from "@spring-keyframes/driver"
+import { useEffect, useRef, useLayoutEffect } from "react"
+import { Interaction } from "../utils/Interaction"
 
 export interface Props {
   enterFrom?: Frame
   exitTo?: Frame
 }
 
-export function useAnimatedPresence(driver: UseDriver, { enterFrom }: Props, transition?: Options) {
-  const mountRef = React.useRef(false)
+export function useAnimatedPresence(
+  driver: Driver,
+  isPresent: boolean,
+  { enterFrom: from, exitTo: to }: Props,
+  options?: Options
+) {
+  const mountRef = useRef(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (mountRef.current === false) mountRef.current = true
   }, [])
 
-  React.useLayoutEffect(() => {
-    if (mountRef.current === false && enterFrom)
-      driver.animate(undefined, Interaction.Mount, enterFrom, undefined, transition)
+  useEffect(() => {
+    if (isPresent === false) {
+      driver.animate({ interaction: Interaction.Exit, to, options })
+    }
+  }, [isPresent])
+
+  useLayoutEffect(() => {
+    if (mountRef.current === false && from) driver.animate({ interaction: Interaction.Mount, from, options })
   }, [])
 }

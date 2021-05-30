@@ -1,11 +1,12 @@
 import * as React from "react"
-import { Options } from "@spring-keyframes/driver"
+import type { Options } from "@spring-keyframes/driver"
 import { useDriver } from "../hooks/useDriver"
 import { useCombinedRefs } from "../hooks/useCombinedRefs"
 import { useAnimatedState, Props as UseAnimatedStateProps } from "../hooks/useAnimatedState"
 import { useWhileInteraction, Props as UseWhileInteractionProps } from "../hooks/useWhileInteraction"
 import { useLayoutTransition, Props as UseLayoutTransitionProps } from "../hooks/useLayoutTransition"
 import { useAnimatedPresence, Props as UseAnimatedPresenceProps } from "../hooks/useAnimatedPresence"
+import { usePresence } from "framer-motion"
 
 interface Props
   extends UseAnimatedStateProps,
@@ -37,13 +38,21 @@ export const Animate = React.forwardRef<HTMLElement, Props>(function (
   const innerRef = React.useRef<HTMLElement>(null)
   const readWriteRef = useCombinedRefs(innerRef, ref)
   const invertedRef = React.useRef<HTMLDivElement>(null)
-  const driver = useDriver(readWriteRef, onAnimationEnd, invertedRef)
+  const [isPresent, safeToRemove] = usePresence()
+  const driver = useDriver(
+    readWriteRef,
+    () => {
+      onAnimationEnd?.()
+      safeToRemove?.()
+    },
+    invertedRef
+  )
 
   const hookProps = { animate, layout, whilePress, whileHover, enterFrom, exitTo }
 
   useAnimatedState(driver, hookProps, transition)
   useWhileInteraction(driver, readWriteRef, hookProps, transition)
-  useAnimatedPresence(driver, hookProps, transition)
+  useAnimatedPresence(driver, isPresent, hookProps, transition)
   useLayoutTransition(driver, readWriteRef, hookProps, invertedRef, transition)
 
   //style={addFrameStyle(props.style, props.animate)}

@@ -13,6 +13,7 @@
     "@emotion/hash": "^0.7.4",
     "@spring-keyframes/driver": "^0.0.43",
     "@spring-keyframes/matrix": "^0.0.43",
+    "framer-motion": "^4.1.17",
     "tslib": "^2.1.0",
     "use-deep-compare-effect": "1.6.1"
   },

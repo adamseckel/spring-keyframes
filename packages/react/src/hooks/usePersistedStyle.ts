@@ -1,5 +1,7 @@
-import * as React from "react"
-import { createTransformString, Frame } from "@spring-keyframes/driver"
+import type * as React from "react"
+import type { Frame } from "@spring-keyframes/driver"
+
+import { createTransformString } from "@spring-keyframes/driver"
 
 export function addFrameStyle(style: React.CSSProperties = {}, frame: Frame | undefined) {
   return Object.assign(

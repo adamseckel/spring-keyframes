@@ -6,7 +6,7 @@ const key = hash(new Date().toDateString())
 const sheet = new StyleSheet({ key, speedy: true })
 const animations: Record<string, number> = {}
 
-function keyframes(name: string, frames: string) {
+function create(name: string, frames: string) {
   const existing = animations[name]
 
   if (existing) {
@@ -44,11 +44,13 @@ function flush(keys: string[]) {
   }
 }
 
-export const KeyframesContext = React.createContext<{
-  keyframes: (name: string, rule: string) => string
+export interface Keyframes {
+  create: (name: string, rule: string) => string
   flush: (keys: string[]) => void
-}>({ keyframes, flush })
+}
+
+export const KeyframesContext = React.createContext<Keyframes>({ create, flush })
 
 export function KeyframesProvider({ children }: { children: React.ReactNode }) {
-  return <KeyframesContext.Provider value={{ keyframes, flush }}>{children}</KeyframesContext.Provider>
+  return <KeyframesContext.Provider value={{ create, flush }}>{children}</KeyframesContext.Provider>
 }

@@ -1,9 +1,9 @@
-import * as React from "react"
+import { useRef, useEffect } from "react"
 
 export function useCombinedRefs(...refs: any[]) {
-  const targetRef = React.useRef<HTMLElement>(null)
+  const targetRef = useRef<HTMLElement>(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
     refs.forEach((ref) => {
       if (!ref) return
 
