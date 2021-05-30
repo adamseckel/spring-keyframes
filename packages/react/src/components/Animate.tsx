@@ -39,15 +39,12 @@ export const Animate = React.forwardRef<HTMLElement, Props>(function (
   const readWriteRef = useCombinedRefs(innerRef, ref)
   const invertedRef = React.useRef<HTMLDivElement>(null)
   const [isPresent, safeToRemove] = usePresence()
-  const driver = useDriver(
-    readWriteRef,
-    () => {
-      onAnimationEnd?.()
-      safeToRemove?.()
-    },
-    invertedRef
-  )
-
+  const callback = () => {
+    console.log("CALLBACK", isPresent)
+    if (isPresent === false) safeToRemove?.()
+    onAnimationEnd?.()
+  }
+  const driver = useDriver(readWriteRef, callback, invertedRef)
   const hookProps = { animate, layout, whilePress, whileHover, enterFrom, exitTo }
 
   useAnimatedState(driver, hookProps, transition)
