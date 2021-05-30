@@ -29,7 +29,7 @@ export function resolveFrame(
     // the base style.
     if (from && !to) {
       const mergedFrom = { ...base, ...from }
-      // console.log("a")
+      console.log("a")
       return {
         from: mergedFrom,
         to: onlyTargetProperties(mergedFrom, { ...identity, ...base }),
@@ -42,11 +42,11 @@ export function resolveFrame(
       /**@TODO is there a scenario where we need to merge computed style and resolved values */
       const mergedTo = { ...base, ...to }
       if (isAnimating) {
-        // console.log("b")
+        console.log("b")
 
         return { from: createComputedFrame(mergedTo, ref), to: mergedTo, velocity }
       } else if (base) {
-        // console.log("c")
+        console.log("c")
 
         return {
           from: onlyTargetProperties(mergedTo, { ...identity, ...base }),
@@ -54,7 +54,7 @@ export function resolveFrame(
           velocity,
         }
       } else {
-        // console.log("d")
+        console.log("d")
 
         return { from: onlyTargetProperties(mergedTo, identity), to: mergedTo, velocity }
       }
@@ -65,7 +65,7 @@ export function resolveFrame(
     // style.
     if (!from && !to && lastFrame && base) {
       if (isAnimating) {
-        // console.log("e")
+        console.log("e")
 
         return {
           from: createComputedFrame(lastFrame, ref),
@@ -73,11 +73,11 @@ export function resolveFrame(
           velocity,
         }
       }
-      // console.log("f")
+      console.log("f")
 
       return { from: lastFrame, to: onlyTargetProperties(lastFrame, { ...identity, ...base }), velocity }
     }
   }
-  // console.log("NOTHING")
+  console.log("NOTHING")
   return { from: {}, to: {}, velocity }
 }

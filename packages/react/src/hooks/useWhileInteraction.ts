@@ -48,6 +48,7 @@ export function useWhileInteraction(
       }
       ref.current.addEventListener("touchstart", handleTap)
       ref.current.addEventListener("touchend", handleTapEnd)
+      document.addEventListener("mouseleave", handleTapEnd)
     }
 
     return () => {
@@ -61,6 +62,7 @@ export function useWhileInteraction(
         ref.current.removeEventListener("mouseup", handleTapEnd)
         ref.current.removeEventListener("touchstart", handleTap)
         ref.current.removeEventListener("touchend", handleTapEnd)
+        document.removeEventListener("mouseleave", handleTapEnd)
       }
     }
   }, [])

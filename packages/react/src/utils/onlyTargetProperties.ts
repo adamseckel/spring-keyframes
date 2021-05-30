@@ -13,6 +13,8 @@ export function onlyTargetProperties(target: Frame, current: Frame, transforms?:
       newFrame[property] = transforms[property]
     } else if (isUndefined(current[property])) {
       newFrame[property] = isTransform(property) ? identity[property] : 0
+    } else if (property === "transformOrigin") {
+      newFrame[property] = target.transformOrigin ?? "50% 50% 0"
     } else {
       newFrame[property] = current[property]
     }

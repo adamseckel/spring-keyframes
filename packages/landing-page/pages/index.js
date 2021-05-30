@@ -39,11 +39,13 @@ export default function Home() {
               height: toggled ? 300 : 200,
             }}
             enterFrom={{ opacity: 0, scale: 1.2 }}>
-            <CorrectLayoutDistortion style={{ width: "100%", height: "100%" }}>
+            <CorrectLayoutDistortion
+              style={{ width: "100%", height: "100%", display: "flex", justifyContent: "flex-end" }}>
               <Animate
                 id="Z"
                 key="Z"
                 layout
+                whileHover={{ scale: 0.8 }}
                 style={{
                   background: "red",
                   width: 200,
@@ -52,8 +54,7 @@ export default function Home() {
                   height: toggled ? 100 : 150,
                 }}>
                 <CorrectLayoutDistortion>
-                  <h1 className={styles.title} style={{ fontSize: 12 }}>
-                    {" "}
+                  <h1 className={styles.title} style={{ fontSize: 18 }}>
                     Welcome to Next.js!
                   </h1>
                 </CorrectLayoutDistortion>

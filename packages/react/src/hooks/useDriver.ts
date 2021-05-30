@@ -3,6 +3,7 @@ import { Driver } from "../Driver"
 import { useConstant } from "./useConstant"
 import { useLayoutEffect, useEffect, useContext, useRef } from "react"
 import { usePresence } from "framer-motion"
+import { Interaction } from "../utils/Interaction"
 
 const createAnimation = (ref: React.RefObject<HTMLElement>, invertedRef?: React.RefObject<HTMLElement>) => (
   animations: string[],
@@ -29,6 +30,11 @@ export function useDriver(
     if (animationName !== driver.animationName) return
 
     driver.reset()
+
+    if (driver.interaction === Interaction.Layout) {
+      ref.current.style.animation = ""
+      if (invertedRef?.current) invertedRef.current.style.animation = ""
+    }
 
     if (callback) callback()
     remove.current?.()

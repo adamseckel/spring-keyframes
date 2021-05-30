@@ -18,7 +18,8 @@ export function createComputedFrame(targetFrame?: Frame, ref?: React.RefObject<H
   const currentStyle = computedStyle(ref.current)
   const transforms = collectTransforms(currentStyle)
 
-  if (!targetFrame) return { ...currentStyle, ...transforms, transform: undefined } as Frame
+  if (!targetFrame)
+    return { ...currentStyle, ...transforms, transformOrigin: "50% 50% 0", transform: undefined } as Frame
 
   return onlyTargetProperties(targetFrame, currentStyle as Frame, transforms)
 }
