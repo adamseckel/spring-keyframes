@@ -1,6 +1,6 @@
 {
   "name": "@spring-keyframes/react",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "main": "dist/index.js",
   "module": "dist/es/index.js",
   "types": "dist/index.d.ts",
@@ -11,8 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "@emotion/hash": "^0.7.4",
-    "@spring-keyframes/driver": "^0.0.44",
-    "@spring-keyframes/matrix": "^0.0.44",
+    "@spring-keyframes/driver": "^0.0.45",
+    "@spring-keyframes/matrix": "^0.0.45",
     "framer-motion": "^4.1.17",
     "tslib": "^2.1.0",
     "use-deep-compare-effect": "1.6.1"
