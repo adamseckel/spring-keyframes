@@ -1,4 +1,4 @@
-import { Frame } from '@spring-keyframes/driver'
+import type { Frame } from "@spring-keyframes/driver"
 
 export function axisScaleForFrame(frame: Frame) {
   const scale = frame.scale
@@ -7,12 +7,7 @@ export function axisScaleForFrame(frame: Frame) {
   return { scaleX, scaleY }
 }
 
-interface ScaleDistortion {
-  scaleX: number
-  scaleY: number
-}
-
-export function createDelta({ scaleX, scaleY }: ScaleDistortion) {
+export function createDelta({ scaleX, scaleY }: { scaleX: number; scaleY: number }) {
   return {
     scaleX: 1 / (1 / scaleX),
     scaleY: 1 / (1 / scaleY),

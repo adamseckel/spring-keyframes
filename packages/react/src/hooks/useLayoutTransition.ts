@@ -1,9 +1,9 @@
 import * as React from "react"
-import { Interaction } from "../utils/types"
-import { UseDriver } from "./useDriver"
+import { Interaction } from "../utils/Interaction"
+import { Driver } from "../Driver"
 import { Frame, Options } from "@spring-keyframes/driver"
 import { Transforms } from "@spring-keyframes/matrix"
-import { createComputedFrame } from "./useDriver/createFrame"
+import { createComputedFrame } from "../utils/createComputedFrame"
 
 export type Layout = {
   left: number
@@ -53,11 +53,11 @@ export interface Props {
 }
 
 export const useLayoutTransition = (
-  driver: UseDriver,
+  driver: Driver,
   ref: React.RefObject<HTMLElement>,
   { layout }: Props,
   invertedRef: React.RefObject<HTMLElement>,
-  transition?: Options
+  options?: Options
 ) => {
   const lastRect = React.useRef<Layout | null>(null)
 
@@ -65,10 +65,9 @@ export const useLayoutTransition = (
     if (!ref.current || !layout) return
 
     const { top, left, right, bottom } = rect(ref)
-    const distortion = driver.getCurrentTargetFrame()
-    const offset = getTransformDistortion(distortion)
+    const offset = getTransformDistortion(driver.targetFrame)
 
-    const { from: current } = driver.resolveValues(undefined, identity)
+    const { from: current } = driver.resolveValues({ base: identity })
     const { scale = 1 } = current as Required<Transforms>
     const { x = 0, y = 0, scaleX = scale, scaleY = scale } = current as Required<Transforms>
 
@@ -114,17 +113,17 @@ export const useLayoutTransition = (
       to: { scaleX: offset.scaleX, scaleY: offset.scaleY },
     }
 
-    driver.animate(
-      {
+    driver.animate({
+      interaction: Interaction.Layout,
+      to: {
         x: identity.x + offset.x,
         y: identity.y + offset.y,
         scaleX: identity.scaleX * offset.scaleX,
         scaleY: identity.scaleY * offset.scaleY,
       },
-      Interaction.Layout,
-      flippedFrom,
+      from: flippedFrom,
       invertedAnimation,
-      transition
-    )
+      options,
+    })
   })
 }

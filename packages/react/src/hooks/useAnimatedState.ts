@@ -1,8 +1,8 @@
 import { Frame, Options } from "@spring-keyframes/driver"
 import * as React from "react"
 import { useDeepCompareEffectNoCheck } from "use-deep-compare-effect"
-import { Interaction } from "../utils/types"
-import { UseDriver } from "./useDriver"
+import { Interaction } from "../utils/Interaction"
+import { Driver } from "../Driver"
 
 interface Cache {
   hasMounted: boolean
@@ -14,7 +14,7 @@ export interface Props {
   animate?: Frame
 }
 
-export function useAnimatedState(driver: UseDriver, { animate: to }: Props, transition?: Options) {
+export function useAnimatedState(driver: Driver, { animate: to }: Props, options?: Options) {
   const cache = React.useRef<Cache>({
     hasMounted: false,
     hasAnimated: false,
@@ -24,8 +24,7 @@ export function useAnimatedState(driver: UseDriver, { animate: to }: Props, tran
   useDeepCompareEffectNoCheck(() => {
     const { hasMounted, hasAnimated, lastFrame } = cache.current
     if (hasMounted && to) {
-      const from = hasAnimated ? undefined : lastFrame
-      driver.animate(to, Interaction.Animate, from, undefined, transition)
+      driver.animate({ to, from: hasAnimated ? undefined : lastFrame, options, interaction: Interaction.Animate })
       cache.current.hasAnimated = true
     }
   }, [to])

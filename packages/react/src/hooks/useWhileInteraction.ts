@@ -1,7 +1,9 @@
-import * as React from "react"
-import { Frame, Options } from "@spring-keyframes/driver"
-import { Interaction } from "../utils/types"
-import { UseDriver } from "./useDriver"
+import type { Driver } from "../Driver"
+import type * as React from "react"
+import type { Frame, Options } from "@spring-keyframes/driver"
+
+import { Interaction } from "../utils/Interaction"
+import { useEffect } from "react"
 
 export interface Props {
   whilePress?: Frame
@@ -9,47 +11,38 @@ export interface Props {
 }
 
 export function useWhileInteraction(
-  driver: UseDriver,
+  driver: Driver,
   ref: React.RefObject<HTMLElement>,
   { whilePress, whileHover }: Props,
-  transition?: Options
+  options?: Options
 ): void {
-  const cache = React.useRef({
-    isTouchDevice: false,
-  })
-
   function handleTap() {
-    if (!whilePress) return
-    driver.animate(whilePress, Interaction.Press, undefined, undefined, transition)
+    if (whilePress) driver.animate({ interaction: Interaction.Press, to: whilePress, options })
   }
 
   function handleTapEnd() {
-    if (!whilePress) return
-
-    driver.animate(undefined, Interaction.None, undefined, undefined, transition)
+    if (whilePress) driver.animate({ interaction: Interaction.None, options })
   }
 
   function handleMouseEnter() {
-    if (!whileHover) return
-    driver.animate(whileHover, Interaction.Hover, undefined, undefined, transition)
+    if (whileHover) driver.animate({ interaction: Interaction.Hover, to: whileHover, options })
   }
 
   function handleMouseEnterEnd() {
-    if (!whileHover) return
-    driver.animate(undefined, Interaction.None, undefined, undefined, transition)
+    if (whileHover) driver.animate({ interaction: Interaction.None, options })
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!ref.current) return
-    cache.current.isTouchDevice = typeof window !== "undefined" && "ontouchstart" in window
+    const isTouchDevice = typeof window !== "undefined" && "ontouchstart" in window
 
-    if (whileHover && !cache.current.isTouchDevice) {
+    if (whileHover && !isTouchDevice) {
       ref.current.addEventListener("mouseenter", handleMouseEnter)
       ref.current.addEventListener("mouseleave", handleMouseEnterEnd)
     }
 
     if (whilePress) {
-      if (!cache.current.isTouchDevice) {
+      if (!isTouchDevice) {
         ref.current.addEventListener("mousedown", handleTap)
         ref.current.addEventListener("mouseup", handleTapEnd)
       }
@@ -59,7 +52,7 @@ export function useWhileInteraction(
 
     return () => {
       if (!ref.current) return
-      if (whileHover && !cache.current.isTouchDevice) {
+      if (whileHover && !isTouchDevice) {
         ref.current.addEventListener("mouseenter", handleMouseEnter)
         ref.current.addEventListener("mouseleave", handleMouseEnterEnd)
       }
