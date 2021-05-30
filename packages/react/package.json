@@ -33,7 +33,7 @@
     "watch": "rollup -cw",
     "test": "jest"
   },
-  "gitHead": "69a97e1653b8d5615a1df12a6254220a87a67346",
+  "gitHead": "a023e3f701807018762624b8427041b4004a1bc2",
   "jest": {
     "roots": [
       "<rootDir>/src"
