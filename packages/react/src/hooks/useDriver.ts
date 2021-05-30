@@ -28,11 +28,8 @@ export function useDriver(
     if (!ref.current) return
     if (animationName !== driver.animationName) return
 
-    ref.current.style.animation = ""
-
     driver.reset()
 
-    if (driver.inverted && invertedRef?.current) invertedRef.current.style.animation = ""
     if (callback) callback()
     remove.current?.()
   }
