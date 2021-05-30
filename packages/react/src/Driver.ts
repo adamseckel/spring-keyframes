@@ -102,6 +102,10 @@ export class Driver {
     return this.state.animation
   }
 
+  get interaction() {
+    return this.state.lastInteraction
+  }
+
   init = () => {
     if (this.state.lastInteraction !== Interaction.Identity) return
     this.state.stack?.set(Interaction.Identity, createComputedFrame(undefined, this.ref))
@@ -141,6 +145,7 @@ export class Driver {
         : resolveBase(nextInteraction, this.state.stack)
 
     const { from: resolvedFrom, to: resolvedTo, velocity } = this.resolveValues({ from, to, base })
+    console.log({ resolvedFrom, resolvedTo })
     const delay = options.delay && withDelay ? `${options.delay}ms` : "0ms"
     const fill = interactionFillMap[nextInteraction]
     const animation = driver(resolvedFrom, resolvedTo, {

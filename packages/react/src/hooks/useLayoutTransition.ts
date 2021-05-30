@@ -1,20 +1,11 @@
-import * as React from "react"
+import type * as React from "react"
 import { Interaction } from "../utils/Interaction"
 import { Driver } from "../Driver"
 import { Frame, Options } from "@spring-keyframes/driver"
 import { Transforms } from "@spring-keyframes/matrix"
 import { createComputedFrame } from "../utils/createComputedFrame"
-
-export type Layout = {
-  left: number
-  top: number
-  bottom: number
-  right: number
-  height: number
-  width: number
-  deltaX: number
-  deltaY: number
-}
+import { progress, clamp, mix } from "popmotion"
+import { useLayoutEffect, useRef } from "react"
 
 function rect(ref: React.RefObject<HTMLElement>) {
   if (!ref.current) return { top: 0, left: 0, right: 0, bottom: 0 }
@@ -22,6 +13,7 @@ function rect(ref: React.RefObject<HTMLElement>) {
   const { top, left, right, bottom } = ref.current.getBoundingClientRect()
   return { top, left, right, bottom }
 }
+
 type Identity = Pick<Transforms, "x" | "y" | "scaleY" | "scaleX" | "scale">
 const identity: Identity = {
   x: 0,
@@ -52,100 +44,75 @@ function getTransformDistortion(distortion?: Frame): Identity {
 
 export interface Props {
   layout?: boolean
-  id?: string
 }
 
-const clamp = (min: number, max: number, v: number) => {
-  return Math.min(Math.max(v, min), max)
-}
 const clampProgress = (v: number) => clamp(0, 1, v)
-const mix = (from: number, to: number, progress: number) => -progress * from + progress * to + from
-const progress = (from: number, to: number, value: number) => {
-  var toFromDifference = to - from
-  return toFromDifference === 0 ? 1 : (value - from) / toFromDifference
-}
-function calcOrigin(min: number, max: number, length: number, tmin: number, tmax: number, tlength: number): number {
+const calcOrigin = (source: AxisTarget, target: AxisTarget): number => {
   let origin = 0.5
 
-  if (tlength > length) {
-    origin = progress(tmin, tmax - length, min)
-  } else if (length > tlength) {
-    origin = progress(min, max - tlength, tmin)
+  if (target.length > source.length) {
+    origin = progress(target.min, target.max - length, source.min)
+  } else if (source.length > target.length) {
+    origin = progress(source.min, source.max - target.length, target.min)
   }
 
   return clampProgress(origin)
 }
 
+interface AxisTarget {
+  min: number
+  max: number
+  length: number
+}
+
+interface Target {
+  x: AxisTarget
+  y: AxisTarget
+}
+
 export const useLayoutTransition = (
   driver: Driver,
   ref: React.RefObject<HTMLElement>,
-  { layout, id }: Props,
+  { layout }: Props,
   invertedRef: React.RefObject<HTMLElement>,
   options?: Options
 ) => {
-  const lastRect = React.useRef<Layout | null>(null)
+  const snapshot = useRef<Target | null>(null)
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (!ref.current || !layout) return
 
     const { top, left, right, bottom } = rect(ref)
-    const parent = rect({ current: ref.current.parentElement })
     const offset = getTransformDistortion(driver.targetFrame)
 
     const { from: current } = driver.resolveValues({ base: identity })
     const { scale = 1 } = current as Required<Transforms>
     const { x = 0, y = 0, scaleX = scale, scaleY = scale } = current as Required<Transforms>
 
-    const newRect: Layout = {
-      top: top - y + window.scrollY,
-      bottom: bottom - y + window.scrollY,
-      left: left - x + window.scrollX,
-      right: right - x + window.scrollX,
-      height: (bottom - top) / scaleY,
-      width: (right - left) / scaleX,
-      deltaX: left - parent.left,
-      deltaY: top - parent.top,
+    const target: Target = {
+      x: { min: left - x + window.scrollX, max: right - x + window.scrollX, length: (right - left) / scaleX },
+      y: { min: top - y + window.scrollY, max: bottom - y + window.scrollY, length: (bottom - top) / scaleY },
     }
 
-    if (lastRect.current === null) {
-      lastRect.current = { ...newRect }
-
+    if (snapshot.current === null) {
+      snapshot.current = target
       return
     }
 
-    const oldRect = lastRect.current
+    const origin = snapshot.current
+    const hasTargetChanged =
+      target.y.min !== origin.y.min ||
+      target.x.min !== origin.x.min ||
+      target.x.length !== origin.x.length ||
+      target.y.length !== origin.y.length
 
-    const hasRectChanged =
-      newRect.top !== oldRect.top ||
-      newRect.left !== oldRect.left ||
-      newRect.height !== oldRect.height ||
-      newRect.width !== oldRect.width
+    if (!hasTargetChanged) return
 
-    if (!hasRectChanged) return
-
-    const originX = calcOrigin(oldRect.left, oldRect.right, oldRect.width, newRect.left, newRect.right, newRect.width)
-    const originY = calcOrigin(oldRect.top, oldRect.bottom, oldRect.height, newRect.top, newRect.bottom, newRect.height)
+    const originX = calcOrigin(origin.x, target.x)
+    const originY = calcOrigin(origin.y, target.y)
     const transformOrigin = `${originX * 100}% ${originY * 100}% 0`
 
-    lastRect.current = { ...newRect }
-    const flippedFrom = {
-      x: (mix(newRect.left, newRect.right, originX) - mix(oldRect.left, oldRect.right, originX)) * -1 + x,
-      y: (mix(newRect.top, newRect.bottom, originY) - mix(oldRect.top, oldRect.bottom, originY)) * -1 + y,
-      scaleX: (oldRect.width * scaleX) / newRect.width,
-      scaleY: (oldRect.height * scaleY) / newRect.height,
-      transformOrigin,
-    }
-
-    if (id === "X" || id === "A")
-      console.log(id, {
-        flippedFrom,
-        x,
-        y,
-        oldRect,
-        newRect,
-        parent,
-        transformOrigin,
-      })
+    snapshot.current = { x: { ...target.x }, y: { ...target.y } }
 
     const invertedDistortion = getTransformDistortion(createComputedFrame(identity, invertedRef))
     const invertedAnimation = {
@@ -159,6 +126,13 @@ export const useLayoutTransition = (
 
     driver.animate({
       interaction: Interaction.Layout,
+      from: {
+        x: (mix(target.x.min, target.x.max, originX) - mix(origin.x.min, origin.x.max, originX)) * -1 + x,
+        y: (mix(target.y.min, target.y.max, originY) - mix(origin.y.min, origin.y.max, originY)) * -1 + y,
+        scaleX: (origin.x.length * scaleX) / target.x.length,
+        scaleY: (origin.y.length * scaleY) / target.y.length,
+        transformOrigin,
+      },
       to: {
         x: identity.x + offset.x,
         y: identity.y + offset.y,
@@ -166,7 +140,7 @@ export const useLayoutTransition = (
         scaleY: identity.scaleY * offset.scaleY,
         transformOrigin,
       },
-      from: flippedFrom,
+
       invertedAnimation,
       options,
     })
