@@ -6,7 +6,6 @@ import { useAnimatedState, Props as UseAnimatedStateProps } from "../hooks/useAn
 import { useWhileInteraction, Props as UseWhileInteractionProps } from "../hooks/useWhileInteraction"
 import { useLayoutTransition, Props as UseLayoutTransitionProps } from "../hooks/useLayoutTransition"
 import { useAnimatedPresence, Props as UseAnimatedPresenceProps } from "../hooks/useAnimatedPresence"
-import { usePresence } from "framer-motion"
 
 interface Props
   extends UseAnimatedStateProps,
