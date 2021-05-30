@@ -32,24 +32,24 @@ export default function Home() {
             layout
             key="B"
             id="X"
-            whileHover={{ x: 100 }}
+            // whileHover={{ x: 100 }}
             style={{
               background: "blue",
               width: toggled ? 600 : 800,
               height: toggled ? 300 : 200,
             }}
             enterFrom={{ opacity: 0, scale: 1.2 }}>
-            {/* <CorrectLayoutDistortion style={{ width: "100%", height: "100%" }}>
+            <CorrectLayoutDistortion style={{ width: "100%", height: "100%" }}>
               <Animate
                 id="Z"
                 key="Z"
-                // layout
+                layout
                 style={{
                   background: "red",
                   width: 200,
                   height: 200,
-                  // width: toggled ? 400 : 600,
-                  // height: toggled ? 100 : 150,
+                  width: toggled ? 400 : 600,
+                  height: toggled ? 100 : 150,
                 }}>
                 <CorrectLayoutDistortion>
                   <h1 className={styles.title} style={{ fontSize: 12 }}>
@@ -58,7 +58,7 @@ export default function Home() {
                   </h1>
                 </CorrectLayoutDistortion>
               </Animate>
-            </CorrectLayoutDistortion> */}
+            </CorrectLayoutDistortion>
           </Animate>
 
           {/* <Animate layout as="div" key="C">
