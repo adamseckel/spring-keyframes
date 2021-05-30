@@ -14,6 +14,7 @@ const background = "background"
 const backgroundColor = "backgroundColor"
 const opacity = "opacity"
 const transform = "transform"
+const transformOrigin = "transformOrigin"
 
-export const unitless: Properties[] = [transform, opacity, color, background, backgroundColor]
-export const tweened: Properties[] = [opacity, color, background, backgroundColor]
+export const unitless: Properties[] = [transform, opacity, color, background, backgroundColor, transformOrigin]
+export const tweened: Properties[] = [opacity, color, background, backgroundColor, transformOrigin]

@@ -38,7 +38,7 @@ export const Animate = React.forwardRef<HTMLElement, Props>(function (
   const readWriteRef = useCombinedRefs(innerRef, ref)
   const invertedRef = React.useRef<HTMLDivElement>(null)
   const driver = useDriver(readWriteRef, onAnimationEnd, invertedRef)
-  const hookProps = { animate, layout, whilePress, whileHover, enterFrom, exitTo }
+  const hookProps = { animate, layout, whilePress, whileHover, enterFrom, exitTo, id: props.id }
 
   useAnimatedState(driver, hookProps, transition)
   useWhileInteraction(driver, readWriteRef, hookProps, transition)
