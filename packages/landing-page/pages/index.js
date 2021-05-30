@@ -1,10 +1,12 @@
 import Head from "next/head"
 import styles from "../styles/Home.module.css"
-import { Animate, CorrectLayoutDistortion } from "@spring-keyframes/react"
+import { Animate, CorrectLayoutDistortion, AnimatePresence } from "@spring-keyframes/react"
 import * as React from "react"
 
 export default function Home() {
   const [toggled, setToggled] = React.useState(false)
+  const [visible, setVisible] = React.useState(true)
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,7 +15,17 @@ export default function Home() {
       </Head>
 
       <main className={styles.main} onClick={() => setToggled(!toggled)}>
-        <Animate
+        <AnimatePresence>
+          {visible && (
+            <Animate
+              onClick={() => setVisible(!visible)}
+              enterFrom={{ opacity: 0 }}
+              exitTo={{ opacity: 0 }}
+              style={{ width: 100, height: 100, backgroundColor: "black" }}
+            />
+          )}
+        </AnimatePresence>
+        {/* <Animate
           as="div"
           layout
           style={{
@@ -58,7 +70,7 @@ export default function Home() {
               <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
             </a>
           </div>
-        </Animate>
+        </Animate> */}
       </main>
 
       <footer className={styles.footer}>
