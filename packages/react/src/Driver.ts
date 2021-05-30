@@ -102,19 +102,19 @@ export class Driver {
     return this.state.animation
   }
 
-  init() {
+  init = () => {
     if (this.state.lastInteraction !== Interaction.Identity) return
     this.state.stack?.set(Interaction.Identity, createComputedFrame(undefined, this.ref))
   }
 
-  reset() {
+  reset = () => {
     this.state.isAnimating = false
     this.state.start = 0
     this.state.isInverted = false
     this.keyframes.flush(this.state.animations)
   }
 
-  resolveValues({ from, to, base }: { from?: Frame; to?: Frame; base?: Frame }): ResolvedValues {
+  resolveValues = ({ from, to, base }: { from?: Frame; to?: Frame; base?: Frame }): ResolvedValues => {
     if (!this.ref.current) return { from: { scale: 1 }, to: { scale: 1 }, velocity: 0 }
 
     const { isAnimating, start, resolveVelocity } = this.state
@@ -132,7 +132,7 @@ export class Driver {
     )
   }
 
-  animate({ to, from, interaction, invertedAnimation, options = {}, withDelay }: CreateAnimation): void {
+  animate = ({ to, from, interaction, invertedAnimation, options = {}, withDelay }: CreateAnimation): void => {
     const nextInteraction = this.resolveInteraction(interaction)
     const withInversion = requiresInversion(interaction, options)
     const base =
