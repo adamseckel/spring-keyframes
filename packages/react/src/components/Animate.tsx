@@ -6,6 +6,8 @@ import { useAnimatedState, Props as UseAnimatedStateProps } from "../hooks/useAn
 import { useWhileInteraction, Props as UseWhileInteractionProps } from "../hooks/useWhileInteraction"
 import { useLayoutTransition, Props as UseLayoutTransitionProps } from "../hooks/useLayoutTransition"
 import { useAnimatedPresence, Props as UseAnimatedPresenceProps } from "../hooks/useAnimatedPresence"
+import { Box, SpringContext } from "./Measurements"
+import { useConstant } from "../hooks/useConstant"
 
 interface Props
   extends UseAnimatedStateProps,
@@ -36,14 +38,16 @@ export const Animate = React.forwardRef<HTMLElement, Props>(function (
 ) {
   const innerRef = React.useRef<HTMLElement>(null)
   const readWriteRef = useCombinedRefs(innerRef, ref)
-  const invertedRef = React.useRef<HTMLDivElement>(null)
+  const invertedRef = React.useRef<HTMLElement>(null)
   const driver = useDriver(readWriteRef, onAnimationEnd, invertedRef)
   const hookProps = { animate, layout, whilePress, whileHover, enterFrom, exitTo, id: props.id }
+  const box = useConstant(() => new Box(readWriteRef, driver))
+  const context = useConstant(() => ({ box, invertedRef }))
 
   useAnimatedState(driver, hookProps, transition)
   useWhileInteraction(driver, readWriteRef, hookProps, transition)
   useAnimatedPresence(driver, hookProps, transition)
-  useLayoutTransition(driver, readWriteRef, hookProps, invertedRef, transition)
+  useLayoutTransition(driver, box, hookProps, invertedRef, transition)
 
   //style={addFrameStyle(props.style, props.animate)}
 
@@ -56,14 +60,16 @@ export const Animate = React.forwardRef<HTMLElement, Props>(function (
   ) {
     return (
       <Element ref={readWriteRef} {...props}>
-        {React.cloneElement(children, { ref: invertedRef })}
+        <SpringContext.Provider value={context}>
+          {React.cloneElement(children, { ref: invertedRef })}
+        </SpringContext.Provider>
       </Element>
     )
   }
 
   return (
     <Element ref={readWriteRef} {...props}>
-      {children}
+      <SpringContext.Provider value={context}>{children}</SpringContext.Provider>
     </Element>
   )
 })

@@ -5,7 +5,7 @@ import * as Properties from "./properties"
 import { createTransformString, Transforms } from "./createTransformString"
 import { invertScale } from "./invertScale"
 
-const inversions = ["scale", "scaleX", "scaleY"]
+const inversions = ["scale", "scaleX", "scaleY", "x", "y"]
 
 function isTransformFrame(property: Property, _frame: KeyframeItem): _frame is TransformFrame {
   return Properties.transforms.includes(property)
@@ -88,6 +88,10 @@ function processInvertedScaleTransforms(
   const props: Transforms = {}
 
   for (const [property, v] of transforms) {
+    if (property === "x" || property === "y") {
+      props[property] = value
+      continue
+    }
     const { from, to } = invertedAnimation
     const invertedValue = Math.round(interpolate(0, 1, from[property], to[property])(value) * 10000) / 10000
     props[property] = invertScale(v, invertedValue)
