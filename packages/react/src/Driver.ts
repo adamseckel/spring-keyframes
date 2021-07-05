@@ -9,7 +9,6 @@ import { getNextStackInteraction } from "./utils/getNextStackInteraction"
 import { resolveFrame } from "./utils/resolveFrame"
 import { resolveBase } from "./utils/resolveBase"
 import { driver } from "@spring-keyframes/driver"
-import hash from "@emotion/hash"
 
 const interactionFillMap: Record<Interaction, React.CSSProperties["animationFillMode"]> = {
   [Interaction.Identity]: "none",
@@ -28,7 +27,8 @@ const getAnimationTime = (startTime: number) => performance.now() - startTime
 const getVelocity = (isAnimating: boolean, animationTime: number, resolveVelocity?: (time: number) => number) =>
   isAnimating && resolveVelocity ? resolveVelocity(animationTime) : 0
 const timingFunction = (isLinear: boolean, ease: string, sprung: boolean) => {
-  if (sprung && isLinear) return "cubic-bezier(1,1,0,0)"
+  if (isLinear) return "linear"
+  if (sprung && !isLinear) return "cubic-bezier(1,1,0,0)"
   return ease
 }
 
@@ -78,6 +78,7 @@ export class Driver {
 
   private resolveInteraction(candidate: Interaction): Interaction {
     const nextInteraction = getNextStackInteraction(candidate, this.state.stack, this.state.lastInteraction)
+    // console.log({ nextInteraction })
 
     if (this.state.lastInteraction && nextInteraction >= this.state.lastInteraction) {
       return nextInteraction
@@ -100,10 +101,6 @@ export class Driver {
 
   get animationName() {
     return this.state.animation
-  }
-
-  get interaction() {
-    return this.state.lastInteraction
   }
 
   init = () => {
@@ -145,7 +142,7 @@ export class Driver {
         : resolveBase(nextInteraction, this.state.stack)
 
     const { from: resolvedFrom, to: resolvedTo, velocity } = this.resolveValues({ from, to, base })
-    console.log({ resolvedFrom, resolvedTo })
+    // console.log({ interaction, nextInteraction, base, from, resolvedFrom, to, resolvedTo }, this.state)
     const delay = options.delay && withDelay ? `${options.delay}ms` : "0ms"
     const fill = interactionFillMap[nextInteraction]
     const animation = driver(resolvedFrom, resolvedTo, {
@@ -154,23 +151,25 @@ export class Driver {
       withInversion,
       invertedAnimation,
     })
-    const prefix = hash(JSON.stringify({ to, from, options }))
     const allAnimations = [animation.sprung, animation.tweened, animation.inverted]
     const animationNames: string[] = []
     const animations = []
     let inversion: string | undefined = undefined
 
+    const timestamp = performance?.now() ?? new Date().getTime()
+    const key = Math.random().toString(36).substring(5)
     for (let index = 0; index < allAnimations.length; index++) {
       const keyframes = allAnimations[index]
       if (!keyframes) continue
 
-      const name = `s${prefix}-${index}-${interaction}`
+      const name = `s-${key}-${index}-${interaction}`
 
-      const string = `${name} ${timingFunction(!!options.withInversion, animation.ease, index !== 1)} ${
+      const string = `${name} ${timingFunction(withInversion, animation.ease, index !== 1)} ${
         animation.duration
       } ${delay} 1 ${fill}`
 
       animationNames.push(name)
+
       this.keyframes.create(name, keyframes)
 
       if (index === 2) {
@@ -185,7 +184,7 @@ export class Driver {
 
     this.createAnimation(animations, withInversion && inversion)
 
-    this.state.start = performance?.now() ?? new Date().getTime()
+    this.state.start = timestamp
     this.state.animation = animationNames[0]
     this.state.lastInteraction = nextInteraction
     this.state.lastResolvedFrame = resolvedTo
@@ -197,5 +196,7 @@ export class Driver {
 
     this.state.animations = animations
     if (inversion) this.state.animations.push(inversion)
+
+    // console.log(this.state)
   }
 }

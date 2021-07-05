@@ -94,11 +94,4 @@ export class StyleSheet {
 
     this.ctr = this.ctr - count
   }
-  flushAll() {
-    this.tags.forEach((tag) => {
-      if (tag.parentNode) tag.parentNode.removeChild(tag)
-    })
-    this.tags = []
-    this.ctr = 0
-  }
 }

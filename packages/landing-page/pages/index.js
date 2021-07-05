@@ -14,7 +14,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main} onClick={() => setToggled(!toggled)}>
+      <main className={styles.main}>
+        {/* <Animate whilePress={{ scale: 1.2 }} style={{ width: 200, height: 200, background: "red" }} /> */}
         <AnimatePresence>
           {visible && (
             <Animate
@@ -31,21 +32,19 @@ export default function Home() {
             as="div"
             layout
             key="B"
-            id="X"
-            // whileHover={{ x: 100 }}
+            id="PARENT"
+            onClick={() => setToggled(!toggled)}
             style={{
               background: "blue",
               width: toggled ? 600 : 800,
               height: toggled ? 300 : 200,
             }}
             enterFrom={{ opacity: 0, scale: 1.2 }}>
-            <CorrectLayoutDistortion
-              style={{ width: "100%", height: "100%", display: "flex", justifyContent: "flex-end" }}>
+            <CorrectLayoutDistortion style={{ transformOrigin: "0% 0% 0" }}>
               <Animate
-                id="Z"
-                key="Z"
+                id="CHILD"
+                key="CHILD"
                 layout
-                whileHover={{ scale: 0.8 }}
                 style={{
                   background: "red",
                   width: 200,
@@ -53,7 +52,7 @@ export default function Home() {
                   width: toggled ? 400 : 600,
                   height: toggled ? 100 : 150,
                 }}>
-                <CorrectLayoutDistortion>
+                <CorrectLayoutDistortion style={{ transformOrigin: "50% 0% 0" }}>
                   <h1 className={styles.title} style={{ fontSize: 18 }}>
                     Welcome to Next.js!
                   </h1>
@@ -62,7 +61,7 @@ export default function Home() {
             </CorrectLayoutDistortion>
           </Animate>
 
-          {/* <Animate layout as="div" key="C">
+          <Animate layout as="div" key="C">
             <p className={styles.description}>
               Get started by editing <code className={styles.code}>pages/index.js</code>
             </p>
@@ -90,7 +89,7 @@ export default function Home() {
                 <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
               </a>
             </div>
-          </Animate> */}
+          </Animate>
         </AnimatePresence>
       </main>
 

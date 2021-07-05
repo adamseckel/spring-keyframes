@@ -1,27 +1,14 @@
 import type * as React from "react"
+import type { AxisTarget } from "../utils/Target"
 import { Interaction } from "../utils/Interaction"
 import { Driver } from "../Driver"
 import { Frame, Options } from "@spring-keyframes/driver"
-import { Transforms } from "@spring-keyframes/matrix"
 import { createComputedFrame } from "../utils/createComputedFrame"
 import { progress, clamp, mix } from "popmotion"
-import { useLayoutEffect, useRef } from "react"
-
-function rect(ref: React.RefObject<HTMLElement>) {
-  if (!ref.current) return { top: 0, left: 0, right: 0, bottom: 0 }
-
-  const { top, left, right, bottom } = ref.current.getBoundingClientRect()
-  return { top, left, right, bottom }
-}
-
-type Identity = Pick<Transforms, "x" | "y" | "scaleY" | "scaleX" | "scale">
-const identity: Identity = {
-  x: 0,
-  y: 0,
-  scaleX: 1,
-  scaleY: 1,
-  scale: 1,
-}
+import { useLayoutEffect, useEffect } from "react"
+import { identity, Identity, Box } from "../components/Measurements"
+import { useContext } from "react"
+import { SpringContext } from "../components/Measurements"
 
 function frameAddsDistortion(frame: Frame) {
   return "scaleX" in frame || "scaleY" in frame || "scale" in frame || "x" in frame || "y" in frame
@@ -59,78 +46,64 @@ const calcOrigin = (source: AxisTarget, target: AxisTarget): number => {
   return clampProgress(origin)
 }
 
-interface AxisTarget {
-  min: number
-  max: number
-  length: number
-}
-
-interface Target {
-  x: AxisTarget
-  y: AxisTarget
-}
-
 export const useLayoutTransition = (
   driver: Driver,
-  ref: React.RefObject<HTMLElement>,
-  { layout }: Props,
+  box: Box,
+  { layout }: Props & { id: any },
   invertedRef: React.RefObject<HTMLElement>,
   options?: Options
 ) => {
-  const snapshot = useRef<Target | null>(null)
+  const { box: parentBox } = useContext(SpringContext)
 
   useLayoutEffect(() => {
-    if (!ref.current || !layout) return
+    if (!box || !layout) return
 
-    const { top, left, right, bottom } = rect(ref)
     const offset = getTransformDistortion(driver.targetFrame)
 
-    const { from: current } = driver.resolveValues({ base: identity })
-    const { scale = 1 } = current as Required<Transforms>
-    const { x = 0, y = 0, scaleX = scale, scaleY = scale } = current as Required<Transforms>
+    const { target: origin } = box.previous() ?? {}
+    const parent = parentBox?.current() ?? parentBox?.measure()
+    const { target, scale, transform } = box?.current() ?? box.measure(parent)
 
-    const target: Target = {
-      x: { min: left - x + window.scrollX, max: right - x + window.scrollX, length: (right - left) / scaleX },
-      y: { min: top - y + window.scrollY, max: bottom - y + window.scrollY, length: (bottom - top) / scaleY },
-    }
-
-    if (snapshot.current === null) {
-      snapshot.current = target
+    if (!origin) {
       return
     }
 
-    const origin = snapshot.current
     const hasTargetChanged =
       target.y.min !== origin.y.min ||
       target.x.min !== origin.x.min ||
       target.x.length !== origin.x.length ||
       target.y.length !== origin.y.length
 
+    // console.log({ id, hasTargetChanged, origin, target })
     if (!hasTargetChanged) return
 
     const originX = calcOrigin(origin.x, target.x)
     const originY = calcOrigin(origin.y, target.y)
     const transformOrigin = `${originX * 100}% ${originY * 100}% 0`
 
-    snapshot.current = { x: { ...target.x }, y: { ...target.y } }
-
     const invertedDistortion = getTransformDistortion(createComputedFrame(identity, invertedRef))
+    // TODO: allow this to receive an uninverted x/y
+
+    const x = (mix(target.x.min, target.x.max, originX) - mix(origin.x.min, origin.x.max, originX)) * -1 + transform.x
+    const y = (mix(target.y.min, target.y.max, originY) - mix(origin.y.min, origin.y.max, originY)) * -1 + transform.y
     const invertedAnimation = {
       from: {
         scaleX: invertedDistortion.scaleX,
         scaleY: invertedDistortion.scaleY,
+        x: x,
+        y: y,
         transformOrigin,
       },
-      to: { scaleX: offset.scaleX, scaleY: offset.scaleY, transformOrigin },
+      to: { scaleX: offset.scaleX, scaleY: offset.scaleY, x: 0, y: 0, transformOrigin },
     }
 
     driver.animate({
       interaction: Interaction.Layout,
       from: {
-        x: (mix(target.x.min, target.x.max, originX) - mix(origin.x.min, origin.x.max, originX)) * -1 + x,
-        y: (mix(target.y.min, target.y.max, originY) - mix(origin.y.min, origin.y.max, originY)) * -1 + y,
-        scaleX: (origin.x.length * scaleX) / target.x.length,
-        scaleY: (origin.y.length * scaleY) / target.y.length,
+        x: x,
+        y: y,
+        scaleX: (origin.x.length * scale.x) / target.x.length,
+        scaleY: (origin.y.length * scale.y) / target.y.length,
         transformOrigin,
       },
       to: {
@@ -145,4 +118,8 @@ export const useLayoutTransition = (
       options,
     })
   })
+
+  useEffect(() => box.clear())
+
+  return box
 }

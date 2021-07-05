@@ -2,7 +2,7 @@ import { SpringOptions } from "popmotion"
 import * as React from "react"
 
 export type FrameNumber = number
-export type ScaleProperty = "scale" | "scaleX" | "scaleY"
+export type ScaleProperty = "scale" | "scaleX" | "scaleY" | "x" | "y"
 export type CSSProperty = keyof Omit<React.CSSProperties, "transition" | "scale" | "rotate">
 export type CSSFrame = [CSSProperty, number | string]
 export type Keyframe = [FrameNumber, string]
