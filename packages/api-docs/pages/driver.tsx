@@ -40,13 +40,13 @@ export default function Introduction() {
         <h3>Quick Start</h3>
         <TwoColumnCodeBlock code={`yarn add @spring-keyframes/driver`} lang={"null"}>
           <p>Install the driver with your favorite package manager.</p>
-          <p>
+          {/* <p>
             If you are already using{" "}
             <Link href={"/react"}>
               <a>@spring-keyframes/react</a>
             </Link>{" "}
             you can skip this step. The driver is included.
-          </p>
+          </p> */}
         </TwoColumnCodeBlock>
       </div>
       <div id="quick-start">
@@ -70,7 +70,7 @@ export default function Introduction() {
       <div>
         <TwoColumnCodeBlock
           lang={"javascript"}
-          code={`import { driver } from "@spring-keyframes/driver"
+          code={`import { keyframesDriver as driver } from "@spring-keyframes/driver"
 
 const animation = driver(
   { opacity: 0, x: 0, y: 0, scale: 1.2 }, 
@@ -90,7 +90,7 @@ const animation = driver(
 
       <div>
         <TwoColumnCodeBlock
-          code={`import { driver } from "@spring-keyframes/driver"
+          code={`import { keyframesDriver as driver } from "@spring-keyframes/driver"
 
 const { 
   duration,
@@ -107,16 +107,15 @@ const {
             {" "}
             They are the <code>duration</code> the animation should be run; the <code>ease</code> curve that should be
             used if the animation is not inverted; a string for each type of animation the driver can return:{" "}
-            <code>sprung</code>, <code>tweened</code>, and <code>inverted</code>; and finally{" "}
-            <code>resolveVelocity</code>, a function that when given a playtime in milliseconds, returns the approximate
-            velocity at that time.
+            <code>keyframes</code>, and <code>inversion</code>; and finally <code>resolveVelocity</code>, a function
+            that when given a playtime in milliseconds, returns the approximate velocity at that time.
           </p>
         </TwoColumnCodeBlock>
       </div>
       <div>
         <TwoColumnCodeBlock
           lang={"javascript"}
-          code={`import { driver } from "@spring-keyframes/driver"
+          code={`import { keyframesDriver as driver } from "@spring-keyframes/driver"
 
 const { sprung } = driver(...)
 
@@ -128,8 +127,8 @@ ${keyframes
   .join("\n")}
 `}>
           <p>
-            The each of <code>sprung</code>, <code>tweened</code>, and <code>inverted</code> are a strings that can be
-            directly inserted as the value of an <code>@keyframes</code> declaration.
+            The each of <code>keyframes</code>, and <code>inversion</code> are a strings that can be directly inserted
+            as the value of an <code>@keyframes</code> declaration.
           </p>
           <p>
             The result is always the minimum number of frames required to achieve the spring generated from the options.
@@ -143,7 +142,7 @@ ${keyframes
       </div>
       <div>
         <TwoColumnCodeBlock
-          code={`import { driver } from "@spring-keyframes/driver"
+          code={`import { keyframesDriver as driver } from "@spring-keyframes/driver"
 import { css } from "linaria"
 
 const { duration, ease, sprung } = driver(...)
@@ -151,7 +150,7 @@ const { duration, ease, sprung } = driver(...)
 const animated = css\`
   @keyframes spring-in { \${sprung} }
 
-  animation: spring-in \${ease} \${duration}
+  animation: spring-in \${ease} \${duration}ms;
 \``}>
           <p>
             Finally, use the return values from calls to <b>driver</b> to build a <code>@keyframes</code> declaration.
@@ -169,40 +168,7 @@ const animated = css\`
           </p>
         </TwoColumnCodeBlock>
       </div>
-      <div>
-        <TwoColumnCodeBlock
-          code={`import { driver } from "@spring-keyframes/driver"
-import { css } from "linaria"
-
-const { duration, ease, sprung, tweened } = driver(..., {
-  tweened: ["scale"]
-})
-
-const animated = css\`
-  @keyframes spring-in { \${sprung} }
-  @keyframes tween-in { \${tweened} }
-
-  animation: spring-in \${ease} \${duration},
-    tween-in linear \${duration * 0.8}
-\``}>
-          <p>
-            Some animations will include properties that are not animated based on the spring. By default, these
-            properties are <code>opacity</code>, <code>color</code>, <code>background</code>, and{" "}
-            <code>backgroundColor</code>
-          </p>
-          <p>
-            To tween different properties, pass an array of the camel-cased css properties you wish to be tweened when
-            invoking <code>driver</code> as <code>options.tweened</code>.
-          </p>
-          <p>
-            These properties will be tweened with a normal, separate <code>@keyframes</code> animation. If you are
-            animating any of these properties, it's important to include this animation as well. This allows easy
-            control over properties such as <code>duration</code> (often these animations should finish a bit sooner
-            than spring animations, which quickly reach the target value, then oscillate around it), as well as the{" "}
-            <code>animation-timing-function</code>.
-          </p>
-        </TwoColumnCodeBlock>
-      </div>
+      <div></div>
 
       <div id="options">
         <h3>Options</h3>
@@ -243,8 +209,8 @@ const animated = css\`
             Linaria
           </a>{" "}
           or{" "}
-          <a href="https://github.com/seek-oss/treat" rel="external">
-            Treat
+          <a href="https://github.com/seek-oss/vanilla-extract" rel="external">
+            Vanilla-Extract
           </a>
           .
         </p>
@@ -252,17 +218,17 @@ const animated = css\`
       <div>
         <h4>Emotion</h4>
         <TwoColumnCodeBlock
-          code={`import { driver } from "@spring-keyframes/driver"
+          code={`import { keyframesDriver as driver } from "@spring-keyframes/driver"
 import { css, keyframes } from '@emotion/react'
 
-const { duration, ease, sprung } = driver(...)
+const { duration, ease, keyframes } = driver(...)
 
 const spring = keyframes\`
-  \${sprung}
+  \${keyframes}
 \`
 
 const animation = css\`
-  animation: \${spring} \${duration} \${ease};
+  animation: \${spring} \${duration}ms \${ease};
 \``}>
           <p>
             <a href="https://github.com/callstack/linaria" rel="external">
@@ -277,17 +243,17 @@ const animation = css\`
       <div>
         <h4>styled-components</h4>
         <TwoColumnCodeBlock
-          code={`import { driver } from "@spring-keyframes/driver"
+          code={`import { keyframesDriver as driver } from "@spring-keyframes/driver"
 import styled, { keyframes } from 'styled-components'
 
-const { duration, ease, sprung } = driver(...)
+const { duration, ease, keyframes } = driver(...)
 
 const spring = keyframes\`
-  \${sprung}
+  \${keyframes}
 \`
 
 const AnimatedButton = styled.div\`
-  animation: \${duration} \${spring} \${ease};
+  animation: \${spring} \${duration}ms \${ease};
 \``}>
           <p>
             <a href="https://github.com/callstack/linaria" rel="external">
@@ -304,15 +270,15 @@ const AnimatedButton = styled.div\`
       <div>
         <h4>Linaria</h4>
         <TwoColumnCodeBlock
-          code={`import { driver } from "@spring-keyframes/driver"
+          code={`import { keyframesDriver as driver } from "@spring-keyframes/driver"
 import { css } from "linaria"
 
-const { duration, ease, sprung } = driver(...)
+const { duration, ease, keyframes } = driver(...)
 
 export const animated = css\`
-  @keyframes spring-in { \${sprung} }
+  @keyframes spring-in { \${keyframes} }
 
-  animation: spring-in \${ease} \${duration}
+  animation: spring-in \${ease} \${duration}ms;
 \``}>
           <p>
             <a href="https://github.com/callstack/linaria" rel="external">
@@ -324,25 +290,37 @@ export const animated = css\`
         </TwoColumnCodeBlock>
       </div>
       <div>
-        <h4>Treat</h4>
+        <h4>Vanilla-Extract</h4>
         <TwoColumnCodeBlock
-          code={`import { driver } from "@spring-keyframes/driver"
-import { style } from 'treat'
+          code={`import { waapiDriver as driver, Keyframe } from "@spring-keyframes/driver"
+import { keyframes, style } from '@vanilla-extract/css';
 
-const { duration, ease, sprung } = driver(...)
+const { duration, ease, keyframes } = driver(...)
+
+function createVanillaExtractKeyframes(keyframes: Keyframe[]) {
+  const result = {}
+
+  for (keyframe of keyframes) {
+    const { offset, ...frame } = keyframe
+    result[\`\${offset * 100}%\`] = frame
+  }
+
+  return result
+}
+
+const spring = keyframes(createVanillaExtractKeyframes(keyframes))
 
 export const animation = style({
-  '@keyframes': sprung,
-  animationTimingFunction: ease,
-  animationDuration: duration,
+  animation: \`\${duration}ms \${spring}\ \${ease}\`
 })`}>
           <p>
             <a href="https://github.com/callstack/linaria" rel="external">
-              Treat
+              Vanilla-Extract
             </a>{" "}
-            automatically creates a unique name for any <code>'@keyframes'</code> properties and assigns it as the
-            declarations <code>animation-name</code>, allowing you to simply specify the keyframes animation, the timing
-            function, and the duration.
+            uses a special syntax for keyframes, so you need to do a little more work to integrate the output of driver.
+            Luckily this transformation happens at build time, so there is no cost to your users. You can use the
+            version of the driver intended to support the WAAPI spec, and create the shape vanilla-extract expects
+            manually.
           </p>
         </TwoColumnCodeBlock>
       </div>
