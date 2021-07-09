@@ -44,10 +44,15 @@ export const Animate = React.forwardRef<HTMLElement, Props>(function (
   const box = useConstant(() => new Box(readWriteRef, driver))
   const context = useConstant(() => ({ box, invertedRef }))
 
-  useAnimatedState(driver, hookProps, transition)
-  useWhileInteraction(driver, readWriteRef, hookProps, transition)
-  useAnimatedPresence(driver, hookProps, transition)
-  useLayoutTransition(driver, box, hookProps, invertedRef, transition)
+  const transitionWithDefaults = {
+    ...transition,
+    tweened: [...(transition?.tweened ?? []), "opacity"],
+  }
+
+  useAnimatedState(driver, hookProps, transitionWithDefaults)
+  useWhileInteraction(driver, readWriteRef, hookProps, transitionWithDefaults)
+  useAnimatedPresence(driver, hookProps, transitionWithDefaults)
+  useLayoutTransition(driver, box, hookProps, invertedRef, transitionWithDefaults)
 
   //style={addFrameStyle(props.style, props.animate)}
 

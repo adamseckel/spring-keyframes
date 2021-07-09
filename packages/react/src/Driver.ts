@@ -157,7 +157,7 @@ export class Driver {
       inversionTween?: Keyframe[]
     } = {}
 
-    let duration = options.duration ?? 0
+    let duration = options.duration ?? 1000
 
     if (sprung) {
       const animation = driver(sprung.from, sprung.to, {
