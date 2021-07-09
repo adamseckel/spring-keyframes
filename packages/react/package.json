@@ -1,6 +1,6 @@
 {
   "name": "@spring-keyframes/react",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "main": "dist/index.js",
   "module": "dist/es/index.js",
   "types": "dist/index.d.ts",
@@ -11,8 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "@emotion/hash": "^0.7.4",
-    "@spring-keyframes/driver": "^0.0.48",
-    "@spring-keyframes/matrix": "^0.0.48",
+    "@spring-keyframes/driver": "^0.0.49",
+    "@spring-keyframes/matrix": "^0.0.49",
     "framer-motion": "^4.1.17",
     "popmotion": "^9.3.6",
     "tslib": "^2.1.0",
