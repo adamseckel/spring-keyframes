@@ -15,6 +15,7 @@ export interface InvertedAnimation {
 }
 
 export interface Options extends Omit<SpringOptions, "from" | "to"> {
+  tweened?: string[]
   withInversion?: boolean
   invertedAnimation?: InvertedAnimation
 }

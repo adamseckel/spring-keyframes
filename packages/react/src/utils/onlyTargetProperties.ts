@@ -14,7 +14,8 @@ export function onlyTargetProperties(
   const properties = Object.keys(target)
 
   for (const property of properties) {
-    const value = isCSSStyleDeclaration(current) ? current.getPropertyValue(property) : current[property]
+    let value = isCSSStyleDeclaration(current) ? current.getPropertyValue(property) : current[property]
+    if (value === "none" && isTransform(property)) value = identity[property]
     if (isTransform(property) && transforms && !isUndefined(transforms[property])) {
       newFrame[property] = transforms[property]
     } else if (isUndefined(value)) {
