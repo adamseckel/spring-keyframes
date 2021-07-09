@@ -7,7 +7,7 @@ import { createComputedFrame } from "./utils/createComputedFrame"
 import { getNextStackInteraction } from "./utils/getNextStackInteraction"
 import { resolveFrame } from "./utils/resolveFrame"
 import { resolveBase } from "./utils/resolveBase"
-import { waapiDriver as driver } from "@spring-keyframes/driver"
+import { waapiDriver as driver, EASE as ease } from "@spring-keyframes/driver"
 import { filterTweenedProperties } from "./utils/filterTweenedProperties"
 
 // const interactionFillMap: Record<Interaction, React.CSSProperties["animationFillMode"]> = {
@@ -25,11 +25,11 @@ const requiresInversion = (interaction: Interaction, options?: Transition): bool
   interaction === Interaction.Layout ? true : !!options?.withInversion
 const getVelocity = (isAnimating: boolean, animationTime: number, resolveVelocity?: (time: number) => number) =>
   isAnimating && resolveVelocity ? resolveVelocity(animationTime) : 0
-// const timingFunction = (isLinear: boolean, ease: string, sprung: boolean) => {
-//   if (isLinear) return "linear"
-//   if (sprung && !isLinear) return "cubic-bezier(1,1,0,0)"
-//   return ease
-// }
+const timingFunction = (isLinear: boolean, ease: string, sprung: boolean) => {
+  if (isLinear) return "linear"
+  if (sprung && !isLinear) return "cubic-bezier(1,1,0,0)"
+  return ease
+}
 
 interface State {
   start: number
@@ -191,7 +191,10 @@ export class Driver {
       const effects = allAnimations[animationType as keyof typeof allAnimations]
       if (!effects) continue
 
-      const animation = element.animate(effects, duration)
+      const animation = element.animate(effects, {
+        duration,
+        easing: timingFunction(withInversion, ease, animationType === "sprung"),
+      })
       if (!animation) continue
 
       animations.push(animation)
