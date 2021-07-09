@@ -74,7 +74,6 @@ export const useLayoutTransition = (
       target.x.length !== origin.x.length ||
       target.y.length !== origin.y.length
 
-    // console.log({ id, hasTargetChanged, origin, target })
     if (!hasTargetChanged) return
 
     const originX = calcOrigin(origin.x, target.x)
@@ -82,16 +81,12 @@ export const useLayoutTransition = (
     const transformOrigin = `${originX * 100}% ${originY * 100}% 0`
 
     const invertedDistortion = getTransformDistortion(createComputedFrame(identity, invertedRef))
-    // TODO: allow this to receive an uninverted x/y
-
     const x = (mix(target.x.min, target.x.max, originX) - mix(origin.x.min, origin.x.max, originX)) * -1 + transform.x
     const y = (mix(target.y.min, target.y.max, originY) - mix(origin.y.min, origin.y.max, originY)) * -1 + transform.y
     const invertedAnimation = {
       from: {
         scaleX: invertedDistortion.scaleX,
         scaleY: invertedDistortion.scaleY,
-        // x: x,
-        // y: y,
         transformOrigin: "50% 50% 0",
       },
       to: { scaleX: offset.scaleX, scaleY: offset.scaleY, transformOrigin: "50% 50% 0" },
