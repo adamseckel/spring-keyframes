@@ -72,12 +72,12 @@ const items: Item[] = [
     ],
   },
   {
-    title: "@spring-keyframes/from-matrix",
-    slug: "/from-matrix",
+    title: "@spring-keyframes/matrix",
+    slug: "/matrix",
     items: [
-      { title: "Quick Start", slug: "/from-matrix#quick-start" },
-      { title: "Usage", slug: "/from-matrix#usage" },
-      { title: "Acknowledgements", slug: "/from-matrix#acknowledgments" },
+      { title: "Quick Start", slug: "/matrix#quick-start" },
+      { title: "Usage", slug: "/matrix#usage" },
+      { title: "Acknowledgements", slug: "/matrix#acknowledgments" },
     ],
   },
   // {
@@ -104,7 +104,7 @@ const cssRule = `
 
 .spring-up {
     animation-name: sprung, tweened;
-    animation-duration: ${slideIn.duration};
+    animation-duration: ${slideIn.duration}ms;
     animation-timing-function: ${slideIn.ease};
     animation-fill-mode: both;
     display: block;
@@ -124,7 +124,7 @@ const cssRule = `
   }
   
   .scale-in {
-    animation: scale-in ${scaleIn.duration} ${scaleIn.ease} both, scale-in-fade 500ms ${scaleIn.ease} both;
+    animation: scale-in ${scaleIn.duration}ms ${scaleIn.ease} both, scale-in-fade 500ms ${scaleIn.ease} both;
     display: block;
   }
 `

@@ -4,8 +4,8 @@ import { TwoColumnCodeBlock } from "../components/CodeBlock"
 import Head from "next/head"
 import Link from "next/link"
 
-import { driver } from "@spring-keyframes/driver"
-const { sprung } = driver({ scale: 0 }, { scale: 1 })
+import { keyframesDriver as driver } from "@spring-keyframes/driver"
+const { keyframes } = driver({ scale: 0 }, { scale: 1 })
 
 export default function Introduction() {
   return (
@@ -27,9 +27,11 @@ export default function Introduction() {
           's physics-based spring algorithm.
         </p>
         <p>
-          Gzipped, and excluding <code>tslib</code>, <b>@spring-keyframes/driver</b> comes in at{" "}
+          Gzipped, <b>@spring-keyframes/driver</b> comes in at{" "}
           <b>
-            <code>6.8kb</code>
+            <a href="https://bundlephobia.com/package/@spring-keyframes/driver@0.0.52" rel="external">
+              <code>3.1kb</code>
+            </a>
           </b>
           .
         </p>
@@ -119,7 +121,7 @@ const {
 const { sprung } = driver(...)
 
 // Returns: 
-${sprung
+${keyframes
   .split("\n")
   .filter((v) => v !== "")
   .map((l) => `// ${l}`)

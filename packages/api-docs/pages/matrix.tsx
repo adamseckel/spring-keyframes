@@ -7,12 +7,12 @@ export default function Introduction() {
   return (
     <>
       <Head>
-        <title>Spring Keyframes Docs | From-Matrix</title>
+        <title>Spring Keyframes Docs | Matrix</title>
       </Head>
       <div id="driver">
-        <h2>@spring-keyframes/from-matrix</h2>
+        <h2>@spring-keyframes/matrix</h2>
         <p>
-          <b>from-matrix</b> is a plain javascript function that transforms a{" "}
+          <b>matrix</b> is a plain javascript function that transforms a{" "}
           <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/matrix3d()" rel="external">
             transform matrix
           </a>{" "}
@@ -23,17 +23,19 @@ export default function Introduction() {
           rotation, or transforms, without sacrificing on bundle size, simply from querying the DOM.
         </p>
         <p>
-          Gzipped, and excluding <code>tslib</code>, <b>@spring-keyframes/from-matrix</b> comes in at{" "}
+          Gzipped, <b>@spring-keyframes/matrix</b> comes in at{" "}
           <b>
-            <code>2.54kb</code>
+            <a href="https://bundlephobia.com/package/@spring-keyframes/matrix" rel="external">
+              <code>1.4kb</code>
+            </a>
           </b>
           .
         </p>
       </div>
       <div id="quick-start">
         <h3>Quick Start</h3>
-        <TwoColumnCodeBlock code={`yarn add @spring-keyframes/from-matrix`} lang={"null"}>
-          <p>Install from-matrix with your favorite package manager.</p>
+        <TwoColumnCodeBlock code={`yarn add @spring-keyframes/matrix`} lang={"null"}>
+          <p>Install matrix with your favorite package manager.</p>
         </TwoColumnCodeBlock>
       </div>
       <div id="usage">
@@ -46,7 +48,7 @@ export default function Introduction() {
       <div>
         <TwoColumnCodeBlock
           lang={"javascript"}
-          code={`import { fromMatrix } from "@spring-keyframes/from-matrix"
+          code={`import { fromMatrix } from "@spring-keyframes/matrix"
 const element = document.querySelector('#button')
 const style = window.getComputedStyle(element)
 const transforms = fromMatrix(style.transform)`}>
@@ -87,7 +89,7 @@ const transforms = fromMatrix(style.transform)`}>
       <div id="acknowledgements">
         <h3>Acknowledgements</h3>
         <p>
-          <b>@spring-keyframes/from-matrix</b> relies on the incredible work of{" "}
+          <b>@spring-keyframes/matrix</b> relies on the incredible work of{" "}
           <a rel="external" href="https://github.com/stassop">
             Stanislav Sopov
           </a>{" "}
@@ -105,9 +107,9 @@ const transforms = fromMatrix(style.transform)`}>
           .
         </p>
         <p>
-          <b>@spring-keyframes/from-matrix</b> only contribution is to cut down the size by removing unused functions,
-          and refactor both of the above libraries to support typescript definitions. This is what allows{" "}
-          <b>@spring-keyframes/from-matrix</b> to achieve a bundle size of <code>2.54kb</code>, whereas together{" "}
+          <b>@spring-keyframes/matrix</b> only contribution is to cut down the size by removing unused functions, and
+          refactor both of the above libraries to support typescript definitions. This is what allows{" "}
+          <b>@spring-keyframes/matrix</b> to achieve a bundle size of <code>1.4kb</code>, whereas together{" "}
           <a rel="external" href="https://github.com/stassop/unmatrix">
             unmatrix
           </a>{" "}

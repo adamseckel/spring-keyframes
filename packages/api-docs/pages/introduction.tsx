@@ -29,14 +29,14 @@ export default function Introduction() {
           required to animate a set of values from a to b, based on whatever spring settings it is configured with.
         </p>
         <p>
-          This output can be used to generate static keyframes that can be compiled at build time when paired with a
+          This output can be used to generate static keyframes that can be generated at build time when paired with a
           static css-in-js tool like{" "}
           <a href="https://github.com/callstack/linaria" rel="external">
             Linaria
           </a>{" "}
           or{" "}
-          <a href="https://github.com/seek-oss/treat" rel="external">
-            Treat
+          <a href="https://github.com/seek-oss/vanilla-extract" rel="external">
+            Vanilla Extract
           </a>
           , or at runtime when paired with other tools like{" "}
           <a href="https://github.com/emotion-js/emotion" rel="external">
@@ -44,18 +44,20 @@ export default function Introduction() {
           </a>{" "}
           while only adding{" "}
           <b>
-            <code>6.8kb</code>
+            <a href="https://bundlephobia.com/package/@spring-keyframes/driver@0.0.52" rel="external">
+              <code>3.1kb</code>
+            </a>
           </b>{" "}
           of bundle-size.
         </p>
-        <p>
+        {/* <p>
           Finally this output can also be used to generate animations "just-in-time". It's this ability that powers{" "}
           <Link href="/react">
             <a>@spring-keyframes/react</a>
           </Link>
           .
-        </p>
-        <p>
+        </p> */}
+        {/* <p>
           None of this would be possible without{" "}
           <Link href="/from-matrix">
             <a>@spring-keyframes/from-matrix</a>
@@ -63,10 +65,10 @@ export default function Introduction() {
           which delivers the ability to extract individual transform function values from a transform matrix string,
           while only adding{" "}
           <b>
-            <code>2.54kb</code>
+            <code>1.4kb</code>
           </b>{" "}
           to the bundle size, allowing animations to be smoothly interrupted.
-        </p>
+        </p> */}
       </div>
       <div id="benefits">
         <h3>Benefits</h3>
@@ -83,13 +85,13 @@ export default function Introduction() {
           <Link href="/driver">
             <a>@spring-keyframes/driver</a>
           </Link>{" "}
-          and{" "}
+          {/* and{" "}
           <Link href="/react">
             <a>@spring-keyframes/react</a>
-          </Link>{" "}
-          excel in situations where the product demands smooth animations even when the web page is busy, something that
-          other animation libraries like <b>framer-motion</b> and <b>react-spring</b> cannot accomplish due to being
-          dependent on the browser having the capacity to schedule an animation frame every 16ms.
+          </Link>{" "} */}
+          excels in situations where the product demands smooth animations even when the web page is busy, something
+          that other animation libraries like <b>framer-motion</b> and <b>react-spring</b> cannot accomplish due to
+          being dependent on the browser having the capacity to schedule an animation frame every 16ms.
         </p>
         <p>
           <Link href="/driver">
@@ -101,7 +103,7 @@ export default function Introduction() {
           animation on anything from a static site, to a PWA. Even when the animation plays, it will have no impact on
           the rest of the site or app, regardless of how much stress the browser is already under.
         </p>
-        <p>
+        {/* <p>
           <Link href="/driver">
             <a> @spring-keyframes/react</a>
           </Link>{" "}
@@ -111,7 +113,7 @@ export default function Introduction() {
           require an animation to play when a site loads when the browser is generally busy parsing and executing a
           javascript bundle, or any other time that an animation will be performed when other cpu-intensive tasks are
           being executed.
-        </p>
+        </p> */}
       </div>
     </>
   )
