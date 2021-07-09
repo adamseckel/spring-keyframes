@@ -3,11 +3,14 @@ import type { Transforms } from "@spring-keyframes/matrix"
 
 import { fromMatrix } from "@spring-keyframes/matrix"
 import { onlyTargetProperties } from "./onlyTargetProperties"
-import computedStyle from "./computedStyle"
+import computedStyle, { isCSSStyleDeclaration } from "./computedStyle"
 
-function collectTransforms(currentStyle: CSSStyleDeclaration): Transforms | null {
-  if (!currentStyle.transform || currentStyle.transform === "none") return null
-  return fromMatrix(currentStyle.transform)
+function collectTransforms(currentStyle: CSSStyleDeclaration | Frame): Transforms | null {
+  const transform = isCSSStyleDeclaration(currentStyle)
+    ? currentStyle.getPropertyValue("transform")
+    : (currentStyle.transform as string | undefined)
+  if (!transform || transform === "none") return null
+  return fromMatrix(transform)
 }
 
 export function createComputedFrame(targetFrame?: Frame, ref?: React.RefObject<HTMLElement>): Frame {
@@ -18,8 +21,9 @@ export function createComputedFrame(targetFrame?: Frame, ref?: React.RefObject<H
   const currentStyle = computedStyle(ref.current)
   const transforms = collectTransforms(currentStyle)
 
-  if (!targetFrame)
-    return { ...currentStyle, ...transforms, transformOrigin: "50% 50% 0", transform: undefined } as Frame
+  if (!targetFrame) {
+    return ({ ...currentStyle, ...transforms, transformOrigin: "50% 50% 0", transform: undefined } as unknown) as Frame
+  }
 
-  return onlyTargetProperties(targetFrame, currentStyle as Frame, transforms)
+  return onlyTargetProperties(targetFrame, currentStyle, transforms)
 }

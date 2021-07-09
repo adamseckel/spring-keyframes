@@ -2,7 +2,7 @@ import Head from "next/head"
 import * as React from "react"
 import { Layout } from "../components/Layout"
 import { Item } from "../components/Navigation"
-import { driver } from "@spring-keyframes/driver"
+import { keyframesDriver as driver } from "@spring-keyframes/driver"
 import "../styles/globals.css"
 import pkg from "../../driver/package.json"
 
@@ -96,18 +96,10 @@ const items: Item[] = [
 
 const slideIn = driver({ y: 90 }, { y: 0 }, { stiffness: 90, damping: 10, restDelta: 0.001 })
 
-const scaleIn = driver(
-  { scale: 0.7, opacity: 0 },
-  { scale: 1, opacity: 1 },
-  { stiffness: 150, damping: 10, restDelta: 0.001 }
-)
+const scaleIn = driver({ scale: 0.7 }, { scale: 1 }, { stiffness: 150, damping: 10, restDelta: 0.001 })
 const cssRule = `
 @keyframes sprung { 
-  ${slideIn.sprung} 
-}
-
-@keyframes tweened { 
-  ${slideIn.tweened} 
+  ${slideIn.keyframes} 
 }
 
 .spring-up {
@@ -119,11 +111,16 @@ const cssRule = `
   }
 
   @keyframes scale-in { 
-    ${scaleIn.sprung} 
+    ${scaleIn.keyframes} 
   }
   
   @keyframes scale-in-fade { 
-    ${scaleIn.tweened} 
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
   
   .scale-in {

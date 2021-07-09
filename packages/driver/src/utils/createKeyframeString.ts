@@ -1,36 +1,27 @@
-import type { Keyframe, Property, Frame } from "./types"
-import { createKeyframe } from "./createKeyframe"
+import * as Properties from "./properties"
 
-export const createKeyframeString = (percent: number, value: string) => `${percent}% {${value};}`
+function camelCaseToDash(property: string) {
+  return property.replace(/([a-zA-Z])(?=[A-Z])/g, "$1-").toLowerCase()
+}
 
-export function createSprungKeyframes(
-  keyframes: Keyframe[],
-  invertedKeyframes: Keyframe[],
-  toFrame: (value: number) => number
-): {
-  sprung: string | undefined
-  inverted: string | undefined
-} {
-  let sprung = keyframes.length ? "" : undefined
-  let inverted = invertedKeyframes.length ? "" : undefined
+function unitForProp(prop: string) {
+  return Properties.unitless.includes(prop) ? "" : "px"
+}
 
-  for (let index = 0; index < keyframes.length; index++) {
-    const [frame, value] = keyframes[index]
+const createCSSDeclaration = (property: string, value: string | number) =>
+  `${camelCaseToDash(property)}: ${value}${unitForProp(property)}`
 
-    const percent = Math.round(toFrame(frame) * 10000) / 10000
-    sprung += createKeyframeString(percent, value) + "\n"
-
-    if (invertedKeyframes.length) inverted += createKeyframeString(percent, invertedKeyframes[index][1]) + "\n"
+function createKeyframeValue(style: Record<string, any>) {
+  const string = []
+  for (const prop in style) {
+    if (prop === "offset") continue
+    string.push(createCSSDeclaration(prop, style[prop]))
   }
-
-  return { sprung, inverted: invertedKeyframes ? inverted : undefined }
+  return string.join("; ")
 }
 
-export function createTweenedKeyframes(from: Frame, to: Frame, tweened: Property[]) {
-  const start = createKeyframe(from, to, 0, 0, tweened, true)
-  const end = createKeyframe(from, to, 1, 1, tweened, true)
-  if (start && end)
-    return { tweened: `${createKeyframeString(0, start[1])}${"\n"}${createKeyframeString(100, end[1])}` }
-
-  return { tweened: undefined }
-}
+export const createKeyframeString = (
+  offset: number,
+  style: Record<string, any>,
+  interpolate: (value: number) => number
+) => `${Math.round(interpolate(offset) * 10000) / 100}% {${createKeyframeValue(style)};}`

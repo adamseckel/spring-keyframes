@@ -90,11 +90,11 @@ export const useLayoutTransition = (
       from: {
         scaleX: invertedDistortion.scaleX,
         scaleY: invertedDistortion.scaleY,
-        x: x,
-        y: y,
-        transformOrigin,
+        // x: x,
+        // y: y,
+        transformOrigin: "50% 50% 0",
       },
-      to: { scaleX: offset.scaleX, scaleY: offset.scaleY, x: 0, y: 0, transformOrigin },
+      to: { scaleX: offset.scaleX, scaleY: offset.scaleY, transformOrigin: "50% 50% 0" },
     }
 
     driver.animate({

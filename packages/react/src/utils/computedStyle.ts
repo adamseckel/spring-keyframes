@@ -3,3 +3,8 @@ export default function computedStyle(element: Element) {
   // our short hand transforms.
   return Object.assign({}, window.getComputedStyle(element), { x: undefined, y: undefined })
 }
+
+const CSSStyleDeclarationKey = "getPropertyValue"
+export function isCSSStyleDeclaration(value: object): value is CSSStyleDeclaration {
+  return CSSStyleDeclarationKey in value
+}

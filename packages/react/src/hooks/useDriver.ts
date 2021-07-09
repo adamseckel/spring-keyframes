@@ -1,45 +1,23 @@
-import { KeyframesContext } from "../components/Keyframes"
 import { Driver } from "../Driver"
 import { useConstant } from "./useConstant"
-import { useLayoutEffect, useEffect, useContext, useRef } from "react"
+import { useLayoutEffect, useEffect, useRef, useCallback } from "react"
 import { usePresence } from "framer-motion"
-
-const createAnimation = (ref: React.RefObject<HTMLElement>, invertedRef?: React.RefObject<HTMLElement>) => (
-  animations: string[],
-  inversion: string | false | undefined
-) => {
-  if (!ref.current) return
-  ref.current.style.animation = animations.join(", ")
-  if (!invertedRef?.current || !inversion) return
-  invertedRef.current.style.animation = inversion
-}
 
 export function useDriver(
   ref: React.RefObject<HTMLElement>,
   callback?: () => void,
-  invertedRef?: React.RefObject<HTMLElement>
+  _invertedRef?: React.RefObject<HTMLElement>
 ): Driver {
-  const keyframes = useContext(KeyframesContext)
   const [isPresent, safeToRemove] = usePresence()
-  const driver = useConstant(() => new Driver(ref, keyframes, createAnimation(ref, invertedRef)))
   const remove = useRef(safeToRemove)
-
-  const onAnimationEnd = ({ animationName }: { animationName: string }) => {
-    if (!ref.current) return
-    if (animationName !== driver.animationName) return
-
-    driver.reset()
-
-    if (callback) callback()
+  const onComplete = useCallback(() => {
     remove.current?.()
-  }
+    callback?.()
+  }, [])
+  const driver = useConstant(() => new Driver(ref, onComplete, _invertedRef))
 
   useEffect(() => {
-    ref.current?.addEventListener("animationend", onAnimationEnd)
-    return () => {
-      ref.current?.removeEventListener("animationend", onAnimationEnd)
-      remove.current?.()
-    }
+    return () => remove.current?.()
   }, [])
 
   useEffect(() => {
