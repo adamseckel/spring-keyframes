@@ -2,7 +2,6 @@ import * as React from "react"
 
 import { TwoColumnCodeBlock } from "../components/CodeBlock"
 import Head from "next/head"
-import Link from "next/link"
 
 import { keyframesDriver as driver } from "@spring-keyframes/driver"
 const { keyframes } = driver({ scale: 0 }, { scale: 1 })
