@@ -1,42 +1,41 @@
 import type * as React from "react"
-import type { Frame, InvertedAnimation } from "@spring-keyframes/driver"
+import type { Frame, InvertedAnimation, Keyframe } from "@spring-keyframes/driver"
 import type { Stack, Transition } from "./types"
 
-import { Keyframes } from "../src/components/Keyframes"
 import { Interaction, interactionPriority } from "./utils/Interaction"
 import { createComputedFrame } from "./utils/createComputedFrame"
 import { getNextStackInteraction } from "./utils/getNextStackInteraction"
 import { resolveFrame } from "./utils/resolveFrame"
 import { resolveBase } from "./utils/resolveBase"
-import { driver } from "@spring-keyframes/driver"
+import { waapiDriver as driver } from "@spring-keyframes/driver"
+import { filterTweenedProperties } from "./utils/filterTweenedProperties"
 
-const interactionFillMap: Record<Interaction, React.CSSProperties["animationFillMode"]> = {
-  [Interaction.Identity]: "none",
-  [Interaction.None]: "none",
-  [Interaction.Mount]: "backwards",
-  [Interaction.Animate]: "forwards",
-  [Interaction.Layout]: "none",
-  [Interaction.Hover]: "forwards",
-  [Interaction.Press]: "forwards",
-  [Interaction.Exit]: "forwards",
-}
+// const interactionFillMap: Record<Interaction, React.CSSProperties["animationFillMode"]> = {
+//   [Interaction.Identity]: "none",
+//   [Interaction.None]: "none",
+//   [Interaction.Mount]: "backwards",
+//   [Interaction.Animate]: "forwards",
+//   [Interaction.Layout]: "none",
+//   [Interaction.Hover]: "forwards",
+//   [Interaction.Press]: "forwards",
+//   [Interaction.Exit]: "forwards",
+// }
 
 const requiresInversion = (interaction: Interaction, options?: Transition): boolean =>
   interaction === Interaction.Layout ? true : !!options?.withInversion
-const getAnimationTime = (startTime: number) => performance.now() - startTime
 const getVelocity = (isAnimating: boolean, animationTime: number, resolveVelocity?: (time: number) => number) =>
   isAnimating && resolveVelocity ? resolveVelocity(animationTime) : 0
-const timingFunction = (isLinear: boolean, ease: string, sprung: boolean) => {
-  if (isLinear) return "linear"
-  if (sprung && !isLinear) return "cubic-bezier(1,1,0,0)"
-  return ease
-}
+// const timingFunction = (isLinear: boolean, ease: string, sprung: boolean) => {
+//   if (isLinear) return "linear"
+//   if (sprung && !isLinear) return "cubic-bezier(1,1,0,0)"
+//   return ease
+// }
 
 interface State {
   start: number
-  animation: string | null
-  animations: string[]
-  isAnimating: boolean
+  leadAnimation: Animation | null
+  duration: null | number
+  animations: Animation[]
   isInverted: boolean
   lastInteraction: Interaction
   lastResolvedFrame?: Frame
@@ -56,29 +55,28 @@ export interface CreateAnimation {
   from?: Frame
   options?: Transition
   invertedAnimation?: InvertedAnimation
-  withDelay?: boolean
+  _withDelay?: boolean
 }
 
 export class Driver {
   constructor(
     private readonly ref: React.RefObject<HTMLElement>,
-    private readonly keyframes: Keyframes,
-    private readonly createAnimation: (animations: string[], inversion: string | false | undefined) => void
+    private readonly onComplete: () => void,
+    private readonly invertedRef?: React.RefObject<HTMLElement>
   ) {}
 
   private state: State = {
-    isAnimating: false,
     isInverted: false,
     start: 0,
-    animation: null,
+    leadAnimation: null,
     animations: [],
     lastInteraction: Interaction.Identity,
     stack: new Map(),
+    duration: null,
   }
 
   private resolveInteraction(candidate: Interaction): Interaction {
     const nextInteraction = getNextStackInteraction(candidate, this.state.stack, this.state.lastInteraction)
-    // console.log({ nextInteraction })
 
     if (this.state.lastInteraction && nextInteraction >= this.state.lastInteraction) {
       return nextInteraction
@@ -99,29 +97,22 @@ export class Driver {
     return this.state.lastResolvedFrame
   }
 
-  get animationName() {
-    return this.state.animation
-  }
-
   init = () => {
     if (this.state.lastInteraction !== Interaction.Identity) return
     this.state.stack?.set(Interaction.Identity, createComputedFrame(undefined, this.ref))
   }
 
-  reset = () => {
-    this.state.isAnimating = false
-    this.state.start = 0
-    this.state.isInverted = false
-    this.keyframes.flush(this.state.animations)
-  }
-
   resolveValues = ({ from, to, base }: { from?: Frame; to?: Frame; base?: Frame }): ResolvedValues => {
     if (!this.ref.current) return { from: { scale: 1 }, to: { scale: 1 }, velocity: 0 }
 
-    const { isAnimating, start, resolveVelocity } = this.state
+    const { resolveVelocity } = this.state
     const identity = this.state.stack?.get(Interaction.Identity)
-    const time = isAnimating ? getAnimationTime(start) : 0
-    const velocity = getVelocity(isAnimating, time, resolveVelocity)
+
+    const currentTime =
+      (this.state.leadAnimation && this.state.leadAnimation.currentTime && this.state.leadAnimation.currentTime) ?? 0
+
+    const isAnimating = currentTime > 0
+    const velocity = getVelocity(isAnimating, this.state.duration ?? 0 - currentTime, resolveVelocity)
 
     return resolveFrame(
       this.ref,
@@ -133,7 +124,10 @@ export class Driver {
     )
   }
 
-  animate = ({ to, from, interaction, invertedAnimation, options = {}, withDelay }: CreateAnimation): void => {
+  animate = ({ to, from, interaction, invertedAnimation, options = {} }: CreateAnimation): void => {
+    if (this.state.animations.length)
+      console.log("interupt", this.state.leadAnimation?.currentTime, this.state.duration)
+
     const nextInteraction = this.resolveInteraction(interaction)
     const withInversion = requiresInversion(interaction, options)
     const base =
@@ -142,61 +136,81 @@ export class Driver {
         : resolveBase(nextInteraction, this.state.stack)
 
     const { from: resolvedFrom, to: resolvedTo, velocity } = this.resolveValues({ from, to, base })
-    // console.log({ interaction, nextInteraction, base, from, resolvedFrom, to, resolvedTo }, this.state)
-    const delay = options.delay && withDelay ? `${options.delay}ms` : "0ms"
-    const fill = interactionFillMap[nextInteraction]
-    const animation = driver(resolvedFrom, resolvedTo, {
-      ...options,
-      velocity,
-      withInversion,
-      invertedAnimation,
-    })
-    const allAnimations = [animation.sprung, animation.tweened, animation.inverted]
-    const animationNames: string[] = []
-    const animations = []
-    let inversion: string | undefined = undefined
 
-    const timestamp = performance?.now() ?? new Date().getTime()
-    const key = Math.random().toString(36).substring(5)
-    for (let index = 0; index < allAnimations.length; index++) {
-      const keyframes = allAnimations[index]
-      if (!keyframes) continue
+    const { sprung, tweened } = filterTweenedProperties(resolvedFrom, resolvedTo, options.tweened)
 
-      const name = `s-${key}-${index}-${interaction}`
-
-      const string = `${name} ${timingFunction(withInversion, animation.ease, index !== 1)} ${
-        animation.duration
-      } ${delay} 1 ${fill}`
-
-      animationNames.push(name)
-
-      this.keyframes.create(name, keyframes)
-
-      if (index === 2) {
-        inversion = string
-        continue
-      }
-
-      animations.push(string)
+    let invertedTween: Keyframe[] | undefined = undefined
+    if (invertedAnimation) {
+      const result = filterTweenedProperties(invertedAnimation.from, invertedAnimation.to)
+      if (result.sprung) invertedAnimation = result.sprung
+      if (result.tweened) invertedTween = [result.tweened.from, result.tweened.to]
     }
 
-    this.state.resolveVelocity = animation.resolveVelocity
+    console.log(sprung, tweened)
+    // const delay = options.delay && withDelay ? `${options.delay}ms` : "0ms"
+    // const fill = interactionFillMap[nextInteraction]
 
-    this.createAnimation(animations, withInversion && inversion)
+    const allAnimations: {
+      sprung?: Keyframe[]
+      inversion?: Keyframe[]
+      tween?: Keyframe[]
+      inversionTween?: Keyframe[]
+    } = {}
 
-    this.state.start = timestamp
-    this.state.animation = animationNames[0]
+    let duration = options.duration ?? 0
+
+    if (sprung) {
+      const animation = driver(sprung.from, sprung.to, {
+        ...options,
+        velocity,
+        withInversion,
+        invertedAnimation,
+      })
+
+      duration = animation.duration
+
+      if (animation.keyframes) allAnimations.sprung = animation.keyframes
+      if (animation.inversions) allAnimations.inversion = animation.inversions
+      this.state.resolveVelocity = animation.resolveVelocity
+    }
+
+    console.log(allAnimations)
+
+    if (tweened) allAnimations.tween = [tweened.from, tweened.to]
+    if (invertedTween) allAnimations.inversionTween = invertedTween
+
+    const animations: Animation[] = []
+    for (const animationType in allAnimations) {
+      const element =
+        animationType === "inversion" || animationType === "inversionTween"
+          ? this.invertedRef?.current
+          : this.ref.current
+
+      if (!element) continue
+
+      const effects = allAnimations[animationType as keyof typeof allAnimations]
+      if (!effects) continue
+
+      const animation = element.animate(effects, duration)
+      if (!animation) continue
+
+      animations.push(animation)
+      this.state.leadAnimation = animation
+      this.state.duration = duration
+
+      animation.addEventListener("finish", () => {
+        this.onComplete()
+        this.state.isInverted = false
+      })
+    }
+
     this.state.lastInteraction = nextInteraction
     this.state.lastResolvedFrame = resolvedTo
-    this.state.isAnimating = true
+
     if (interaction !== Interaction.None) this.state.stack.set(interaction, to || {})
     if (withInversion) this.state.isInverted = true
 
-    this.keyframes.flush(this.state.animations)
-
+    this.state.animations.forEach((animation) => animation.cancel())
     this.state.animations = animations
-    if (inversion) this.state.animations.push(inversion)
-
-    // console.log(this.state)
   }
 }

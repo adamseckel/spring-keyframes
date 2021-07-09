@@ -1,6 +1,6 @@
-export { driver, ease } from "@spring-keyframes/driver"
+export { keyframesDriver, EASE as ease } from "@spring-keyframes/driver"
 export { Animate, CorrectLayoutDistortion } from "./components/Animate"
-export { KeyframesContext } from "./components/Keyframes"
+// export { KeyframesContext } from "./components/Keyframes"
 export { useDriver } from "./hooks/useDriver"
 export { useAnimatedState, Props as UseAnimatedStateProps } from "./hooks/useAnimatedState"
 export { useWhileInteraction, Props as UseWhileInteractionProps } from "./hooks/useWhileInteraction"

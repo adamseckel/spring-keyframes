@@ -29,6 +29,24 @@ export default function Home() {
             />
           )}
           <Animate
+            id="CHILD"
+            key="CHILD"
+            onClick={() => setToggled(!toggled)}
+            layout
+            style={{
+              background: "red",
+              width: 200,
+              height: 200,
+              width: toggled ? 400 : 600,
+              height: toggled ? 100 : 150,
+            }}>
+            <CorrectLayoutDistortion style={{ transformOrigin: "50% 0% 0" }}>
+              <h1 className={styles.title} style={{ fontSize: 18 }}>
+                Welcome to Next.js!
+              </h1>
+            </CorrectLayoutDistortion>
+          </Animate>
+          {/* <Animate
             as="div"
             layout
             key="B"
@@ -41,25 +59,9 @@ export default function Home() {
             }}
             enterFrom={{ opacity: 0, scale: 1.2 }}>
             <CorrectLayoutDistortion style={{ transformOrigin: "0% 0% 0" }}>
-              <Animate
-                id="CHILD"
-                key="CHILD"
-                layout
-                style={{
-                  background: "red",
-                  width: 200,
-                  height: 200,
-                  width: toggled ? 400 : 600,
-                  height: toggled ? 100 : 150,
-                }}>
-                <CorrectLayoutDistortion style={{ transformOrigin: "50% 0% 0" }}>
-                  <h1 className={styles.title} style={{ fontSize: 18 }}>
-                    Welcome to Next.js!
-                  </h1>
-                </CorrectLayoutDistortion>
-              </Animate>
+              
             </CorrectLayoutDistortion>
-          </Animate>
+          </Animate> */}
 
           <Animate layout as="div" key="C">
             <p className={styles.description}>
