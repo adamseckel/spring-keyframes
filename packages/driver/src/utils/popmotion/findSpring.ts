@@ -1,5 +1,4 @@
 import type { SpringOptions } from "popmotion/lib/animations/types"
-import { warning } from "hey-listen"
 import { clamp } from "./clamp"
 
 /**
@@ -18,7 +17,7 @@ export function findSpring({ duration = 800, bounce = 0.25, velocity = 0, mass =
   let envelope: Resolver
   let derivative: Resolver
 
-  warning(duration <= maxDuration * 1000, "Spring duration must be 10 seconds or less")
+  console.warn(duration <= maxDuration * 1000, "Spring duration must be 10 seconds or less")
 
   let dampingRatio = 1 - bounce
 
@@ -32,7 +31,7 @@ export function findSpring({ duration = 800, bounce = 0.25, velocity = 0, mass =
     /**
      * Underdamped spring
      */
-    envelope = undampedFreq => {
+    envelope = (undampedFreq) => {
       const exponentialDecay = undampedFreq * dampingRatio
       const delta = exponentialDecay * duration
       const a = exponentialDecay - velocity
@@ -41,7 +40,7 @@ export function findSpring({ duration = 800, bounce = 0.25, velocity = 0, mass =
       return safeMin - (a / b) * c
     }
 
-    derivative = undampedFreq => {
+    derivative = (undampedFreq) => {
       const exponentialDecay = undampedFreq * dampingRatio
       const delta = exponentialDecay * duration
       const d = delta * velocity + velocity
@@ -55,13 +54,13 @@ export function findSpring({ duration = 800, bounce = 0.25, velocity = 0, mass =
     /**
      * Critically-damped spring
      */
-    envelope = undampedFreq => {
+    envelope = (undampedFreq) => {
       const a = Math.exp(-undampedFreq * duration)
       const b = (undampedFreq - velocity) * duration + 1
       return -safeMin + a * b
     }
 
-    derivative = undampedFreq => {
+    derivative = (undampedFreq) => {
       const a = Math.exp(-undampedFreq * duration)
       const b = (velocity - undampedFreq) * (duration * duration)
       return a * b
