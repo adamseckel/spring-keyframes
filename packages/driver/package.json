@@ -41,9 +41,8 @@
   },
   "gitHead": "a023e3f701807018762624b8427041b4004a1bc2",
   "dependencies": {
-    "hey-listen": "^1.0.8",
     "popmotion": "^9.0.0",
-    "tslib": "^2.1.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "ts-jest": "^26.4.4"

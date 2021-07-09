@@ -15,7 +15,7 @@
     "@spring-keyframes/matrix": "^0.0.50",
     "framer-motion": "^4.1.17",
     "popmotion": "^9.3.6",
-    "tslib": "^2.1.0",
+    "tslib": "^2.3.0",
     "use-deep-compare-effect": "1.6.1"
   },
   "peerDependencies": {
